@@ -1,0 +1,20 @@
+<div id="div_content">
+    <div class="row">
+        {include="$page_menu"}
+        <div class="col-md-10 mtop-10">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>test <span class="text-muted">test</span></h3>
+                    <h5>test test</h5>
+                    <hr/>
+                    <h5>log_error</h5>
+                    <ul>
+                        {loop="$log_error_value"}
+                        <li>{$value->nome}</li>
+                        {/loop}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
