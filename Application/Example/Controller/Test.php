@@ -5,21 +5,20 @@ namespace Application\Example\Controller {
     use \Util;
     use \Auth\ProtectResource;
     use \Rain\Tpl;
-    use \Application\Log\Model\LogError;
+    use \Application\Log\Model\ALogError;
     class Test extends ProtectResource {
         function __construct($request) {
-            $log_error = new LogError;
+            $a_log_error = new ALogError;
 
             $csrf = Util::csrf($request);
-            $_SESSION["csrf"] = $csrf;
 
             $test_info = "test information";
 
-            $log_error_value = $log_error->databaseUse(DB_LOG)->filter()->value();
+            $a_log_error_value = $a_log_error->databaseUse(DB_LOG)->filter()->value();
 
             $rain_tpl_assign = [
                 "test_info" => $test_info,
-                "log_error_value" => $log_error_value,
+                "log_error_value" => $a_log_error_value,
                 "csrf" => $csrf,
                 "page_view" => "home",
                 "page_menu" => "menu",

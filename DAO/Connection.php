@@ -63,40 +63,9 @@ namespace DAO {
             return $this;
         }
 
-        public function databaseUse($name = null) {
+        public function databaseUse($name) {
             $this->setDatabase($name);
             $this->connect();
-
-            return $this;
-        }
-
-        public function connectOutside($database_info = []) {
-            $db_host = Util::get($database_info,"DB_HOST",null);
-            $db_port = Util::get($database_info,"DB_PORT",null);
-            $db_name = Util::get($database_info,"DB_NAME",null);
-            $db_user = Util::get($database_info,"DB_USER",null);
-            $db_driver = Util::get($database_info,"DB_DRIVER",null);
-            $db_password = Util::get($database_info,"DB_PASSWORD",null);
-
-            if (empty($db_driver) || empty($db_host) || empty($db_name) || empty($db_user) || empty($db_password)) {
-                throw new Exception("param missing");
-            }
-
-            try {
-                $pdo = new PDO($db_driver.":host=".$db_host.";port=".$db_port.";dbname=".$db_name,$db_user,$db_password);
-
-                if (DB_AUTOCOMMIT) {
-                    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
-                }
-
-                $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
-                $pdo->setAttribute(PDO::ERRMODE_EXCEPTION,1);
-  
-            } catch (Exception $error) {
-                throw new Exception($error);
-            }
-
-            $this->link = $pdo;
 
             return $this;
         }

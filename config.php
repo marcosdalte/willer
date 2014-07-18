@@ -5,7 +5,7 @@ include_once("Util.php");
 include_once("url.php");
 
 define("PAGE",Util::get($_GET,"page",null));
-define("VERSION","0.0.1");
+define("VERSION","0.0.3");
 define("DISPLAY_ERRORS",1);
 define("ERROR_REPORTING",E_ALL);
 define("TIMEZONE","America/Sao_Paulo");
@@ -14,6 +14,11 @@ define("HTTP_TYPE","http");
 define("PUBLIC_PATH",vsprintf("%s://%s/public",[HTTP_TYPE,URL_SITE]));
 define("TEMPLATE_PATH",vsprintf("%s://%s/public/template",[HTTP_TYPE,URL_SITE]));
 define("URL_BASE",vsprintf("%s://%s",[HTTP_TYPE,URL_SITE]));
+define("PATH_404","404.html");
+define("QUERY_LIMIT_ROW",15);
+define("SESSION_LIMIT",10);
+define("API_AUTH_KEY",API_KEY);
+define("API_AUTH_USER",API_USER);
 define("DB_DEFAULT",DB_MAIN_NAME);
 define("DB_LOG",DB_LOG_NAME);
 define("DB_AUTOCOMMIT",0);
@@ -46,7 +51,7 @@ Util::autoLoad();
 $url_route = Util::urlRoute($URL,PAGE);
 
 if (empty($url_route)) {
-    exit();
+    Util::httpRedirect(vsprintf("%s/%s",[URL_BASE,PATH_404]));
 }
 
 define("APPLICATION",$url_route["application"]);

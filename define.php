@@ -1,8 +1,6 @@
 <?php
 
 define("URL_SITE","127.0.0.1/starter2app");
-define("QUERY_LIMIT_ROW",15);
-define("SESSION_LIMIT",10);
 define("API_KEY","12345");
 define("API_USER","wborba");
 define("DB_MAIN_DRIVER","pgsql");

@@ -2,9 +2,9 @@
 
 namespace Auth {
     use \Util;
-    use \Application\Log\Model\LogUser;
-    use \Application\Log\Model\LogRegister;
-    use \Application\Log\Model\LogError;
+    use \Application\Log\Model\ALogUser;
+    use \Application\Log\Model\ALogRegister;
+    use \Application\Log\Model\ALogError;
     use \Exception as Exception;
     class ProtectResource {
         public function protect($controller) {
@@ -33,7 +33,7 @@ namespace Auth {
         }
 
         private function auth($request) {
-            $log_user = new LogUser;
+            $a_log_user = new ALogUser;
 
             $auth_user = Util::get($request->GET,"auth_user",null);
             $auth_key = Util::get($request->GET,"auth_key",null);
@@ -44,7 +44,7 @@ namespace Auth {
             }
 
             try {
-                $log_user = $log_user->databaseUse(DB_LOG)->get([
+                $a_log_user = $a_log_user->databaseUse(DB_LOG)->get([
                     "nome" => $auth_user,
                     "publickey" => $auth_key,
                     "ativo" => 1]);
@@ -53,15 +53,15 @@ namespace Auth {
                 throw new Exception("auth_key_invalid");
             }
 
-            return $log_user;
+            return $a_log_user;
         }
 
         protected function log($request,$error_name,$message = "") {
-            $log_error = new LogError;
-            $log_register = new LogRegister;
+            $a_log_error = new ALogError;
+            $a_log_register = new ALogRegister;
 
             try {
-                $log_error = $log_error->databaseUse(DB_LOG)->get([
+                $a_log_error = $a_log_error->databaseUse(DB_LOG)->get([
                     "nome" => $error_name]);
 
             } catch (Exception $error) {
@@ -70,9 +70,9 @@ namespace Auth {
             }
 
             try {
-                $log_register->databaseUse(DB_LOG)->save([
+                $a_log_register->databaseUse(DB_LOG)->save([
                     "log_user_id" => Util::get($request->auth,"id",null),
-                    "log_error_id" => Util::get($log_error,"id",null),
+                    "log_error_id" => Util::get($a_log_error,"id",null),
                     "url" => PAGE,
                     "post" => json_encode($request->POST),
                     "get" => json_encode($request->GET),
@@ -86,26 +86,26 @@ namespace Auth {
         }
 
         protected function error($request,$error_name,$message = "") {
-            $log_error = new LogError;
-            $log_register = new LogRegister;
+            $a_log_error = new ALogError;
+            $a_log_register = new ALogRegister;
 
             if (!empty($message)) {
                 $message .= vsprintf("%s\n%s",[$message->getMessage(),$message->getTraceAsString()]);
             }
 
             try {
-                $error_get = $log_error->databaseUse(DB_LOG)->get([
+                $a_log_error = $a_log_error->databaseUse(DB_LOG)->get([
                     "nome" => $error_name]);
 
             } catch (Exception $error) {
                 $message .= vsprintf("%s\n%s",$error->getMessage(),$error->getTraceAsString());
-                $error_get = null;
+                $a_log_error = null;
             }
 
             try {
                 $log_register->databaseUse(DB_LOG)->save([
                     "log_user_id" => Util::get($request->auth,"id",null),
-                    "log_error_id" => Util::get($error_get,"id",null),
+                    "log_error_id" => Util::get($a_log_error,"id",null),
                     "url" => PAGE,
                     "post" => json_encode($request->POST),
                     "get" => json_encode($request->GET),
@@ -117,8 +117,8 @@ namespace Auth {
             }
 
             return Util::renderToJson([
-                "error_name" => Util::get($error_get,"nome",null),
-                "error_message" => Util::get($error_get,"descricao",null),
+                "error_name" => Util::get($a_log_error,"nome",null),
+                "error_message" => Util::get($a_log_error,"descricao",null),
                 "error_exception" => $message,
                 "success" => false,]);
         }

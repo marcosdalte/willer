@@ -9,10 +9,12 @@ namespace DAO {
         private $table_name;
         private $table_column;
         private $table_primary_key;
-        private $field;
+		private $table_foreign_key;
+		private $field;
         private $related;
+		private $exclude;
+		private $exclude_escape;
         private $page;
-        private $limit;
         private $order_by;
         private $query_value;
         private $update_filter_sql_escape;
@@ -48,7 +50,15 @@ namespace DAO {
             $this->table_primary_key = $value;
         }
 
-        protected function getField() {
+		public function getTableForeignKey() {
+			return $this->table_foreign_key;
+		}
+
+		protected function setTableForeignKey($value) {
+			$this->table_foreign_key = $value;
+		}
+
+		protected function getField() {
             return $this->field;
         }
 
@@ -64,20 +74,28 @@ namespace DAO {
             $this->related = $value;
         }
 
+		protected function getExcludeEscape($value) {
+            return $this->exclude_escape;
+        }
+
+		protected function setExcludeEscape($value) {
+            $this->exclude_escape = $value;
+        }
+
+		protected function getExclude($value) {
+            return $this->exclude;
+        }
+
+        protected function setExclude($value) {
+            $this->exclude = $value;
+        }
+
         protected function getPage() {
             return $this->page;
         }
 
         protected function setPage($value) {
             $this->page = $value;
-        }
-
-        protected function getLimit() {
-            return $this->limit;
-        }
-
-        protected function setLimit($value) {
-            $this->limit = $value;
         }
 
         protected function getOrderBy() {
@@ -124,20 +142,22 @@ namespace DAO {
             return $this->getQueryValue();
         }
 
-        public function field($field = []) {
+		public function field($field = null) {
             if (!empty($field)) {
-                $list = null;
+				$this->setField($field);
 
-                foreach ($field as $key => $value) {
-                    $list[] = vsprintf("%s as %s",[$key,$value]);
-                }
+			} else {
+				$field = $this->column();
+				$table_name = $this->getTableName();
+				$list = [];
 
-                $list = implode(",",$list);
+				foreach ($field as $value) {
+					$list[] = vsprintf("%s.%s",[$table_name,$value]);
 
-                $this->setField($list);
-            }
+				}
 
-            return $this;
+				$this->setField($list);
+			}
         }
 
         public function orderBy($order_by = []) {
@@ -174,61 +194,78 @@ namespace DAO {
             return $this;
         }
 
-        protected function related($related) {
-            $list = [];
+		protected function related($foreign_Key = null,$list = []) {
+			$table_name = $this->getTableName();
+			$table_primary_key = $this->getTablePrimaryKey();
+			
+			if (!empty($foreign_Key)) {
+				$table_foreign_Key = $foreign_Key->getTableForeignKey();
 
-            foreach ($related as $key => $value) {
-                foreach ($value as $sub_key => $sub_value) {
-                    $table_b = key($sub_value);
-                    $foreign_key_b = current($sub_value);
+			} else {
+				$table_foreign_Key = $this->getTableForeignKey();
+			}
 
-                    $list[] = vsprintf("inner join %s on %s.%s=%s.%s",[$key,$key,$sub_key,$table_b,$foreign_key_b]);
-                }
-            }
+			if (!empty($table_foreign_Key)) {
+				$list = [];
 
-            $value = implode(" ",$list);
+				foreach ($table_foreign_Key as $key => $value) {
+					$table_index = $key;
+					$foreign_Key = $value["index"];
 
-            $this->setRelated($value);
+					$table_join = $foreign_Key->name();
+					$table_join_index = $foreign_Key->primaryKey();
+					$table_join_index_null = $value["null"];
+
+					$join_type = "inner";
+
+					if (!empty($table_join_index_null)) {
+						$join_type = "left";
+					}
+
+					$list[] = vsprintf("%s join %s on %s.%s=%s.%s",[$join_type,$table_join,$table_join,$table_join_index,$table_name,$table_index]);
+					
+					if (!empty($foreign_Key->getTableForeignKey())) {
+						$this->related($foreign_Key,$list);
+					}
+				}
+
+				$value = implode(" ",$list);
+
+				$this->setRelated($value);
+			}
 
             return $this;
         }
 
-        // public function exclude($exclude = array()) {
-            // if (empty($exclude)) {
-            //     $where = "";
-  
-            // } else {
-            //     $where = array();
-  
-            //     foreach ($exclude as $key => $value) {
-            //         $value_escape = array();
-  
-            //         foreach ($value as $sub_value) {
-            //             $value_escape[] = "?";
-            //             $this->sql_consult_escape[] = $sub_value;
-            //         }
-  
-            //         $where[] = $key." not in(".implode(",",$value_escape).")";
-            //     }
-  
-            //     $where = " and ".implode(" and ",$where);
-            // }
-  
-            // retorna variavel $this->sql_exclude
-  
-            // return $this;
-        // }
+		public function exclude($exclude = []) {
+			if (!empty($exclude)) {
+				$list = [];
+				
+				foreach ($exclude as $key => $value) {
+					$this->setExcludeEscape($value);
+					
+					$list[] = vsprintf("%s not in(?)",[$key,]);
+				}
 
+				$list = implode(" and ",$list);
+
+				$this->setExclude($list);
+			}
+
+			return $this;
+        }
+		/*refatorar*/
         public function filter($where = []) {
-            $related = $this->getRelated();
+			$link = $this->getLink();
             $table_name = $this->getTableName();
-            $field = $this->getField();
+			$table_primary_key = $this->getTablePrimaryKey();
+			$related = $this->getRelated();
+			$exclude = $this->getExclude();
+			$exclude_escape = $this->getExcludeEscape();
             $order_by = $this->getOrderBy();
-            $limit = $this->getLimit();
-            $link = $this->getLink();
+            $page = $this->getPage();
 
-            $sql_consult_total = vsprintf("select count(1) from %s %s",[$table_name,$related]);
-            $sql_consult_id = vsprintf("select %s.id from %s %s",[$table_name,$table_name,$related]);
+            $sql_consult_id = vsprintf("select %s.%s from %s %s",[$table_name,$table_primary_key,$table_name,$related]);
             $sql_consult = vsprintf("select %s from %s %s",[$field,$table_name,$related]);
 
             $sql_value_list = [];
@@ -255,7 +292,6 @@ namespace DAO {
                 $where_escape = implode(" and ",$where_escape);
                 $where_escape = vsprintf("where ",[$where_escape]);
 
-                $sql_consult_total .= vsprintf(" %s",[$where_escape]);
                 $sql_consult_id .= vsprintf(" %s",[$where_escape]);
                 $sql_consult .= vsprintf(" %s %s s%",[$where_escape,$order_by,$limit]);
             }
@@ -480,11 +516,12 @@ namespace DAO {
             $this->setTableName($this->name());
             $this->setTableColumn($this->column());
             $this->setTablePrimaryKey($this->primaryKey());
-            $this->setField("*");
-            $this->setOrderBy(null);
-            $this->setPage(1);
-            $this->setLimit("limit ".QUERY_LIMIT_ROW." offset 0");
+			$this->setTableForeignKey($this->foreignKey());
+			$this->setField($this->field());
             $this->setRelated(null);
+			$this->setExclude(null);
+			$this->setOrderBy(null);
+            $this->setPage(1);
             $this->setUpdateResult(null);
             $this->setUpdateFilterSqlEscape(null);
             $this->setUpdateFilterSqlValueList(null);

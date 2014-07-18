@@ -32,6 +32,7 @@ trait Util {
         $mt_rand = mt_rand();
         $csrf = sprintf("%s/%s",$request->SERVER["REMOTE_ADDR"],$mt_rand);
         $csrf = hash("whirlpool",$csrf);
+		$_SESSION["csrf"] = $csrf;
 
         return $csrf;
     }
