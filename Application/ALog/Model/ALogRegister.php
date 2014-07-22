@@ -1,9 +1,9 @@
 <?php
 
-namespace Application\Log\Model {
+namespace Application\ALog\Model {
     use \DAO\DataManipulationLanguage;
-	use \Application\Log\Model\ALogUser;
-	use \Application\Log\Model\ALogError;
+	use \Application\ALog\Model\ALogUser;
+	use \Application\ALog\Model\ALogError;
     class ALogRegister extends DataManipulationLanguage {
         public $id;
         public $log_user_id;

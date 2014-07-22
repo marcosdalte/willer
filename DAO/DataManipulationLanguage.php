@@ -74,7 +74,7 @@ namespace DAO {
             $this->related = $value;
         }
 
-		protected function getExcludeEscape($value) {
+		protected function getExcludeEscape() {
             return $this->exclude_escape;
         }
 
@@ -82,7 +82,7 @@ namespace DAO {
             $this->exclude_escape = $value;
         }
 
-		protected function getExclude($value) {
+		protected function getExclude() {
             return $this->exclude;
         }
 
@@ -147,12 +147,12 @@ namespace DAO {
 				$this->setField($field);
 
 			} else {
-				$field = $this->column();
+				$field = $this->getTableColumn();
 				$table_name = $this->getTableName();
 				$list = [];
 
-				foreach ($field as $value) {
-					$list[] = vsprintf("%s.%s",[$table_name,$value]);
+				foreach ($field as $key => $value) {
+					$list[] = vsprintf("%s.%s %s__%s",[$table_name,$key,$table_name,$key]);
 
 				}
 
@@ -194,7 +194,7 @@ namespace DAO {
             return $this;
         }
 
-		protected function related($foreign_Key = null,$list = []) {
+		public function related($foreign_Key = null,$field = [],$list = []) {
 			$table_name = $this->getTableName();
 			$table_primary_key = $this->getTablePrimaryKey();
 			
@@ -211,6 +211,7 @@ namespace DAO {
 				foreach ($table_foreign_Key as $key => $value) {
 					$table_index = $key;
 					$foreign_Key = $value["index"];
+                    $field = array_merge($field,$foreign_Key->getField());
 
 					$table_join = $foreign_Key->name();
 					$table_join_index = $foreign_Key->primaryKey();
@@ -223,14 +224,17 @@ namespace DAO {
 					}
 
 					$list[] = vsprintf("%s join %s on %s.%s=%s.%s",[$join_type,$table_join,$table_join,$table_join_index,$table_name,$table_index]);
-					
-					if (!empty($foreign_Key->getTableForeignKey())) {
-						$this->related($foreign_Key,$list);
+
+                    $get_table_foreign_key = $foreign_Key->getTableForeignKey();
+
+					if (!empty($get_table_foreign_key)) {
+						$this->related($foreign_Key,$field,$list);
 					}
 				}
 
-				$value = implode(" ",$list);
+                $this->setField(array_merge($this->getField(),$field));
 
+				$value = implode(" ",$list);
 				$this->setRelated($value);
 			}
 
@@ -264,6 +268,8 @@ namespace DAO {
 			$exclude_escape = $this->getExcludeEscape();
             $order_by = $this->getOrderBy();
             $page = $this->getPage();
+            $field = $this->getField();
+            $field = implode(", ",$field);
 
             $sql_consult_id = vsprintf("select %s.%s from %s %s",[$table_name,$table_primary_key,$table_name,$related]);
             $sql_consult = vsprintf("select %s from %s %s",[$field,$table_name,$related]);
@@ -271,7 +277,7 @@ namespace DAO {
             $sql_value_list = [];
 
             if (empty($where)) {
-                $sql_consult .= vsprintf(" %s %s",[$order_by,$limit]);
+                $sql_consult .= vsprintf(" %s %s",[$order_by,$page]);
 
             } else {
                 $where_escape = [];
@@ -290,10 +296,10 @@ namespace DAO {
                 }
 
                 $where_escape = implode(" and ",$where_escape);
-                $where_escape = vsprintf("where ",[$where_escape]);
+                $where_escape = vsprintf("where %s",[$where_escape,]);
 
                 $sql_consult_id .= vsprintf(" %s",[$where_escape]);
-                $sql_consult .= vsprintf(" %s %s s%",[$where_escape,$order_by,$limit]);
+                $sql_consult .= vsprintf(" %s %s %s",[$where_escape,$order_by,$page]);
             }
 
             try {
@@ -517,11 +523,9 @@ namespace DAO {
             $this->setTableColumn($this->column());
             $this->setTablePrimaryKey($this->primaryKey());
 			$this->setTableForeignKey($this->foreignKey());
-			$this->setField($this->field());
-            $this->setRelated(null);
-			$this->setExclude(null);
-			$this->setOrderBy(null);
-            $this->setPage(1);
+            $this->field(null);
+            $this->orderBy(null);
+            $this->page(1);
             $this->setUpdateResult(null);
             $this->setUpdateFilterSqlEscape(null);
             $this->setUpdateFilterSqlValueList(null);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Log\Model {
+namespace Application\ALog\Model {
     use \DAO\DataManipulationLanguage;
     class ALogUser extends DataManipulationLanguage {
         public $id;

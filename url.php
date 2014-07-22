@@ -1,8 +1,8 @@
 <?php
 /*urls*/
 $URL = [
-	"/^\/?$/" => ["application" => "Example", "controller" => "Test", "protect_resource" => false],
-    "/^home\/?$/" => ["application" => "Example", "controller" => "Test", "protect_resource" => false],
+	"/^\/?$/"     => ["application" => "Doc", "controller" => "Home", "protect_resource" => false],
+    "/^home\/?$/" => ["application" => "Doc", "controller" => "Home", "protect_resource" => false],
 ];
 
 ?>
