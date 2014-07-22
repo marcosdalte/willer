@@ -5,3 +5,4 @@ CHANGELOG
 -------------------
 
 * Initial release of the starter2app.
+* fix filter()
