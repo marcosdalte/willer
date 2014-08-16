@@ -1,6 +1,6 @@
 <?php
 
-define("URL_SITE","127.0.0.1/starter2app");
+define("URL_SITE","127.0.0.1/phpkit");
 define("API_KEY","12345");
 define("API_USER","wborba");
 define("DB_MAIN_DRIVER","pgsql");

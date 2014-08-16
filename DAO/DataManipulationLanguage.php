@@ -3,13 +3,12 @@
 namespace DAO {
     use \PDO as PDO;
     use \Exception as Exception;
-    use \Util;
-    use \DAO\Connection;
-    abstract class DataManipulationLanguage extends Connection {
+	use \Helper\Util;
+
+    abstract class DataManipulationLanguage {
         private $table_name;
         private $table_column;
         private $table_primary_key;
-		private $table_foreign_key;
 		private $field;
         private $related;
 		private $exclude;
@@ -23,7 +22,19 @@ namespace DAO {
 
         public function __construct() {
             $this->clearData();
-            $this->connect();
+        }
+
+		protected function clearData() {
+            $this->setTableName($this->name());
+            $this->setTableColumn($this->column());
+            $this->setTablePrimaryKey($this->schema());
+            $this->field(null);
+            $this->orderBy(null);
+            $this->page(1);
+            $this->setUpdateResult(null);
+            $this->setUpdateFilterSqlEscape(null);
+            $this->setUpdateFilterSqlValueList(null);
+            $this->setQueryValue(null);
         }
 
         protected function getTableName() {
@@ -49,14 +60,6 @@ namespace DAO {
         protected function setTablePrimaryKey($value) {
             $this->table_primary_key = $value;
         }
-
-		public function getTableForeignKey() {
-			return $this->table_foreign_key;
-		}
-
-		protected function setTableForeignKey($value) {
-			$this->table_foreign_key = $value;
-		}
 
 		protected function getField() {
             return $this->field;
@@ -516,20 +519,6 @@ namespace DAO {
 
         public function rowCount() {
             return $this->getUpdateResult();
-        }
-
-        protected function clearData() {
-            $this->setTableName($this->name());
-            $this->setTableColumn($this->column());
-            $this->setTablePrimaryKey($this->primaryKey());
-			$this->setTableForeignKey($this->foreignKey());
-            $this->field(null);
-            $this->orderBy(null);
-            $this->page(1);
-            $this->setUpdateResult(null);
-            $this->setUpdateFilterSqlEscape(null);
-            $this->setUpdateFilterSqlValueList(null);
-            $this->setQueryValue(null);
         }
 
         public function __destruct() {

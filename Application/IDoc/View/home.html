@@ -1,7 +1,7 @@
 <div id="div_content">
     <div class="row">
         {include="$page_menu"}
-        <div class="col-md-10 mtop-10">
+        <div class="col-md-10">
             <div class="row">
                 <div class="col-md-12">
                     <h3>test <span class="text-muted">test</span></h3>
@@ -9,8 +9,8 @@
                     <hr/>
                     <h5>log_error</h5>
                     <ul>
-                        {loop="$log_register"}
-                        <li>{$value->log_register__mensagem}</li>
+                        {loop="$log_error"}
+                        <li>{$value->log_error__id}</li>
                         {/loop}
                     </ul>
                 </div>

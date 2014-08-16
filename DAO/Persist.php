@@ -3,15 +3,15 @@
 namespace DAO {
     use \PDO as PDO;
     use \Exception as Exception;
-    use \Util;
-    abstract class Connection {
+
+    class Persist {
         private $link;
         private $database;
         private $last_insert_id;
   
         public function __construct() {}
 
-        protected function getLink() {
+        public function getLink() {
             return $this->link;
         }
 
@@ -19,7 +19,7 @@ namespace DAO {
             $this->link = $value;
         }
 
-        protected function getDatabase() {
+        public function getDatabase() {
             return $this->database;
         }
 
@@ -27,7 +27,7 @@ namespace DAO {
             $this->database = $value;
         }
 
-        protected function getLastInsertId() {
+        public function getLastInsertId() {
             return $this->last_insert_id;
         }
 
@@ -35,25 +35,34 @@ namespace DAO {
             $this->last_insert_id = $value;
         }
 
-        protected function connect() {
+        public function connect() {
             $database = $this->getDatabase();
 
             if (empty($database)) {
                 $database = DB_DEFAULT;
             }
 
-            $database_info = $GLOBALS["database_info"];
+            $database_info = $GLOBALS["DATABASE_INFO"];
 
             try {
                 $pdo = new PDO($database_info[$database]["DB_DRIVER"].":host=".$database_info[$database]["DB_HOST"].";port=".$database_info[$database]["DB_PORT"].";dbname=".$database_info[$database]["DB_NAME"],$database_info[$database]["DB_USER"],$database_info[$database]["DB_PASSWORD"]);
 
-                if (DB_AUTOCOMMIT) {
+                if ($database_info[$database]["DB_AUTOCOMMIT"] === 0) {
                     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
-                }
 
-                $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
-                $pdo->setAttribute(PDO::ERRMODE_EXCEPTION,1);
-  
+                } else if ($database_info[$database]["DB_AUTOCOMMIT"] === 1) {
+					$pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,1);
+				}
+
+				if ($database_info[$database]["DB_DEBUG"] === 0) {
+					$pdo->setAttribute(PDO::ATTR_ERRMODE,1);
+                	$pdo->setAttribute(PDO::ERRMODE_EXCEPTION,1);
+
+				} else if ($database_info[$database]["DB_DEBUG"] === 1) {
+					$pdo->setAttribute(PDO::ATTR_ERRMODE,0);
+                	$pdo->setAttribute(PDO::ERRMODE_EXCEPTION,0);
+				}
+
             } catch (Exception $error) {
                 throw new Exception($error);
             }
@@ -65,7 +74,6 @@ namespace DAO {
 
         public function databaseUse($name) {
             $this->setDatabase($name);
-            $this->connect();
 
             return $this;
         }
