@@ -172,7 +172,7 @@ namespace Helper {
 				if ($this->flag_null === 0 && $this->flag_blank === 0) {
 					$option = [
 						"options" => [
-							"default" => null,]
+							"default" => null],
 						"flags" => []];
 
 					if (!filter_var($value,FILTER_VALIDATE_INT,$option)) {
@@ -202,7 +202,7 @@ namespace Helper {
 				if ($this->flag_null === 0 && $this->flag_blank === 0) {
 					$option = [
 						"options" => [
-							"default" => null,]
+							"default" => null],
 						"flags" => []];
 
 					if (!filter_var($value,FILTER_VALIDATE_BOOLEAN,$option)) {
