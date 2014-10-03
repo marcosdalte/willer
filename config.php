@@ -8,7 +8,7 @@ include_once("url.php");
 use Helper\Util;
 use Helper\System;
 
-define("PAGE",Util::get($_GET,"page",null));
+define("PAGE",Util::get($_GET,"http_path",null));
 define("VERSION","0.0.3");
 define("DISPLAY_ERRORS",1);
 define("ERROR_REPORTING",E_ALL);

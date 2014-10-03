@@ -5,18 +5,18 @@ namespace DAO {
     use \Exception as Exception;
 
     class Persist {
-        private $link;
+        private $resource;
         private $database;
         private $last_insert_id;
   
         public function __construct() {}
 
-        public function getLink() {
-            return $this->link;
+        public function getResource() {
+            return $this->resource;
         }
 
-        protected function setLink($value) {
-            $this->link = $value;
+        protected function setResource($value) {
+            $this->resource = $value;
         }
 
         public function getDatabase() {
@@ -47,27 +47,27 @@ namespace DAO {
             try {
                 $pdo = new PDO($database_info[$database]["DB_DRIVER"].":host=".$database_info[$database]["DB_HOST"].";port=".$database_info[$database]["DB_PORT"].";dbname=".$database_info[$database]["DB_NAME"],$database_info[$database]["DB_USER"],$database_info[$database]["DB_PASSWORD"]);
 
-                if ($database_info[$database]["DB_AUTOCOMMIT"] === 0) {
-                    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
+                if ($database_info[$database]["DB_DRIVER"] == "mysql") {
+                    if ($database_info[$database]["DB_AUTOCOMMIT"] === 0) {
+                        $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
 
-                } else if ($database_info[$database]["DB_AUTOCOMMIT"] === 1) {
-					$pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,1);
-				}
+                    } else if ($database_info[$database]["DB_AUTOCOMMIT"] === 1) {
+                        $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,1);
+                    }
+                }
 
-				if ($database_info[$database]["DB_DEBUG"] === 0) {
-					$pdo->setAttribute(PDO::ATTR_ERRMODE,1);
-                	$pdo->setAttribute(PDO::ERRMODE_EXCEPTION,1);
+                if ($database_info[$database]["DB_DEBUG"] === 0) {
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
 
-				} else if ($database_info[$database]["DB_DEBUG"] === 1) {
-					$pdo->setAttribute(PDO::ATTR_ERRMODE,0);
-                	$pdo->setAttribute(PDO::ERRMODE_EXCEPTION,0);
-				}
+                } else if ($database_info[$database]["DB_DEBUG"] === 1) {
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE,0);
+                }
 
             } catch (Exception $error) {
                 throw new Exception($error);
             }
 
-            $this->link = $pdo;
+            $this->resource = $pdo;
 
             return $this;
         }
@@ -80,7 +80,7 @@ namespace DAO {
   
         public function beginTransaction() {
             try {
-                $this->link->beginTransaction();
+                $this->resource->beginTransaction();
   
             } catch (Exception $error) {  
                 throw new Exception($error);
@@ -91,7 +91,7 @@ namespace DAO {
   
         public function commit() {
             try {
-                $this->link->commit();
+                $this->resource->commit();
   
             } catch (Exception $error) {  
                 throw new Exception($error);
@@ -102,7 +102,7 @@ namespace DAO {
   
         public function rollBack() {
             try {
-                $this->link->rollBack();
+                $this->resource->rollBack();
   
             } catch (Exception $error) {
                 throw new Exception($error);
@@ -113,7 +113,7 @@ namespace DAO {
   
         public function lastInsertId($name = null) {
             try {
-                $this->setLastInsertId($this->link->lastInsertId($name));
+                $this->setLastInsertId($this->resource->lastInsertId($name));
   
             } catch (Exception $error) {  
                 throw new Exception($error);

@@ -8,7 +8,7 @@ namespace DAO {
     abstract class DataManipulationLanguage {
         private $table_name;
         private $table_column;
-        private $table_primary_key;
+        private $table_schema;
 		private $field;
         private $related;
 		private $exclude;
@@ -27,7 +27,7 @@ namespace DAO {
 		protected function clearData() {
             $this->setTableName($this->name());
             $this->setTableColumn($this->column());
-            $this->setTablePrimaryKey($this->schema());
+            $this->setTableSchema($this->schema());
             $this->field(null);
             $this->orderBy(null);
             $this->page(1);
@@ -53,12 +53,12 @@ namespace DAO {
             $this->table_column = $value;
         }
 
-        protected function getTablePrimaryKey() {
-            return $this->table_primary_key;
+        protected function getTableSchema() {
+            return $this->table_schema;
         }
 
-        protected function setTablePrimaryKey($value) {
-            $this->table_primary_key = $value;
+        protected function setTableSchema($value) {
+            $this->table_schema = $value;
         }
 
 		protected function getField() {
