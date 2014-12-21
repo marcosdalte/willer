@@ -1,14 +1,14 @@
 <?php
 
 include_once("define.php");
-include_once("Helper/Util.php");
-include_once("Helper/System.php");
+include_once("Core/Util.php");
+include_once("Core/System.php");
 include_once("url.php");
 
-use Helper\Util;
-use Helper\System;
+use Core\Util;
+use Core\System;
 
-define("PAGE",Util::get($_GET,"http_path",null));
+define("HTTP_PATH",Util::get($_GET,"http_path",null));
 define("VERSION","0.0.3");
 define("DISPLAY_ERRORS",1);
 define("ERROR_REPORTING",E_ALL);
@@ -16,7 +16,7 @@ define("TIMEZONE","America/Sao_Paulo");
 define("ROOT_PATH",__DIR__);
 define("HTTP_TYPE","http");
 define("PUBLIC_PATH",Util::str("%s://%s/public",[HTTP_TYPE,URL_SITE]));
-define("TEMPLATE_PATH",Util::str("%s://%s/public/template",[HTTP_TYPE,URL_SITE]));
+define("TEMPLATE_PATH",Util::str("%s://%s/public/theme",[HTTP_TYPE,URL_SITE]));
 define("URL_BASE",Util::str("%s://%s",[HTTP_TYPE,URL_SITE]));
 define("PATH_404","404.html");
 define("URL_NOT_FOUND",Util::str("%s/%s",[URL_BASE,PATH_404]));
@@ -28,8 +28,6 @@ define("DB_DEFAULT",DB_MAIN_NAME);
 define("DB_LOG",DB_LOG_NAME);
 
 global $DATABASE_INFO;
-global $AUTH;
-global $PERSIST;
 
 $DATABASE_INFO = [
     DB_DEFAULT => [

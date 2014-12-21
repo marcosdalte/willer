@@ -2,32 +2,38 @@
 
 namespace Application\IDoc\Controller {
     use \Exception as Exception;
-    use \Helper\Util;
-    use \Helper\System;
-    use \Helper\ProtectResource;
-    use \Application\ALog\Model\LogRegister;
-    use \Application\ALog\Model\LogError;
+    use \Core\Util;
+    use \Core\TplEngine;
+    use \Core\Controller;
+    use \Core\DAO\Transaction;
+    use \Application\ALog\Model\Log;
 
-    class Home extends ProtectResource {
-		/*
-		 * Available POST,PUT,DELETE,GET or void(simple html)
-		 *
-		 */
-		const ACCESS_METHOD = null;
+    class Home extends Controller {
+		protected $api_rest_rule = ["GET","POST","PUT","DELETE"];
 
         function __construct() {
-            $log_register = new LogRegister(DB_LOG);
-            $log_error = new LogError(DB_LOG);
+            try {
+                $transaction = new Transaction;
+                $log_register = new Log\LogRegister(DB_LOG);
+                $log_error = new LogError(DB_LOG);
+
+            } catch (Exception $error) {
+                throw new Exception($error);
+            }
 
             $csrf = Util::csrf();
 
-            $GLOBALS["PERSIST"]->beginTransaction();
+            $transaction->beginTransaction();
 
-            $log_error_value = $log_error->orderBy(["id" => "desc"])->filter()->value();
+            $log_register = $log_register->save([
+                "log_user_id" => null,
+                "log_error_id" => null,
+                "url" => "test",
+                "post" => "test",
+                "get" => "test",
+                "message" => "test"]);
 
-            $GLOBALS["PERSIST"]->commit();
-
-            // $log_register_value = $log_register->databaseUse(DB_LOG)->orderBy(["id" => "desc"])->filter()->value();
+            $transaction->commit();
 
             $template_assign = [
                 // "log_register" => $log_register_value,
@@ -37,9 +43,7 @@ namespace Application\IDoc\Controller {
                 "page_menu" => "menu",
                 "template" => "default"];
 
-			$template_engine = System::templateEngineReady();
-            $template_engine->assign($template_assign);
-            $template_engine->draw("template");
+			$template_engine = TplEngine::ready()->assign($template_assign)->draw("template");
         }
     }
 }
