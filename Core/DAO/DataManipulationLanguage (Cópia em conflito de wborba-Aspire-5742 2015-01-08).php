@@ -12,9 +12,6 @@ namespace Core\DAO {
         private $order_by;
         private $primary_key;
         private $last_insert_id;
-        private $query;
-        private $query_value;
-        private $register;
 
         public function __construct() {
             $this->clearData();
@@ -80,35 +77,11 @@ namespace Core\DAO {
             $this->last_insert_id = $id;
         }
 
-        private function getQuery() {
-            return $this->query;
-        }
-
-        private function setQuery($query) {
-            $this->query = $query;
-        }
-
-        private function getQueryValue() {
-            return $this->query_value;
-        }
-
-        private function setQueryValue($query_value) {
-            $this->query_value = $query_value;
-        }
-
-        private function getRegister() {
-            return $this->register;
-        }
-
-        private function setRegister($register) {
-            $this->register = $register;
-        }
-
         private function clearData() {
             $this->select($field = null);
             $this->orderBy($order_by = []);
             $this->limit($page = 1,$limit = QUERY_LIMIT_ROW);
-            $this->definePrimaryKey($column = null);
+            $this->definePrimaryKey($column = "id");
         }
 
         private function definePrimaryKey($column = null) {
@@ -119,10 +92,6 @@ namespace Core\DAO {
                     $column = $i;
                     break;
                 }
-            }
-
-            if (empty($column)) {
-                throw new Exception("primary key missing in schema");
             }
 
             $this->setPrimaryKey($column);
@@ -138,14 +107,12 @@ namespace Core\DAO {
                 $field_list = [];
 
                 foreach ($field as $i => $value) {
-                    $field_list[] = vsprintf("%s.%s",[$table_name,$i]);
+                    $field_list[] = vsprintf("%s.%s %s__%s",[$table_name,$i,$table_name,$i]);
 
                 }
 
                 $this->setField($field_list);
             }
-
-            return $this;
         }
 
         public function orderBy($order_by = []) {
@@ -248,66 +215,64 @@ namespace Core\DAO {
         // }
 
         public function filter($where = []) {
+            if (empty($GLOBALS["TRANSACTION"])) {
+                throw new Exception("Transaction don't initiated.");
+            }
+
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
 
+            $order_by = $this->getOrderBy();
+            $limit = $this->getLimit();
             $field = $this->getField();
-
-            if (empty($field)) {
-                $field = $this->select($field = [])->getField();
-            }
-
-            $field = implode(",",$field);
 
             $query = vsprintf("select %s from %s",[$field,$table_name]);
 
-            $query_value_list = [];
+            $sql_value_list = [];
 
             if (empty($where)) {
-                $query = vsprintf("%s",[$query,]);
+                $query = vsprintf("%s %s %s",[$query,$order_by,$page]);
 
             } else {
                 $where_escape = [];
 
-                foreach ($where as $i => $value) {
-                    if (!array_key_exists($i,$table_column)) {
-                        throw new Exception("field missing, check our model");
+                foreach ($where as $key => $value) {
+                    $value_escape_list = [];
+
+                    foreach ($value as $sub_value) {
+                        $value_escape_list[] = "?";
+                        $sql_value_list[] = $sub_value;
                     }
 
-                    if (!array_key_exists($i,$table_schema)) {
-                        throw new Exception("field missing, check our schema");
-                    }
+                    $value_escape_list = implode(",",$value_escape_list);
 
-                    $where_value = null;
-
-                    if (empty($value)) {
-                        $where_value = vsprintf("%s.%s is null",[$table_name,$i]);
-
-                    } else if (!is_array($value)) {
-                        $query_value_list[] = $value;
-
-                        $where_value = vsprintf("%s.%s=?",[$table_name,$i]);
-
-                    } else if (is_array($value)) {
-                        $query_value_list = array_merge($query_value_list,$value);
-                        $value = implode(",",array_map(function ($value) { return "?"; },$value));
-
-                        $where_value = vsprintf("%s.%s in(%s)",[$table_name,$i,$value]);
-
-                    } else {
-                        throw new Exception("filter query error");
-                    }
-
-                    $where_escape[] = $where_value;
+                    $where_escape[] = vsprintf("%s in(%s)",[$key,$value_escape_list]);
                 }
 
                 $where_escape = implode(" and ",$where_escape);
-                $query = vsprintf("%s where %s",[$query,$where_escape]);
+                $where_escape = vsprintf("where %s",[$where_escape,]);
+
+                $sql_consult_id .= vsprintf(" %s",[$where_escape]);
+                $query .= vsprintf(" %s %s %s",[$where_escape,$order_by,$page]);
             }
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
+            try {
+                $statement = $link->prepare($query);
+                $statement->execute($sql_value_list);
+                $result = $statement->fetchAll(PDO::FETCH_CLASS);
+
+            } catch (Exception $error) {
+                $this->clearData();
+
+                throw new Exception($error);
+            }
+
+            $this->clearData();
+
+            $this->setQueryValue($result);
+            $this->setUpdateFilterSqlEscape($sql_consult_id);
+            $this->setUpdateFilterSqlValueList($sql_value_list);
 
             return $this;
         }
@@ -325,8 +290,8 @@ namespace Core\DAO {
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
 
-            $where_escape_list = [];
-            $query_value_list = [];
+            $where_escape = [];
+            $where_value = [];
 
             foreach ($where as $i => $value) {
                 if (!array_key_exists($i,$table_column)) {
@@ -337,11 +302,11 @@ namespace Core\DAO {
                     throw new Exception("field missing, check our schema");
                 }
 
-                $where_escape_list[] = vsprintf("%s.%s=?",[$table_name,$i]);
-                $query_value_list[] = $value;
+                $where_escape[] = vsprintf("%s.%s=?",[$table_name,$i]);
+                $where_value[] = $value;
             }
 
-            $where = vsprintf("where %s",[implode(" and ",$where_escape_list),]);
+            $where = vsprintf("where %s",[implode(" and ",$where_escape),]);
             $field = [];
 
             foreach ($table_column as $i => $value) {
@@ -355,29 +320,26 @@ namespace Core\DAO {
 
             try {
                 $query_total = $GLOBALS["TRANSACTION"]->getResource()->prepare($query_total);
-                $query_total->execute($query_value_list);
+                $query_total->execute($where_value);
                 $query_total = $query_total->fetch(PDO::FETCH_OBJ);
 
                 if ($query_total->total != 1) {
-                    throw new Exception("error in get, don't unique register");
+                    throw new Exception("error in get, don't unique result");
                 }
 
                 $query = $GLOBALS["TRANSACTION"]->getResource()->prepare($query);
-                $query->execute($query_value_list);
-                $query_fetch = $query->fetch(PDO::FETCH_OBJ);
+                $query->execute($where_value);
+                $query = $query->fetch(PDO::FETCH_OBJ);
 
             } catch (Exception $error) {
                 throw new Exception($error);
             }
 
-            foreach ($query_fetch as $i => $value) {
+            foreach ($query as $i => $value) {
                 $this->$i = $value;
             }
 
             $this->clearData();
-
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
 
             return $this;
         }
@@ -392,9 +354,9 @@ namespace Core\DAO {
             $table_schema = $this->getTableSchema();
 
             if (!empty($field)) {
-                $column_list = [];
-                $query_value_list = [];
-                $query_escape_list = [];
+                $column = [];
+                $row = [];
+                $row_escape = [];
 
                 foreach ($field as $i => $value) {
                     if (!array_key_exists($i,$table_column)) {
@@ -418,23 +380,23 @@ namespace Core\DAO {
                         throw new Exception($error);
                     }
 
-                    $column_list[] = $i;
-                    $query_value_list[] = $value;
-                    $query_escape_list[] = "?";
+                    $column[] = $i;
+                    $row[] = $value;
+                    $row_escape[] = "?";
                 }
 
-                $column_list = implode(",",$column_list);
-                $query_escape_list = implode(",",$query_escape_list);
+                $column = implode(",",$column);
+                $row_escape = implode(",",$row_escape);
 
-                $query = vsprintf("insert into %s (%s) values(%s)",[$table_name,$column_list,$query_escape_list]);
+                $query = vsprintf("insert into %s (%s) values(%s)",[$table_name,$column,$row_escape]);
 
             } else {
-                $query_value_list = [];
+                $row = [];
                 $set_escape = [];
 
                 foreach ($table_column as $i => $value) {
                     $set_escape[] = vsprintf("%s=?",[$i,]);
-                    $query_value_list[] = $value;
+                    $row[] = $value;
                 }
 
                 $set_escape = implode(",",$set_escape);
@@ -449,7 +411,7 @@ namespace Core\DAO {
 
             try {
                 $query = $GLOBALS["TRANSACTION"]->getResource()->prepare($query);
-                $query->execute($query_value_list);
+                $query->execute($row);
 
             } catch (Exception $error) {
                 throw new Exception($error);
@@ -473,11 +435,7 @@ namespace Core\DAO {
 
             $this->setLastInsertId($id = $last_insert_id);
             $this->get($where = ["id" => $last_insert_id]);
-
             $this->clearData();
-
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
 
             return $this;
         }
@@ -493,7 +451,8 @@ namespace Core\DAO {
 
             if (!empty($field)) {
                 $column = [];
-                $query_value_list = [];
+                $row = [];
+                $row_escape = [];
 
                 foreach ($field as $i => $value) {
                     if (!array_key_exists($i,$table_column)) {
@@ -518,7 +477,7 @@ namespace Core\DAO {
                     }
 
                     $where[] = vsprintf("%s=?",[$i,]);
-                    $query_value_list[] = $value;
+                    $row[] = $value;
                 }
 
                 $where = implode(",",$where);
@@ -526,7 +485,7 @@ namespace Core\DAO {
                 $query = vsprintf("delete from %s where %s",[$table_name,$where]);
 
             } else {
-                $query_value_list = [];
+                $row = [];
 
                 foreach ($table_column as $i => $value) {
                     $this->$i = null;
@@ -542,7 +501,7 @@ namespace Core\DAO {
 
             try {
                 $query = $GLOBALS["TRANSACTION"]->getResource()->prepare($query);
-                $query->execute($query_value_list);
+                $query->execute($row);
 
             } catch (Exception $error) {
                 throw new Exception($error);
@@ -565,9 +524,6 @@ namespace Core\DAO {
             $last_insert_id = $GLOBALS["TRANSACTION"]->lastInsertId($sequence_name = $sequence_name);
 
             $this->clearData();
-
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
 
             return $this;
         }
@@ -642,120 +598,6 @@ namespace Core\DAO {
 
         //     return $this;
         // }
-
-        public function executeRowsTotal($where = []) {
-            if (empty($GLOBALS["TRANSACTION"])) {
-                throw new Exception("Transaction don't initiated.");
-            }
-
-            $table_column = $this->getTableColumn();
-            $table_name = $this->getTableName();
-            $table_schema = $this->getTableSchema();
-
-            $query = vsprintf("select count(1) total from %s",[$table_name,]);
-
-            $query_value_list = [];
-
-            if (!empty($where)) {
-                $where_escape = [];
-
-                foreach ($where as $i => $value) {
-                    if (!array_key_exists($i,$table_column)) {
-                        throw new Exception("field missing, check our model");
-                    }
-
-                    if (!array_key_exists($i,$table_schema)) {
-                        throw new Exception("field missing, check our schema");
-                    }
-
-                    $where_value = null;
-
-                    if (empty($value)) {
-                        $where_value = vsprintf("%s.%s is null",[$table_name,$i]);
-
-                    } else if (!is_array($value)) {
-                        $query_value_list[] = $value;
-
-                        $where_value = vsprintf("%s.%s=?",[$table_name,$i]);
-
-                    } else if (is_array($value)) {
-                        $query_value_list = array_merge($query_value_list,$value);
-                        $value = implode(",",array_map(function ($value) { return "?"; },$value));
-
-                        $where_value = vsprintf("%s.%s in(%s)",[$table_name,$i,$value]);
-
-                    } else {
-                        throw new Exception("filter query error");
-                    }
-
-                    $where_escape[] = $where_value;
-                }
-
-                $where_escape = implode(" and ",$where_escape);
-                $query = vsprintf("%s where %s",[$query,$where_escape]);
-            }
-
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
-
-            try {
-                $query = $GLOBALS["TRANSACTION"]->getResource()->prepare($query);
-                $query->execute($query_value_list);
-                $query_fetch = $query->fetch(PDO::FETCH_OBJ);
-
-            } catch (Exception $error) {
-                throw new Exception($error);
-            }
-
-            $this->setRegister($query_fetch);
-
-            return $this;
-        }
-
-        public function lastQuery() {
-            $query = $this->getQuery();
-            $query_value = $this->getQueryValue();
-
-            $order_by = $this->getOrderBy();
-            $limit = $this->getLimit();
-
-            $query = vsprintf("%s %s %s",[$query,$order_by,$limit]);
-
-            return [
-                "query" => $query,
-                "query_value" => $query_value,
-            ];
-        }
-
-        public function execute() {
-            if (empty($GLOBALS["TRANSACTION"])) {
-                throw new Exception("Transaction don't initiated.");
-            }
-
-            $order_by = $this->getOrderBy();
-            $limit = $this->getLimit();
-            $query = $this->getQuery();
-            $query_value = $this->getQueryValue();
-
-            $query = vsprintf("%s %s %s",[$query,$order_by,$limit]);
-
-            try {
-                $query = $GLOBALS["TRANSACTION"]->getResource()->prepare($query);
-                $query->execute($query_value);
-                $query_fetch_all = $query->fetchAll(PDO::FETCH_OBJ);
-
-            } catch (Exception $error) {
-                throw new Exception($error);
-            }
-
-            $this->setRegister($query_fetch_all);
-
-            return $this;
-        }
-
-        public function dump() {
-            return $this->getRegister();
-        }
 
         public function __destruct() {
             unset($this);

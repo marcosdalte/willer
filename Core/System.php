@@ -6,14 +6,14 @@ namespace Core {
     use \Core\DAO\Transaction;
 
     trait System {
-        public static function appReady($URL) {
+        public static function appReady($url = []) {
             global $AUTH;
             global $TRANSACTION;
 
             System::iniSetReady();
             System::autoLoadReady();
             System::sessionReady();
-            System::urlRouteReady($URL,HTTP_PATH);
+            System::urlRouteReady($url,HTTP_PATH);
         }
 
         private static function iniSetReady() {
@@ -36,7 +36,7 @@ namespace Core {
                         unset($class_explode[count($class_explode) - 1]);
 
                         $class = implode("/",$class_explode);
-                        $class = vsprintf("%s.php",[$class]);
+                        $class = vsprintf("%s.php",[$class,]);
 
                     } else {
                         $scan_dir = array_diff(scandir(ROOT_PATH."/Vendor"),array("..","."));
@@ -86,7 +86,7 @@ namespace Core {
                         new $controller();
 
                     } catch (Exception $error) {
-                        Util::renderToJson($error);
+                        Util::exceptionToJson($error);
                     }
 
                     break;

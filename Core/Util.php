@@ -50,12 +50,31 @@ namespace Core {
 			header("Location: ".$url);
 		}
 
-		public static function renderToJson($data = []) {
+		public static function exceptionToJson($exception = null) {
 			header("Content-Type: application/json");
-			print json_encode($data,JSON_UNESCAPED_UNICODE);
+
+			if (empty($exception)) {
+				exit();
+			}
+
+			$exception = json_encode(array(
+				"message" => $exception->getMessage(),
+				"file" => $exception->getFile(),
+				"line" => $exception->getLine(),
+			));
+
+			exit($exception);
 		}
 
-		public static function urlRequest($url,$params_get,$params_post) {
+		public static function renderToJson($data = []) {
+			header("Content-Type: application/json");
+
+			$data = json_encode($data,JSON_UNESCAPED_UNICODE);
+
+			exit($data);
+		}
+
+		public static function urlRequest($url,$params_get = null,$params_post = null) {
 			if (!empty($params_get)) {
 				$url = Util::str("%s/?%s",[$url,http_build_query($params_get)]);
 			}

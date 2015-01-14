@@ -3,24 +3,24 @@
 namespace Application\ALog\Model\Log {
 	use \Core\Model;
 
-	class LogError extends Model {
+	class Error extends Model {
 		public $id;
 		public $name;
 		public $describe;
 
 		protected function schema() {
 			return [
-				"id" => $this->primaryKeyField([]),
-				"name" => $this->charField(["length" => 40]),
-				"describe" => $this->textField(["blank" => 1,"null" => 1])];
+				"id" => $this->primaryKey(),
+				"name" => $this->char(["length" => 40]),
+				"describe" => $this->text(["null" => 1])];
 		}
 
 		protected function name() {
-			return "log_error";
+			return "error";
 		}
 	}
 
-	class LogUser extends Model {
+	class User extends Model {
         public $id;
         public $active;
         public $name;
@@ -31,24 +31,24 @@ namespace Application\ALog\Model\Log {
 
 		protected function schema() {
 			return [
-				"id" => $this->primaryKeyField([]),
-				"active" => $this->integerField(["length" => 1]),
-				"name" => $this->charField(["length" => 30]),
-				"publickey" => $this->charField(["length" => 40]),
-				"dateadd" => $this->datetimeField([]),
-				"dateupdate" => $this->datetimeField([]),
-				"datecancel" => $this->datetimeField(["null" => 1])];
+				"id" => $this->primaryKey([]),
+				"active" => $this->integer(["length" => 1]),
+				"name" => $this->char(["length" => 30]),
+				"publickey" => $this->char(["length" => 40]),
+				"dateadd" => $this->datetime([]),
+				"dateupdate" => $this->datetime([]),
+				"datecancel" => $this->datetime(["null" => 1])];
 		}
 
 		protected function name() {
-            return "log_user";
+            return "user";
         }
     }
 
-	class LogRegister extends Model {
+	class Register extends Model {
         public $id;
-        public $log_user_id;
-        public $log_error_id;
+        public $user_id;
+        public $error_id;
         public $url;
         public $post;
         public $get;
@@ -57,18 +57,18 @@ namespace Application\ALog\Model\Log {
 
 		protected function schema() {
 			return [
-				"id" => $this->primaryKeyField([]),
-				"log_user_id" => $this->foreignKeyField(["table" => new LogUser, "null" => 1]),
-				"log_error_id" => $this->foreignKeyField(["table" => new LogError, "null" => 1]),
-				"url" => $this->charField(["length" => 255]),
-				"post" => $this->textField(["null" => 1]),
-				"get" => $this->textField(["null" => 1]),
-				"message" => $this->textField(["null" => 1]),
-				"dateadd" => $this->datetimeField([]),];
+				"id" => $this->primaryKey([]),
+				"user_id" => $this->foreignKey(["table" => new User,"null" => 1]),
+				"error_id" => $this->foreignKey(["table" => new Error,"null" => 1]),
+				"url" => $this->char(["length" => 255]),
+				"post" => $this->text(["null" => 1]),
+				"get" => $this->text(["null" => 1]),
+				"message" => $this->text(["null" => 1]),
+				"dateadd" => $this->datetime([]),];
 		}
 
 		protected function name() {
-            return "log_register";
+            return "register";
         }
     }
 }

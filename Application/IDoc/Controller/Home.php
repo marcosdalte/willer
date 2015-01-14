@@ -9,41 +9,75 @@ namespace Application\IDoc\Controller {
     use \Application\ALog\Model\Log;
 
     class Home extends Controller {
-		protected $api_rest_rule = ["GET","POST","PUT","DELETE"];
-
         function __construct() {
-            try {
-                $transaction = new Transaction;
-                $log_register = new Log\LogRegister(DB_LOG);
-                $log_error = new LogError(DB_LOG);
-
-            } catch (Exception $error) {
-                throw new Exception($error);
-            }
+            $transaction = new Transaction;
+            $log_register = new Log\Register();
+            $log_error = new Log\Error();
+            $log_user = new Log\User();
 
             $csrf = Util::csrf();
 
-            $transaction->beginTransaction();
+            try {
+                // $transaction->beginTransaction(DB_LOG);
+                $transaction->connect(DB_LOG);
 
-            $log_register = $log_register->save([
-                "log_user_id" => null,
-                "log_error_id" => null,
-                "url" => "test",
-                "post" => "test",
-                "get" => "test",
-                "message" => "test"]);
+                // $log_error->save([
+                //     "name" => "teucu8",
+                //     "describe" => "lalalalal"]);
 
-            $transaction->commit();
+                // $log_error->name = "teucu7";
+                // $log_error->describe = "bbsdofijdfjsdlf";
+                // $log_error->save();
 
-            $template_assign = [
+                // $log_error->get([
+                //     "name" => "teucu5"]);
+
+                // $log_error->delete();
+
+                // $log_error->delete([
+                //     "name" => "teucu5"]);
+
+                $log_register->save([
+                    "user_id" => ,
+                    "error_id" => ,
+                    "url" => ,
+                    "post" => ,
+                    "get" => ,
+                    "message" => ,
+                    "dateadd" => ,]);
+
+                // $total = $log_error
+                //     ->executeRowsTotal();
+                //     ->dump();
+
+                // $log_error
+                //     ->select()
+                //     ->orderBy(["id" => "asc","name" => "asc"])
+                //     ->limit(
+                //         $page = 1,
+                //         $limit = 5)
+                //     ->filter()
+                //     ->execute();
+
+                // $transaction->commit();
+
+            } catch (Exception $error) {
+                // $transaction->rollBack();
+
+                throw new Exception($error);
+            }
+
+            Util::renderToJson($log_register);
+
+            // $template_assign = [
                 // "log_register" => $log_register_value,
-                "log_error" => $log_error_value,
-                "csrf" => $csrf,
-                "page_view" => "home",
-                "page_menu" => "menu",
-                "template" => "default"];
+                // "log_error" => $log_error_value,
+                // "csrf" => $csrf,
+                // "page_view" => "home",
+                // "page_menu" => "menu",
+                // "template" => "default"];
 
-			$template_engine = TplEngine::ready()->assign($template_assign)->draw("template");
+			// $template_engine = TplEngine::ready()->assign($template_assign)->draw("template");
         }
     }
 }

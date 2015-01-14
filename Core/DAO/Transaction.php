@@ -15,52 +15,64 @@ namespace Core\DAO {
             return $this->resource;
         }
 
-        protected function setResource($value) {
-            $this->resource = $value;
+        protected function setResource($resource) {
+            $this->resource = $resource;
         }
 
         public function getDatabase() {
             return $this->database;
         }
 
-        protected function setDatabase($value) {
-            $this->database = $value;
+        protected function setDatabase($database) {
+            $this->database = $database;
         }
 
         public function getLastInsertId() {
             return $this->last_insert_id;
         }
 
-        protected function setLastInsertId($value) {
-            $this->last_insert_id = $value;
+        protected function setLastInsertId($id) {
+            $this->last_insert_id = $id;
         }
 
-        public function connect() {
+        public function getDatabaseInfo() {
             $database = $this->getDatabase();
 
             if (empty($database)) {
                 $database = DB_DEFAULT;
             }
 
-            $database_info = $GLOBALS["DATABASE_INFO"];
+            return $GLOBALS["DATABASE_INFO"][$database];
+        }
+
+        public function connect($database = null) {
+            if (!empty($database)) {
+                if (!array_key_exists($database,$GLOBALS["DATABASE_INFO"])) {
+                    throw new Exception("database_not_found_in_DATABASE_INFO");
+                }
+
+                $this->setDatabase($database);
+            }
+
+            $database_info = $this->getDatabaseInfo();
 
             try {
-                $pdo = new PDO($database_info[$database]["DB_DRIVER"].":host=".$database_info[$database]["DB_HOST"].";port=".$database_info[$database]["DB_PORT"].";dbname=".$database_info[$database]["DB_NAME"],$database_info[$database]["DB_USER"],$database_info[$database]["DB_PASSWORD"]);
+                $pdo = new PDO($database_info["DB_DRIVER"].":host=".$database_info["DB_HOST"].";port=".$database_info["DB_PORT"].";dbname=".$database_info["DB_NAME"],$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
 
-                if ($database_info[$database]["DB_DRIVER"] == "mysql") {
-                    if ($database_info[$database]["DB_AUTOCOMMIT"] == 0) {
+                if ($database_info["DB_DRIVER"] == "mysql") {
+                    if ($database_info["DB_AUTOCOMMIT"] == 0) {
                         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
 
-                    } else if ($database_info[$database]["DB_AUTOCOMMIT"] == 1) {
+                    } else if ($database_info["DB_AUTOCOMMIT"] == 1) {
                         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,1);
                     }
                 }
 
-                if ($database_info[$database]["DB_DEBUG"] == 0) {
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
-
-                } else if ($database_info[$database]["DB_DEBUG"] == 1) {
+                if ($database_info["DB_DEBUG"] == 0) {
                     $pdo->setAttribute(PDO::ATTR_ERRMODE,0);
+
+                } else if ($database_info["DB_DEBUG"] == 1) {
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
                 }
 
             } catch (Exception $error) {
@@ -69,18 +81,22 @@ namespace Core\DAO {
 
             $this->resource = $pdo;
 
-            return $this;
-        }
-
-        public function databaseUse($name) {
-            $this->setDatabase($name);
+            $GLOBALS["TRANSACTION"] =& $this;
 
             return $this;
         }
   
-        public function beginTransaction() {
+        public function beginTransaction($database = null) {
+            if (!empty($database)) {
+                if (!array_key_exists($database,$GLOBALS["DATABASE_INFO"])) {
+                    throw new Exception("database_not_found_in_DATABASE_INFO");
+                }
+
+                $this->setDatabase($database);
+            }
+
             try {
-                $GLOBALS["TRANSACTION"] &= $this->connect();
+                $this->connect();
   
             } catch (Exception $error) {  
                 throw new Exception($error);
@@ -118,9 +134,9 @@ namespace Core\DAO {
             return $this;
         }
   
-        public function lastInsertId($name = null) {
+        public function lastInsertId($sequence_name = null) {
             try {
-                $this->setLastInsertId($this->resource->lastInsertId($name));
+                $this->setLastInsertId($this->resource->lastInsertId($sequence_name));
   
             } catch (Exception $error) {  
                 throw new Exception($error);

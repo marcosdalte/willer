@@ -38,7 +38,7 @@ $DATABASE_INFO = [
         "DB_PASSWORD" => DB_MAIN_PASSWORD,
         "DB_PORT" => DB_MAIN_PORT,
 		"DB_AUTOCOMMIT" => 0,
-		"DB_DEBUG" => 1,
+		"DB_DEBUG" => 0,
     ],
     DB_LOG => [
         "DB_DRIVER" => DB_LOG_DRIVER,
@@ -48,10 +48,10 @@ $DATABASE_INFO = [
         "DB_PASSWORD" => DB_LOG_PASSWORD,
         "DB_PORT" => DB_LOG_PORT,
 		"DB_AUTOCOMMIT" => 1,
-		"DB_DEBUG" => 1,
+		"DB_DEBUG" => 0,
     ],
 ];
 
-System::appReady($URL);
+System::appReady($url = $URL);
 
 ?>

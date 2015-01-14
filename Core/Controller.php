@@ -8,7 +8,7 @@ namespace Core {
     abstract class Controller {
         public function __construct() {
             try {
-                $this->apiRestAccess($this->API_REST_ACCESS);
+                $this->apiRestAccess(REST_RULE);
 				$this->protectResource($_GET);
 
             } catch (Exception $error) {

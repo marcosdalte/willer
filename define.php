@@ -13,7 +13,7 @@ define("DB_LOG_DRIVER","pgsql");
 define("DB_LOG_HOST","127.0.0.1");
 define("DB_LOG_NAME","log");
 define("DB_LOG_USER","postgres");
-define("DB_LOG_PASSWORD","");
+define("DB_LOG_PASSWORD","@mailliw8");
 define("DB_LOG_PORT","5432");
 
 ?>
