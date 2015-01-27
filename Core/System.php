@@ -79,10 +79,13 @@ namespace Core {
                     define("CONTROLLER",$controller[1]);
                     define("PROTECT_RESOURCE",$application["protect_resource"]);
 
+                    $controller_action = $controller[2];
+
                     $controller = Util::str("Application\\%s\\Controller\\%s",[APPLICATION,CONTROLLER]);
 
                     try {
-                        new $controller();
+                        $new_controller = new $controller();
+                        $new_controller->$controller_action();
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);

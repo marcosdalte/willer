@@ -9,16 +9,18 @@ namespace Application\IDoc\Controller {
     use \Application\ALog\Model\Log;
 
     class Home extends Controller {
-        function __construct() {
-            $transaction_main = new Transaction(DB_DEFAULT);
-            $transaction_log = new Transaction(DB_LOG);
+        public function __construct() {
+            $this->transaction_main = new Transaction(DB_DEFAULT);
+            $this->transaction_log = new Transaction(DB_LOG);
+        }
 
-            $log_error = new Log\Error($transaction_log);
-            $log_user = new Log\User($transaction_log);
-            $log_register = new Log\Register($transaction_log);
+        public function index() {
+            $log_error = new Log\Error($this->transaction_log);
+            $log_user = new Log\User($this->transaction_log);
+            $log_register = new Log\Register($this->transaction_log);
 
             try {
-                $transaction_log->beginTransaction();
+                $this->transaction_log->beginTransaction();
 
                 $log_error->save([
                     "name" => "test4",
@@ -64,10 +66,10 @@ namespace Application\IDoc\Controller {
                 //     ->filter()
                 //     ->execute();
 
-                $transaction_log->commit();
+                $this->transaction_log->commit();
 
             } catch (Exception $error) {
-                $transaction_log->rollBack();
+                $this->transaction_log->rollBack();
 
                 throw new Exception($error);
             }
@@ -88,6 +90,10 @@ namespace Application\IDoc\Controller {
             // $template_engine = TplEngine::ready()
             //     ->assign($template_assign)
             //     ->draw("template");
+        }
+
+        public function contact() {
+            print "aaaa";
         }
     }
 }
