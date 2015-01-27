@@ -10,20 +10,34 @@ namespace Application\IDoc\Controller {
 
     class Home extends Controller {
         function __construct() {
-            $transaction = new Transaction;
-            $log_register = new Log\Register();
-            $log_error = new Log\Error();
-            $log_user = new Log\User();
+            $transaction_main = new Transaction(DB_DEFAULT);
+            $transaction_log = new Transaction(DB_LOG);
 
-            $csrf = Util::csrf();
+            $log_error = new Log\Error($transaction_log);
+            $log_user = new Log\User($transaction_log);
+            $log_register = new Log\Register($transaction_log);
 
             try {
-                // $transaction->beginTransaction(DB_LOG);
-                $transaction->connect(DB_LOG);
+                $transaction_log->beginTransaction();
 
-                // $log_error->save([
-                //     "name" => "teucu8",
-                //     "describe" => "lalalalal"]);
+                $log_error->save([
+                    "name" => "test4",
+                    "describe" => "test describe"]);
+
+                $log_user->save([
+                    "active" => 1,
+                    "name" => "test4",
+                    "publickey" => "123456",
+                    "dateadd" => Util::datetimeNow()]);
+
+                $log_register->save([
+                    "user_id" => $log_user,
+                    "error_id" => $log_error,
+                    "url" => "url/test",
+                    "post" => "post",
+                    "get" => "post",
+                    "message" => "message test",
+                    "dateadd" => Util::datetimeNow()]);
 
                 // $log_error->name = "teucu7";
                 // $log_error->describe = "bbsdofijdfjsdlf";
@@ -36,15 +50,6 @@ namespace Application\IDoc\Controller {
 
                 // $log_error->delete([
                 //     "name" => "teucu5"]);
-
-                $log_register->save([
-                    "user_id" => ,
-                    "error_id" => ,
-                    "url" => ,
-                    "post" => ,
-                    "get" => ,
-                    "message" => ,
-                    "dateadd" => ,]);
 
                 // $total = $log_error
                 //     ->executeRowsTotal();
@@ -59,15 +64,18 @@ namespace Application\IDoc\Controller {
                 //     ->filter()
                 //     ->execute();
 
-                // $transaction->commit();
+                $transaction_log->commit();
 
             } catch (Exception $error) {
-                // $transaction->rollBack();
+                $transaction_log->rollBack();
 
                 throw new Exception($error);
             }
 
-            Util::renderToJson($log_register);
+            Util::renderToJson([
+                "log_error" => $log_error,
+                "log_user" => $log_user,
+                "log_register" => $log_register]);
 
             // $template_assign = [
                 // "log_register" => $log_register_value,
@@ -77,9 +85,9 @@ namespace Application\IDoc\Controller {
                 // "page_menu" => "menu",
                 // "template" => "default"];
 
-			// $template_engine = TplEngine::ready()->assign($template_assign)->draw("template");
+            // $template_engine = TplEngine::ready()
+            //     ->assign($template_assign)
+            //     ->draw("template");
         }
     }
 }
-
-?>

@@ -8,7 +8,6 @@ namespace Core {
     trait System {
         public static function appReady($url = []) {
             global $AUTH;
-            global $TRANSACTION;
 
             System::iniSetReady();
             System::autoLoadReady();
@@ -99,5 +98,3 @@ namespace Core {
         }
     }
 }
-
-?>

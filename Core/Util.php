@@ -1,6 +1,8 @@
 <?php
 
 namespace Core {
+	use \DateTime as DateTime;
+
 	trait Util {
 		public static function str($output,$value) {
 			return vsprintf($output,$value);
@@ -34,7 +36,10 @@ namespace Core {
 		}
 
 		public static function datetimeNow() {
-			return date("Y-m-d H:i:s");
+			$date_time = new DateTime();
+			$format = $date_time->format("Y-m-d H:i:s");
+
+			return $format;
 		}
 
 		public static function csrf() {
@@ -93,5 +98,3 @@ namespace Core {
 		}
 	}
 }
-
-?>

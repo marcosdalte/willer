@@ -8,8 +8,18 @@ namespace Core\DAO {
         private $resource;
         private $database;
         private $last_insert_id;
-  
-        public function __construct() {}
+
+        public function __construct($database = null) {
+            if (empty($database)) {
+                $database = DB_DEFAULT;
+            }
+
+            if (!array_key_exists($database,$GLOBALS["DATABASE_INFO"])) {
+                throw new Exception("database not found in DATABASE_INFO");
+            }
+
+            $this->setDatabase($database);
+        }
 
         public function getResource() {
             return $this->resource;
@@ -45,15 +55,7 @@ namespace Core\DAO {
             return $GLOBALS["DATABASE_INFO"][$database];
         }
 
-        public function connect($database = null) {
-            if (!empty($database)) {
-                if (!array_key_exists($database,$GLOBALS["DATABASE_INFO"])) {
-                    throw new Exception("database_not_found_in_DATABASE_INFO");
-                }
-
-                $this->setDatabase($database);
-            }
-
+        private function connect() {
             $database_info = $this->getDatabaseInfo();
 
             try {
@@ -81,20 +83,10 @@ namespace Core\DAO {
 
             $this->resource = $pdo;
 
-            $GLOBALS["TRANSACTION"] =& $this;
-
             return $this;
         }
   
-        public function beginTransaction($database = null) {
-            if (!empty($database)) {
-                if (!array_key_exists($database,$GLOBALS["DATABASE_INFO"])) {
-                    throw new Exception("database_not_found_in_DATABASE_INFO");
-                }
-
-                $this->setDatabase($database);
-            }
-
+        public function beginTransaction() {
             try {
                 $this->connect();
   
@@ -150,5 +142,3 @@ namespace Core\DAO {
         }
     }
 }
-  
-?>

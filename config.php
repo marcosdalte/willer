@@ -52,6 +52,4 @@ $DATABASE_INFO = [
     ],
 ];
 
-System::appReady($url = $URL);
-
-?>
+System::appReady($URL);
