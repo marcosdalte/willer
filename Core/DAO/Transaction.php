@@ -14,7 +14,7 @@ namespace Core\DAO {
                 $database = DB_DEFAULT;
             }
 
-            if (!array_key_exists($database,$GLOBALS["DATABASE_INFO"])) {
+            if (!array_key_exists($database,DATABASE_INFO)) {
                 throw new Exception("database not found in DATABASE_INFO");
             }
 
@@ -52,7 +52,7 @@ namespace Core\DAO {
                 $database = DB_DEFAULT;
             }
 
-            return $GLOBALS["DATABASE_INFO"][$database];
+            return DATABASE_INFO[$database];
         }
 
         private function connect() {

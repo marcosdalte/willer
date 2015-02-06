@@ -27,9 +27,7 @@ define("API_AUTH_USER",API_USER);
 define("DB_DEFAULT",DB_MAIN_NAME);
 define("DB_LOG",DB_LOG_NAME);
 
-global $DATABASE_INFO;
-
-$DATABASE_INFO = [
+const DATABASE_INFO = [
     DB_DEFAULT => [
         "DB_DRIVER" => DB_MAIN_DRIVER,
         "DB_HOST" => DB_MAIN_HOST,

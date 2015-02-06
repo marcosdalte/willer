@@ -6,52 +6,28 @@ namespace Core {
     use \Application\ALog\Model\Log;
 
     abstract class Controller {
-        public function __construct() {
+        public function __construct($request_method = null) {
             try {
-                $this->apiRestAccess(REST_RULE);
-				$this->protectResource($_GET);
+                $this->apiRestAccess($request_method);
 
             } catch (Exception $error) {
-				throw new Exception($this->error($error));
-            }
-        }
-
-        private function apiRestAccess($method = null) {
-            if (empty($method)) {
-                return false;
-            }
-        }
-
-        private function protectResource($get = null) {
-            if (empty(PROTECT_RESOURCE)) {
-                return false;
-            }
-
-			try {
-            	$log_user = new LogUser(DB_LOG);
-
-			} catch (Exception $error) {
 				throw new Exception($error);
-			}
-
-            $auth_user = Util::get($_GET,"auth_user",null);
-            $auth_key = Util::get($_GET,"auth_key",null);
-
-            if (empty($auth_user) || empty($auth_key)) {
-                throw new Exception("auth_key_required");
-
             }
+        }
 
-            try {
-                $log_user = $log_user->get(["name" => $auth_user,"publickey" => $auth_key,"active" => 1]);
+        private function apiRestAccess($request_method = null) {
+            if (!empty($request_method)) {
+                if (is_array($request_method)) {
+                    if (!in_array(REQUEST_METHOD,$request_method)) {
+                        throw new Exception("request method invalid");
+                    }
 
-            } catch (Exception $error) {
-                throw new Exception($error);
+                } else {
+                    if (REQUEST_METHOD != $request_method) {
+                        throw new Exception("request method invalid");
+                    }
+                }
             }
-
-            $GLOBALS["AUTH"] = $log_user;
-
-            return $log_user;
         }
 
         protected function log($error_name,$message = "") {

@@ -9,7 +9,9 @@ namespace Application\IDoc\Controller {
     use \Application\ALog\Model\Log;
 
     class Home extends Controller {
-        public function __construct() {
+        public function __construct($request_method = null) {
+            parent::__construct($request_method);
+
             $this->transaction_main = new Transaction(DB_DEFAULT);
             $this->transaction_log = new Transaction(DB_LOG);
         }
@@ -40,6 +42,9 @@ namespace Application\IDoc\Controller {
                     "get" => "post",
                     "message" => "message test",
                     "dateadd" => Util::datetimeNow()]);
+
+                $log_register->delete([
+                    "id" => $log_register->id]);
 
                 // $log_error->name = "teucu7";
                 // $log_error->describe = "bbsdofijdfjsdlf";

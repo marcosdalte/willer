@@ -3,11 +3,10 @@
 namespace Core {
     use \Exception as Exception;
     use \Core\Util;
-    use \Core\DAO\Transaction;
 
     trait System {
         public static function appReady($url = []) {
-            global $AUTH;
+            define("REQUEST_METHOD",$_SERVER["REQUEST_METHOD"]);
 
             System::iniSetReady();
             System::autoLoadReady();
@@ -72,20 +71,38 @@ namespace Core {
             foreach ($url as $url_er => $application) {
                 if (preg_match($url_er,$http_path)) {
                     $flag = true;
+                    $request_method = null;
 
-                    $controller = explode("\\",$application["controller"]);
+                    if (!is_array($application)) {
+                        Util::renderToJson(["error in the file url"]);
+                    }
 
-                    define("APPLICATION",$controller[0]);
-                    define("CONTROLLER",$controller[1]);
-                    define("PROTECT_RESOURCE",$application["protect_resource"]);
+                    if (!Util::get($application,"controller",null)) {
+                        Util::renderToJson(["error in the file url(controller is missing)"]);
+                    }
 
+                    $controller = explode("/",$application["controller"]);
+
+                    if (count($controller) < 3) {
+                        Util::renderToJson(["error in the file url(controller format not allowed)"]);
+                    }
+
+                    foreach ($controller as $app) {
+                        if (empty($app)) {
+                            Util::renderToJson(["error in the file url(controller format not allowed)"]);
+                        }
+                    }
+
+                    if (Util::get($application,"request_method",null)) {
+                        $request_method = $application["request_method"];
+                    }
+
+                    $application = Util::str("Application\\%s\\Controller\\%s",[$controller[0],$controller[1]]);
                     $controller_action = $controller[2];
 
-                    $controller = Util::str("Application\\%s\\Controller\\%s",[APPLICATION,CONTROLLER]);
-
                     try {
-                        $new_controller = new $controller();
-                        $new_controller->$controller_action();
+                        $new_application = new $application($request_method);
+                        $new_application->$controller_action();
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);

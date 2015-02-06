@@ -542,6 +542,10 @@ namespace Core\DAO {
                 $query = vsprintf("delete from %s where %s",[$table_name_with_escape,$where]);
             }
 
+            print $query;
+            print "\n\n";
+            print_r($query_value_list);
+
             try {
                 $query = $this::$transaction->getResource()->prepare($query);
                 $query->execute($query_value_list);
