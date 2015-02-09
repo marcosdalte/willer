@@ -18,7 +18,11 @@ namespace Core\DAO {
         private $query_value;
         private $register;
 
-        public function __construct($transaction) {
+        public function __construct(Transaction $transaction = null) {
+            if (empty($transaction)) {
+                throw new Exception("transaction object doesn't loaded");
+            }
+
             $this->setTransaction($transaction);
             $this->definePrimaryKey(null);
 

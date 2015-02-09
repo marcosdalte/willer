@@ -7,11 +7,9 @@ namespace Core {
 
     abstract class Model extends DataManipulationLanguage {
         public function __construct(Transaction $transaction = null) {
-            if (empty($transaction)) {
-                throw new Exception("transaction object doesn't loaded");
+            if (!empty($transaction)) {
+                parent::__construct($transaction);
             }
-
-            parent::__construct($transaction);
         }
 
         protected function column() {
