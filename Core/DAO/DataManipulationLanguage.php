@@ -6,6 +6,7 @@ namespace Core\DAO {
     use \Core\Util;
 
     abstract class DataManipulationLanguage {
+        private $transaction;
         private $db_escape;
         private $field;
         private $related;
@@ -17,10 +18,11 @@ namespace Core\DAO {
         private $query_value;
         private $register;
 
-        public function main() {
+        public function __construct($transaction) {
+            $this->setTransaction($transaction);
             $this->definePrimaryKey(null);
 
-            $get_database_info = $this::$transaction->getDatabaseInfo();
+            $get_database_info = $this->transaction->getDatabaseInfo();
             $db_driver = $get_database_info["DB_DRIVER"];
 
             if ($db_driver == "mysql") {
@@ -41,6 +43,14 @@ namespace Core\DAO {
 
         private function getTableSchema() {
             return $this->schema();
+        }
+
+        protected function getTransaction() {
+            return $this->transaction;
+        }
+
+        protected function setTransaction($transaction) {
+            $this->transaction = $transaction;
         }
 
         private function getField() {
@@ -185,73 +195,14 @@ namespace Core\DAO {
             return $this;
         }
 
-        // public function related($foreign_Key = null,$field = [],$list = []) {
-        //     $table_name = $this->getTableName();
-        //     $table_primary_key = $this->getTablePrimaryKey();
-            
-        //     if (!empty($foreign_Key)) {
-        //         $table_foreign_Key = $foreign_Key->getTableForeignKey();
-
-        //     } else {
-        //         $table_foreign_Key = $this->getTableForeignKey();
-        //     }
-
-        //     if (!empty($table_foreign_Key)) {
-        //         $list = [];
-
-        //         foreach ($table_foreign_Key as $key => $value) {
-        //             $table_index = $key;
-        //             $foreign_Key = $value["index"];
-        //             $field = array_merge($field,$foreign_Key->getField());
-
-        //             $table_join = $foreign_Key->name();
-        //             $table_join_index = $foreign_Key->primaryKey();
-        //             $table_join_index_null = $value["null"];
-
-        //             $join_type = "inner";
-
-        //             if (!empty($table_join_index_null)) {
-        //                 $join_type = "left";
-        //             }
-
-        //             $list[] = vsprintf("%s join %s on %s.%s=%s.%s",[$join_type,$table_join,$table_join,$table_join_index,$table_name,$table_index]);
-
-        //             $get_table_foreign_key = $foreign_Key->getTableForeignKey();
-
-        //             if (!empty($get_table_foreign_key)) {
-        //                 $this->related($foreign_Key,$field,$list);
-        //             }
-        //         }
-
-        //         $this->setField(array_merge($this->getField(),$field));
-
-        //         $value = implode(" ",$list);
-        //         $this->setRelated($value);
-        //     }
-
-        //     return $this;
-        // }
-
-        // public function exclude($exclude = []) {
-        //     if (!empty($exclude)) {
-        //         $list = [];
-                
-        //         foreach ($exclude as $key => $value) {
-        //             $this->setExcludeEscape($value);
-                    
-        //             $list[] = vsprintf("%s not in(?)",[$key,]);
-        //         }
-
-        //         $list = implode(" and ",$list);
-
-        //         $this->setExclude($list);
-        //     }
-
-        //     return $this;
-        // }
+        private function related() {
+            // $table_column = $this->getTableColumn();
+            // $table_name = $this->getTableName();
+            // $table_schema = $this->getTableSchema();
+            // $field = $this->getField();
+        }
 
         public function filter($where = []) {
-            $this->main();
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
@@ -324,7 +275,6 @@ namespace Core\DAO {
                 throw new Exception("error in get, where don't set");
             }
 
-            $this->main();
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
@@ -355,7 +305,7 @@ namespace Core\DAO {
             $query = vsprintf("select %s from %s %s",[$field,$table_name_with_escape,$where]);
 
             try {
-                $query_total = $this::$transaction->getResource()->prepare($query_total);
+                $query_total = $this->transaction->getResource()->prepare($query_total);
                 $query_total->execute($query_value_list);
                 $query_total = $query_total->fetch(PDO::FETCH_OBJ);
 
@@ -363,7 +313,7 @@ namespace Core\DAO {
                     throw new Exception("error in get, don't unique register");
                 }
 
-                $query = $this::$transaction->getResource()->prepare($query);
+                $query = $this->transaction->getResource()->prepare($query);
                 $query->execute($query_value_list);
                 $query_fetch = $query->fetch(PDO::FETCH_OBJ);
 
@@ -382,7 +332,6 @@ namespace Core\DAO {
         }
 
         public function save($field = null) {
-            $this->main();
             $table_name = $this->getTableName();
             $table_column = $this->getTableColumn();
             $table_schema = $this->getTableSchema();
@@ -453,7 +402,7 @@ namespace Core\DAO {
             }
 
             try {
-                $query = $this::$transaction->getResource()->prepare($query);
+                $query = $this->transaction->getResource()->prepare($query);
                 $query->execute($query_value_list);
 
             } catch (Exception $error) {
@@ -466,7 +415,7 @@ namespace Core\DAO {
                 throw new Exception($query_error_info[2]);
             }
 
-            $get_database_info = $this::$transaction->getDatabaseInfo();
+            $get_database_info = $this->transaction->getDatabaseInfo();
 
             $sequence_name = null;
 
@@ -474,7 +423,7 @@ namespace Core\DAO {
                 $sequence_name = vsprintf("%s_id_seq",[$table_name,]);
             }
 
-            $last_insert_id = $this::$transaction->lastInsertId($sequence_name);
+            $last_insert_id = $this->transaction->lastInsertId($sequence_name);
 
             $this->setLastInsertId($last_insert_id);
             $this->get(["id" => $last_insert_id]);
@@ -486,7 +435,6 @@ namespace Core\DAO {
         }
 
         public function delete($field = []) {
-            $this->main();
             $table_name = $this->getTableName();
             $table_column = $this->getTableColumn();
             $table_schema = $this->getTableSchema();
@@ -542,12 +490,8 @@ namespace Core\DAO {
                 $query = vsprintf("delete from %s where %s",[$table_name_with_escape,$where]);
             }
 
-            print $query;
-            print "\n\n";
-            print_r($query_value_list);
-
             try {
-                $query = $this::$transaction->getResource()->prepare($query);
+                $query = $this->transaction->getResource()->prepare($query);
                 $query->execute($query_value_list);
 
             } catch (Exception $error) {
@@ -566,67 +510,7 @@ namespace Core\DAO {
             return $this;
         }
 
-        // public function update($set) {
-        //     $table_name = $this->getTableName();
-        //     $link = $this->getLink();
-        //     $update_filter_sql_escape = $this->getUpdateFilterSqlEscape();
-        //     $update_filter_sql_value_list = $this->getUpdateFilterSqlValueList();
-
-        //     if (empty($update_filter_sql_escape) || empty($update_filter_sql_value_list)) {
-        //         throw new Exception("param missing");
-        //     }
-
-        //     $set_escape = [];
-        //     $set_value_list = [];
-
-        //     foreach ($set as $key => $value) {
-        //         $set_escape[] = $table_name.".".$key."='".$value."'";
-        //     }
-
-        //     $set_escape = implode(",",$set_escape);
-
-        //     try {
-        //         $sql = $update_filter_sql_escape;
-        //         $prepare = $link->prepare($sql);
-        //         $prepare->execute($update_filter_sql_value_list);
-        //         $result = $prepare->fetchAll(PDO::FETCH_BOTH);
-
-        //     } catch (Exception $error) {
-
-        //         throw new Exception($error);
-        //     }
-
-        //     if (empty($result)) {
-  
-        //         throw new Exception("query is empty for update.");
-        //     }
-
-        //     $id_list = [];
-
-        //     foreach ($result as $key => $value) {
-        //         $id_list[] = $value["id"];
-        //     }
-
-        //     $id_list = implode(",",$id_list);
-
-        //     try {
-        //         $sql = "update ".$table_name." set ".$set_escape." where ".$table_name.".id in(".$id_list.")";
-        //         $prepare = $link->prepare($sql);
-        //         $prepare->execute();
-        //         $result = $prepare->rowCount();
-  
-        //     } catch (Exception $error) {
-
-        //         throw new Exception($error);
-        //     }
-
-        //     $this->setUpdateResult($result);
-
-        //     return $this;
-        // }
-
         public function executeRowsTotal($where = []) {
-            $this->main();
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
@@ -682,7 +566,7 @@ namespace Core\DAO {
             $this->setQueryValue($query_value_list);
 
             try {
-                $query = $this::$transaction->getResource()->prepare($query);
+                $query = $this->transaction->getResource()->prepare($query);
                 $query->execute($query_value_list);
                 $query_fetch = $query->fetch(PDO::FETCH_OBJ);
 
@@ -719,7 +603,7 @@ namespace Core\DAO {
             $query = vsprintf("%s %s %s",[$query,$order_by,$limit]);
 
             try {
-                $query = $this::$transaction->getResource()->prepare($query);
+                $query = $this->transaction->getResource()->prepare($query);
                 $query->execute($query_value);
                 $query_fetch_all = $query->fetchAll(PDO::FETCH_OBJ);
 

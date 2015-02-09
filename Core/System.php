@@ -73,24 +73,10 @@ namespace Core {
                     $flag = true;
                     $request_method = null;
 
-                    if (!is_array($application)) {
-                        Util::renderToJson(["error in the file url"]);
-                    }
-
-                    if (!Util::get($application,"controller",null)) {
-                        Util::renderToJson(["error in the file url(controller is missing)"]);
-                    }
-
                     $controller = explode("/",$application["controller"]);
 
                     if (count($controller) < 3) {
                         Util::renderToJson(["error in the file url(controller format not allowed)"]);
-                    }
-
-                    foreach ($controller as $app) {
-                        if (empty($app)) {
-                            Util::renderToJson(["error in the file url(controller format not allowed)"]);
-                        }
                     }
 
                     if (Util::get($application,"request_method",null)) {

@@ -55,7 +55,7 @@ namespace Core\DAO {
             return DATABASE_INFO[$database];
         }
 
-        private function connect() {
+        public function connect() {
             $database_info = $this->getDatabaseInfo();
 
             try {

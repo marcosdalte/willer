@@ -6,14 +6,12 @@ namespace Core {
     use \Core\DAO\DataManipulationLanguage;
 
     abstract class Model extends DataManipulationLanguage {
-        protected static $transaction;
-
         public function __construct(Transaction $transaction = null) {
             if (empty($transaction)) {
                 throw new Exception("transaction object doesn't loaded");
             }
 
-            $this::$transaction = $transaction;
+            parent::__construct($transaction);
         }
 
         protected function column() {
@@ -73,7 +71,7 @@ namespace Core {
                         }
 
                         if (!$value instanceof $rule_table) {
-                            throw new Exception("foreign key is not a valid instance of ");
+                            throw new Exception("foreign key is not a valid instance");
                         }
                     }
 

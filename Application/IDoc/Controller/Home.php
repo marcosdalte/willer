@@ -24,52 +24,50 @@ namespace Application\IDoc\Controller {
             try {
                 $this->transaction_log->beginTransaction();
 
-                $log_error->save([
-                    "name" => "test4",
-                    "describe" => "test describe"]);
+                // $log_error->save([
+                //     "name" => "test4",
+                //     "describe" => "test describe"]);
 
-                $log_user->save([
-                    "active" => 1,
-                    "name" => "test4",
-                    "publickey" => "123456",
-                    "dateadd" => Util::datetimeNow()]);
+                // $log_user->save([
+                //     "active" => 1,
+                //     "name" => "test4",
+                //     "publickey" => "123456",
+                //     "dateadd" => Util::datetimeNow()]);
 
-                $log_register->save([
-                    "user_id" => $log_user,
-                    "error_id" => $log_error,
-                    "url" => "url/test",
-                    "post" => "post",
-                    "get" => "post",
-                    "message" => "message test",
-                    "dateadd" => Util::datetimeNow()]);
+                // $log_register->save([
+                //     "user_id" => $log_user,
+                //     "error_id" => $log_error,
+                //     "url" => "url/test",
+                //     "post" => "post",
+                //     "get" => "post",
+                //     "message" => "message test",
+                //     "dateadd" => Util::datetimeNow()]);
 
-                $log_register->delete([
-                    "id" => $log_register->id]);
-
-                // $log_error->name = "teucu7";
-                // $log_error->describe = "bbsdofijdfjsdlf";
-                // $log_error->save();
-
-                // $log_error->get([
-                //     "name" => "teucu5"]);
-
+                // delete
                 // $log_error->delete();
+                // $log_user->delete();
+                // $log_register->delete();
 
                 // $log_error->delete([
-                //     "name" => "teucu5"]);
+                //     "id" => $log_error->id]);
 
-                // $total = $log_error
-                //     ->executeRowsTotal();
-                //     ->dump();
+                // $log_user->delete([
+                //     "id" => $log_user->id]);
 
-                // $log_error
-                //     ->select()
-                //     ->orderBy(["id" => "asc","name" => "asc"])
-                //     ->limit(
-                //         $page = 1,
-                //         $limit = 5)
-                //     ->filter()
-                //     ->execute();
+                // $log_register->delete([
+                //     "id" => $log_register->id]);
+
+                // get
+                // $log_error->get([
+                //     "name" => "test4"]);
+
+                // filter
+                $log_register
+                    ->select()
+                    ->filter()
+                    ->orderBy(["id" => "asc"])
+                    ->limit($page = 1,$limit = 5)
+                    ->execute();
 
                 $this->transaction_log->commit();
 
@@ -82,7 +80,7 @@ namespace Application\IDoc\Controller {
             Util::renderToJson([
                 "log_error" => $log_error,
                 "log_user" => $log_user,
-                "log_register" => $log_register]);
+                "log_register" => $log_register->dump()]);
 
             // $template_assign = [
                 // "log_register" => $log_register_value,
@@ -98,7 +96,17 @@ namespace Application\IDoc\Controller {
         }
 
         public function contact() {
-            print "aaaa";
+            $log_register = new Log\Register($this->transaction_log->connect());
+
+            $log_register
+                ->select()
+                ->filter()
+                ->orderBy(["id" => "asc"])
+                ->limit($page = 1,$limit = 5)
+                ->execute();
+
+            Util::renderToJson([
+                "log_register" => $log_register->dump()]);
         }
     }
 }

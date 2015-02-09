@@ -58,8 +58,8 @@ namespace Application\ALog\Model\Log {
 		protected function schema() {
 			return [
 				"id" => $this->primaryKey([]),
-				"user_id" => $this->foreignKey(["table" => new User($this::$transaction),"null" => 1]),
-				"error_id" => $this->foreignKey(["table" => new Error($this::$transaction),"null" => 1]),
+				"user_id" => $this->foreignKey(["table" => new User($this->getTransaction()),"null" => 1]),
+				"error_id" => $this->foreignKey(["table" => new Error($this->getTransaction()),"null" => 1]),
 				"url" => $this->char(["length" => 255]),
 				"post" => $this->text(["null" => 1]),
 				"get" => $this->text(["null" => 1]),
