@@ -3,14 +3,31 @@
 namespace Application\ALog\Model\Log {
 	use \Core\Model;
 
+	class ErrorType extends Model {
+		public $id;
+		public $name;
+
+		protected function schema() {
+			return [
+				"id" => $this->primaryKey(),
+				"name" => $this->char(["length" => 40])];
+		}
+
+		protected function name() {
+			return "errortype";
+		}
+	}
+
 	class Error extends Model {
 		public $id;
+		public $type_id;
 		public $name;
 		public $describe;
 
 		protected function schema() {
 			return [
 				"id" => $this->primaryKey(),
+				"type_id" => $this->foreignKey(["table" => new ErrorType,"null" => 0]),
 				"name" => $this->char(["length" => 40]),
 				"describe" => $this->text(["null" => 1])];
 		}
@@ -58,8 +75,8 @@ namespace Application\ALog\Model\Log {
 		protected function schema() {
 			return [
 				"id" => $this->primaryKey([]),
-				"user_id" => $this->foreignKey(["table" => new User(),"null" => 1]),
-				"error_id" => $this->foreignKey(["table" => new Error(),"null" => 1]),
+				"user_id" => $this->foreignKey(["table" => new User,"null" => 1]),
+				"error_id" => $this->foreignKey(["table" => new Error,"null" => 1]),
 				"url" => $this->char(["length" => 255]),
 				"post" => $this->text(["null" => 1]),
 				"get" => $this->text(["null" => 1]),

@@ -79,16 +79,22 @@ namespace Core {
 			exit($data);
 		}
 
-		public static function urlRequest($url,$params_get = null,$params_post = null) {
+		public static function urlRequest($url,$params_get = null,$params_post = null,$params_header = null) {
 			if (!empty($params_get)) {
 				$url = Util::str("%s/?%s",[$url,http_build_query($params_get)]);
 			}
 
+			if (!empty($params_post)) {
+	            $params_post = http_build_query($params_post);
+	        }
+
 			$http = curl_init();
 			curl_setopt($http,CURLOPT_URL,$url);
+			// curl_setopt($http,CURLOPT_USERPWD,"AXwWTbM2FCotK4Sv4Sj349kONiUhpIjoQYhnYskzdLOCMTuqGrTJpaGWz47BAz0zFcAJ5zb025DwE1fQ:EPZdjBpbQU1GnkjNkx1pxDjE9Lf3f0FwEzmpLAajg0e5jDNfCxlCM9Vwavr8uF4gFjG_ROO6OSP8Y_fM");
 			curl_setopt($http,CURLOPT_POST,1);
 			curl_setopt($http,CURLOPT_POSTFIELDS,$params_post);
 			curl_setopt($http,CURLOPT_HEADER,0);
+			curl_setopt($http,CURLOPT_HTTPHEADER,$params_header);
 			curl_setopt($http,CURLOPT_RETURNTRANSFER,true);
 			curl_setopt($http,CURLOPT_TIMEOUT,10);
 			$output = curl_exec($http);

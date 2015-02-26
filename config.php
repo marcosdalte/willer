@@ -45,7 +45,7 @@ const DATABASE_INFO = [
         "DB_USER" => DB_LOG_USER,
         "DB_PASSWORD" => DB_LOG_PASSWORD,
         "DB_PORT" => DB_LOG_PORT,
-		"DB_AUTOCOMMIT" => 1,
+		"DB_AUTOCOMMIT" => 0,
 		"DB_DEBUG" => 0,
     ],
 ];

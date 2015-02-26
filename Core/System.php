@@ -69,15 +69,11 @@ namespace Core {
             $flag = false;
 
             foreach ($url as $url_er => $application) {
-                if (preg_match($url_er,$http_path)) {
+                if (preg_match($url_er,$http_path,$matche)) {
                     $flag = true;
                     $request_method = null;
 
                     $controller = explode("/",$application["controller"]);
-
-                    if (count($controller) < 3) {
-                        Util::renderToJson(["error in the file url(controller format not allowed)"]);
-                    }
 
                     if (Util::get($application,"request_method",null)) {
                         $request_method = $application["request_method"];
@@ -88,7 +84,7 @@ namespace Core {
 
                     try {
                         $new_application = new $application($request_method);
-                        $new_application->$controller_action();
+                        $new_application->$controller_action($matche);
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);

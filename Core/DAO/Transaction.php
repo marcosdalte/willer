@@ -105,22 +105,26 @@ namespace Core\DAO {
         }
   
         public function commit() {
-            try {
-                $this->resource->commit();
-  
-            } catch (Exception $error) {  
-                throw new Exception($error);
+            if (!empty($this->resource)) {
+                try {
+                    $this->resource->commit();
+      
+                } catch (Exception $error) {  
+                    throw new Exception($error);
+                }
             }
   
             return $this;
         }
   
         public function rollBack() {
-            try {
-                $this->resource->rollBack();
-  
-            } catch (Exception $error) {
-                throw new Exception($error);
+            if (!empty($this->resource)) {
+                try {
+                    $this->resource->rollBack();
+      
+                } catch (Exception $error) {
+                    throw new Exception($error);
+                }
             }
   
             return $this;

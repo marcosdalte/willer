@@ -7,6 +7,8 @@ namespace Core {
 
     abstract class Model extends DataManipulationLanguage {
         public function __construct(Transaction $transaction = null) {
+            $this->definePrimaryKey(null);
+
             if (!empty($transaction)) {
                 parent::__construct($transaction);
             }
