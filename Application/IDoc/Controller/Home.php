@@ -74,11 +74,11 @@ namespace Application\IDoc\Controller {
                 //     "name" => "test4"]);
 
                 // filter
-                // $log_register
-                //     ->where(["register.id" => [11,10,9,8]])
-                //     ->orderBy(["id" => "asc"])
-                //     ->limit($page = 1,$limit = 5)
-                //     ->execute(["join" => "left"]);
+                $log_register
+                    ->where(["register.id" => [11,10,9,8]])
+                    ->orderBy(["id" => "asc"])
+                    ->limit($page = 1,$limit = 5)
+                    ->execute(["join" => "left"]);
 
                 $this->transaction_log->commit();
 
@@ -95,12 +95,12 @@ namespace Application\IDoc\Controller {
             //     ->execute(["join" => "left"]);
 
             Util::renderToJson([
-                "last_query" => $log_errortype->lastQuery(),
+                "last_query" => $log_register->lastQuery(),
                 "log_error" => $log_error,
                 "log_errortype" => $log_errortype,
-                "log_errortype_dump" => $log_errortype->dump(),
+                "log_errortype_dump" => $log_errortype,
                 "log_user" => $log_user,
-                "log_register" => $log_register]);
+                "log_register" => $log_register->dump()]);
         }
 
         public function contact($url_fragment) {}
