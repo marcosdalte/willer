@@ -35,11 +35,6 @@ namespace Core\DAO {
             } else if ($db_driver == "pgsql") {
                 $this->db_escape = "\"";
             }
-
-            $this->field = [];
-            $this->order_by = [];
-            $this->where = [];
-            $this->where_value = [];
         }
 
         private function getTableName() {
@@ -66,16 +61,16 @@ namespace Core\DAO {
             return $this->field;
         }
 
-        private function setField($value) {
-            $this->field = $value;
+        private function setField($field) {
+            $this->field = $field;
         }
 
         private function getRelated() {
             return $this->related;
         }
 
-        private function setRelated($value) {
-            $this->related = $value;
+        private function setRelated($related) {
+            $this->related = $related;
         }
 
         private function getLimit() {
@@ -90,8 +85,8 @@ namespace Core\DAO {
             return $this->order_by;
         }
 
-        private function setOrderBy($value) {
-            $this->order_by = $value;
+        private function setOrderBy($order_by) {
+            $this->order_by = $order_by;
         }
 
         protected function getPrimaryKey() {
@@ -167,6 +162,12 @@ namespace Core\DAO {
             $this->setPrimaryKey($column);
         }
 
+        public function select($field = null) {
+            $this->setField($field);
+
+            return $this;
+        }
+
         public function orderBy($order_by = []) {
             if (!empty($order_by)) {
                 $table_name = $this->getTableName();
@@ -179,6 +180,10 @@ namespace Core\DAO {
                 }
 
                 $get_order_by = $this->getOrderBy();
+
+                if (empty($get_order_by)) {
+                    $get_order_by = [];
+                }
 
                 $this->setOrderBy(array_merge($get_order_by,$order_by_list));
             }
@@ -279,6 +284,14 @@ namespace Core\DAO {
 
                 $get_where = $this->getWhere();
                 $get_where_value = $this->getWhereValue();
+
+                if (empty($get_where)) {
+                    $get_where = [];
+                }
+
+                if (empty($get_where_value)) {
+                    $get_where_value = [];
+                }
 
                 $this->setWhere(array_merge($get_where,$where_query));
                 $this->setWhereValue(array_merge($get_where_value,$where_value_list));
@@ -563,6 +576,7 @@ namespace Core\DAO {
 
             $table_name = $this->getTableName();
             $table_column = $this->getTableColumn();
+            $get_field = $this->getField();
             $get_where = $this->getWhere();
             $get_where_value = $this->getWhereValue();
             $order_by = $this->getOrderBy();
@@ -589,7 +603,20 @@ namespace Core\DAO {
                 $column_list[] = vsprintf("%s.%s %s__%s",[$table_name_with_escape,$i,$table_name,$i]);
             }
 
-            $column_list = implode(",",array_merge($related_column,$column_list));
+            $column_list = array_merge($related_column,$column_list);
+            $column_list = implode(",",$column_list);
+
+            if (!empty($get_field)) {
+                $column_list_ = explode(",",$column_list);
+
+                print "<pre>";
+                print_r($column_list_);
+                exit();
+            }
+
+            // print "<pre>";
+            // print_r($column_list);
+            // exit();
 
             $where = vsprintf("where %s",[implode(" and ",$get_where),]);
             $order_by = vsprintf("order by %s",[implode(",",$order_by),]);

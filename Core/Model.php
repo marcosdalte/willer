@@ -117,7 +117,7 @@ namespace Core {
             return null;
         }
 
-        protected function primaryKey($rule = [],$value = null,$flag = false) {
+        protected static function primaryKey($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -146,7 +146,7 @@ namespace Core {
             }
         }
 
-        protected function foreignKey($rule = [],$value = null,$flag = false) {
+        protected static function foreignKey($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -172,7 +172,7 @@ namespace Core {
             }
         }
 
-        protected function char($rule = [],$value = null,$flag = false) {
+        protected static function char($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -202,7 +202,7 @@ namespace Core {
             }
         }
 
-        protected function text($rule = [],$value = null,$flag = false) {
+        protected static function text($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -232,7 +232,7 @@ namespace Core {
             }
         }
 
-        protected function integer($rule = [],$value = null,$flag = false) {
+        protected static function integer($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -261,7 +261,7 @@ namespace Core {
             }
         }
 
-        protected function boolean($rule = [],$value = null,$flag = false) {
+        protected static function boolean($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -290,7 +290,7 @@ namespace Core {
             }
         }
 
-        protected function datetime($rule = [],$value = null,$flag = false) {
+        protected static function datetime($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -320,7 +320,7 @@ namespace Core {
             }
         }
 
-        protected function date($rule = [],$value = null,$flag = false) {
+        protected static function date($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -350,7 +350,7 @@ namespace Core {
             }
         }
 
-        protected function time($rule = [],$value = null,$flag = false) {
+        protected static function time($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -380,7 +380,7 @@ namespace Core {
             }
         }
 
-        protected function float($rule = [],$value = null,$flag = false) {
+        protected static function float($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -410,7 +410,7 @@ namespace Core {
             }
         }
 
-        protected function email($rule = [],$value = null,$flag = false) {
+        protected static function email($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -439,7 +439,7 @@ namespace Core {
             }
         }
 
-        protected function ip($rule = [],$value = null,$flag = false) {
+        protected static function ip($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,
@@ -468,7 +468,7 @@ namespace Core {
             }
         }
 
-        protected function url($rule = [],$value = null,$flag = false) {
+        protected static function url($rule = [],$value = null,$flag = false) {
             if (empty($flag)) {
                 return (object) [
                     "method" => __function__,

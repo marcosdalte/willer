@@ -75,6 +75,10 @@ namespace Application\IDoc\Controller {
 
                 // filter
                 $log_register
+                    ->select([
+                        "register__id",
+                        "user__id",
+                        "error__id"])
                     ->where(["register.id" => [11,10,9,8]])
                     ->orderBy(["id" => "asc"])
                     ->limit($page = 1,$limit = 5)
