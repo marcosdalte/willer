@@ -23,6 +23,7 @@ namespace Core {
         private static function autoLoadReady() {
             spl_autoload_register(function ($class) {
                 $class_ = $class;
+                $flag_class_exist = false;
 
                 $class = str_replace("\\","/",$class);
                 $class = vsprintf("%s/%s.php",[ROOT_PATH,$class]);
@@ -39,15 +40,20 @@ namespace Core {
                     } else {
                         $scan_dir = array_diff(scandir(ROOT_PATH."/Vendor"),array("..","."));
 
-                        foreach ($scan_dir as $dir) {
-                            $class = Util::str("%s/Vendor/%s/%s.php",[ROOT_PATH,$dir,$class_]);
-                            $class = str_replace("\\","/",$class);
-
-                            if (file_exists($class)) {
-                                break;
-                            }
-
+                        if (empty($scan_dir)) {
                             $class = null;
+
+                        } else {
+                            foreach ($scan_dir as $dir) {
+                                $class = Util::str("%s/Vendor/%s/%s.php",[ROOT_PATH,$dir,$class_]);
+                                $class = str_replace("\\","/",$class);
+
+                                if (file_exists($class)) {
+                                    break;
+                                }
+
+                                $class = null;
+                            }
                         }
                     }
                 }
@@ -84,6 +90,16 @@ namespace Core {
 
                     try {
                         $new_application = new $application($request_method);
+
+                    } catch (Exception $error) {
+                        Util::exceptionToJson($error);
+                    }
+
+                    if (empty(method_exists($new_application,$controller_action))) {
+                        Util::exceptionToJson(new Exception("method does not exist in object"));
+                    }
+
+                    try {
                         $new_application->$controller_action($matche);
 
                     } catch (Exception $error) {

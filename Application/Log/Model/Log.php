@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\ALog\Model\Log {
+namespace Application\Log\Model\Log {
     use \Core\Model;
 
     class ErrorType extends Model {

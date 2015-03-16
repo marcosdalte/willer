@@ -14,11 +14,15 @@ namespace Core {
             }
         }
 
+        protected function className() {
+            return get_class($this);
+        }
+
         protected function column() {
             return get_object_vars($this);
         }
 
-        private function filterRule($rule_list,$value,$function_name,$function_filter) {
+        private static function filterRule($rule_list,$value,$function_name,$function_filter) {
             if (empty($rule_list)) {
                 if (empty($value)) {
                     throw new Exception("field value is missing");
@@ -125,7 +129,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null],
@@ -154,10 +158,10 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
-                        $get_primary_key = $this->getPrimaryKey();
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
+                        $get_primary_key = $value->getPrimaryKey();
 
-                        if (empty($value->$get_primary_key)) {
+                        if (empty($get_primary_key)) {
                             throw new Exception("foreignkey not defined");
                         }
 
@@ -180,7 +184,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
@@ -210,7 +214,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
@@ -240,7 +244,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null],
@@ -269,7 +273,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null],
@@ -298,7 +302,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
@@ -328,7 +332,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
@@ -358,7 +362,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
@@ -388,7 +392,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
@@ -418,7 +422,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,],
@@ -447,7 +451,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,],
@@ -476,7 +480,7 @@ namespace Core {
 
             } else {
                 try {
-                    $filter_rule = $this->filterRule($rule,$value,__function__,function($value) {
+                    $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,],

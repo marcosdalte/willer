@@ -1,12 +1,12 @@
 <?php
 
-namespace Application\IDoc\Controller {
+namespace Application\Documentation\Controller {
     use \Exception as Exception;
     use \Core\Util;
     use \Core\TplEngine;
     use \Core\Controller;
     use \Core\DAO\Transaction;
-    use \Application\ALog\Model\Log;
+    use \Application\Log\Model\Log;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
@@ -29,6 +29,21 @@ namespace Application\IDoc\Controller {
                 // $log_error->save([
                 //     "name" => "test4",
                 //     "describe" => "test describe"]);
+
+                // $log_error->get([
+                //     "name" => "test4"]);
+
+                // $log_user->get([
+                //     "name" => "test4"]);
+
+                // $log_register->save([
+                //     "user_id" => $log_user,
+                //     "error_id" => $log_error,
+                //     "url" => "testeeeee",
+                //     "post" => "{}",
+                //     "get" => "{}",
+                //     "message" => "message of test",
+                //     "dateadd" => Util::datetimeNow()]);
 
                 // $log_errortype->name = "nameteste15";
                 // $log_errortype->save();
@@ -74,15 +89,18 @@ namespace Application\IDoc\Controller {
                 //     "name" => "test4"]);
 
                 // filter
-                $log_register
-                    ->select([
-                        "register__id",
-                        "user__id",
-                        "error__id"])
-                    ->where(["register.id" => [11,10,9,8]])
+                $log_register_list = $log_register
+                    ->where(["register.id" => [11,10,9,8,1]])
                     ->orderBy(["id" => "asc"])
                     ->limit($page = 1,$limit = 5)
                     ->execute(["join" => "left"]);
+
+                foreach ($log_register_list as $i => $log_register_) {
+                    $log_register_->url = "lalalalalalallalalalalalala11";
+                    $log_register_->save();
+                    print_r($log_register->lastQuery());
+                    print "<br/>";
+                }
 
                 $this->transaction_log->commit();
 
@@ -92,19 +110,25 @@ namespace Application\IDoc\Controller {
                 throw new Exception($error);
             }
 
+            // print "<pre>";
+            // print_r($log_register->lastQuery());
+            // foreach ($log_register_list as $i => $log_register) {
+            //     print_r($log_register);
+            // }
+
             // $log_register
             //     ->where(["register.id" => [1,11,10,9,8]])
             //     ->orderBy(["id" => "asc"])
             //     ->limit($page = 1,$limit = 5)
             //     ->execute(["join" => "left"]);
 
-            Util::renderToJson([
-                "last_query" => $log_register->lastQuery(),
-                "log_error" => $log_error,
-                "log_errortype" => $log_errortype,
-                "log_errortype_dump" => $log_errortype,
-                "log_user" => $log_user,
-                "log_register" => $log_register->dump()]);
+            // Util::renderToJson([
+            //     "last_query" => $log_register->lastQuery(),
+            //     "log_error" => $log_error,
+            //     "log_errortype" => $log_errortype,
+            //     "log_errortype_dump" => $log_errortype,
+            //     "log_user" => $log_user,
+            //     "log_register" => $log_register->dump()]);
         }
 
         public function contact($url_fragment) {}

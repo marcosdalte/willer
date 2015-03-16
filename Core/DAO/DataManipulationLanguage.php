@@ -7,7 +7,6 @@ namespace Core\DAO {
     abstract class DataManipulationLanguage {
         private $transaction;
         private $db_escape;
-        private $field;
         private $related;
         private $limit;
         private $order_by;
@@ -55,14 +54,6 @@ namespace Core\DAO {
 
         protected function setTransaction($transaction) {
             $this->transaction = $transaction;
-        }
-
-        private function getField() {
-            return $this->field;
-        }
-
-        private function setField($field) {
-            $this->field = $field;
         }
 
         private function getRelated() {
@@ -160,12 +151,6 @@ namespace Core\DAO {
             }
 
             $this->setPrimaryKey($column);
-        }
-
-        public function select($field = null) {
-            $this->setField($field);
-
-            return $this;
         }
 
         public function orderBy($order_by = []) {
@@ -392,7 +377,7 @@ namespace Core\DAO {
             $set_escape = [];
 
             if (!empty($field)) {
-                if (is_array($field)) {
+                if (!is_array($field)) {
                     throw new Exception("wrong type of filter");
                 }
 
@@ -576,7 +561,6 @@ namespace Core\DAO {
 
             $table_name = $this->getTableName();
             $table_column = $this->getTableColumn();
-            $get_field = $this->getField();
             $get_where = $this->getWhere();
             $get_where_value = $this->getWhereValue();
             $order_by = $this->getOrderBy();
@@ -606,24 +590,25 @@ namespace Core\DAO {
             $column_list = array_merge($related_column,$column_list);
             $column_list = implode(",",$column_list);
 
-            if (!empty($get_field)) {
-                $column_list_ = explode(",",$column_list);
+            $query_value = [];
 
-                print "<pre>";
-                print_r($column_list_);
-                exit();
+            if (empty($get_where)) {
+                $where = "";
+
+            } else {
+                $where = vsprintf("where %s",[implode(" and ",$get_where),]);
+
+                $query_value = array_merge([],$get_where_value);
             }
 
-            // print "<pre>";
-            // print_r($column_list);
-            // exit();
+            if (empty($order_by)) {
+                $order_by = "";
 
-            $where = vsprintf("where %s",[implode(" and ",$get_where),]);
-            $order_by = vsprintf("order by %s",[implode(",",$order_by),]);
+            } else {
+                $order_by = vsprintf("order by %s",[implode(",",$order_by),]);
+            }
 
             $query = vsprintf("select %s from %s %s %s %s %s",[$column_list,$table_name_with_escape,$related_join,$where,$order_by,$limit]);
-
-            $query_value = array_merge([],$get_where_value);
 
             $this->setQuery($query);
             $this->setQueryValue($query_value);
@@ -637,9 +622,32 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            $this->setDump($query_fetch_all);
+            $query_fetch_all_list = [];
 
-            return $this;
+            if (!empty($query_fetch_all)) {
+                $class_name = $this->className();
+                $table_name = $this->getTableName();
+                $column_list = $this->column();
+                $transaction = $this->getTransaction();
+
+                foreach ($query_fetch_all as $i => $fetch) {
+                    $obj = new $class_name($transaction);
+
+                    print "<pre>";
+                    print_r($obj->schema());
+                    exit();
+
+                    foreach ($column_list as $column => $ii) {
+                        $table_column = vsprintf("%s__%s",[$table_name,$column]);
+
+                        $obj->$column = $fetch->$table_column;
+                    }
+
+                    $query_fetch_all_list[] = $obj;
+                }
+            }
+
+            return $query_fetch_all_list;
         }
 
         public function dump() {
