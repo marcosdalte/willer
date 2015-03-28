@@ -48,7 +48,10 @@ namespace Application\Documentation\Controller {
                 // $log_errortype->name = "nameteste15";
                 // $log_errortype->save();
 
-                // $log_errortype->get(["name" => "nameteste15"]);
+                // $log_errortype->get(["name" => "nameteste14"]);
+
+                // $log_errortype->name = "nameteste99999";
+                // $log_errortype->save();
 
                 // $log_errortype->delete();
 
@@ -87,7 +90,7 @@ namespace Application\Documentation\Controller {
                 // get
                 // $log_error->get([
                 //     "name" => "test4"]);
-
+ 
                 // filter
                 $log_register_list = $log_register
                     ->where(["register.id" => [11,10,9,8,1]])
@@ -95,11 +98,16 @@ namespace Application\Documentation\Controller {
                     ->limit($page = 1,$limit = 5)
                     ->execute(["join" => "left"]);
 
+                // print "<pre>";
+                // print_r($log_register->lastQuery());
+                // print_r($log_register->dump());
+                // print_r($log_register_list);
+                // exit();
+
                 foreach ($log_register_list as $i => $log_register_) {
-                    $log_register_->url = "lalalalalalallalalalalalala11";
+                    $log_register_->url = "132";
                     $log_register_->save();
-                    print_r($log_register->lastQuery());
-                    print "<br/>";
+
                 }
 
                 $this->transaction_log->commit();
@@ -109,6 +117,11 @@ namespace Application\Documentation\Controller {
 
                 throw new Exception($error);
             }
+
+            print "<pre>";
+            print_r($log_register->dump());
+            print_r($log_register_list);
+            exit();
 
             // print "<pre>";
             // print_r($log_register->lastQuery());

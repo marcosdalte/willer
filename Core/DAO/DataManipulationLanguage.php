@@ -36,6 +36,10 @@ namespace Core\DAO {
             }
         }
 
+        private function getClassName() {
+            return $this->className();
+        }
+
         private function getTableName() {
             return $this->name();
         }
@@ -346,9 +350,9 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            foreach ($query_fetch as $i => $value) {
-                $this->$i = $value;
-            }
+            // foreach ($query_fetch as $i => $value) {
+            //     $this->$i = $value;
+            // }
 
             $this->setQuery($query);
             $this->setQueryValue($query_value_list);
@@ -375,6 +379,7 @@ namespace Core\DAO {
             $query_value_list = [];
             $query_escape_list = [];
             $set_escape = [];
+            $add_flag = false;
 
             if (!empty($field)) {
                 if (!is_array($field)) {
@@ -414,18 +419,26 @@ namespace Core\DAO {
             }
 
             $set_escape = implode(",",$set_escape);
-            $where = vsprintf("%s=%s",[$primary_key,$last_insert_id]);
+
+            if (!empty($table_column[$primary_key])) {
+                $where = vsprintf("%s=%s",[$primary_key,$table_column[$primary_key]]);
+
+            } else {
+                $where = vsprintf("%s=%s",[$primary_key,$last_insert_id]);
+            }
 
             $column_list = implode(",",$column_list);
             $query_escape_list = implode(",",$query_escape_list);
 
-            if (!empty($last_insert_id) && !empty($field)) {
+            if (!empty($last_insert_id) || !empty($table_column[$primary_key])) {
                 $query = vsprintf("update %s set %s where %s",[$table_name_with_escape,$set_escape,$where]);
                 $query_value_list = $query_value_update_list;
 
             } else {
                 $query = vsprintf("insert into %s (%s) values(%s)",[$table_name_with_escape,$column_list,$query_escape_list]);
                 $query_value_list = $query_value_add_list;
+
+                $add_flag = true;
             }
 
             try {
@@ -442,18 +455,23 @@ namespace Core\DAO {
                 throw new Exception($query_error_info[2]);
             }
 
-            $get_database_info = $this->transaction->getDatabaseInfo();
+            if (empty($add_flag)) {
+                $this->get(["id" => $table_column[$primary_key]]);
 
-            $sequence_name = null;
+            } else {
+                $get_database_info = $this->transaction->getDatabaseInfo();
 
-            if ($get_database_info["DB_DRIVER"] == "pgsql") {
-                $sequence_name = vsprintf("%s_id_seq",[$table_name,]);
+                $sequence_name = null;
+
+                if ($get_database_info["DB_DRIVER"] == "pgsql") {
+                    $sequence_name = vsprintf("%s_id_seq",[$table_name,]);
+                }
+
+                $last_insert_id = $this->transaction->lastInsertId($sequence_name);
+
+                $this->setLastInsertId($last_insert_id);
+                $this->get(["id" => $last_insert_id]);
             }
-
-            $last_insert_id = $this->transaction->lastInsertId($sequence_name);
-
-            $this->setLastInsertId($last_insert_id);
-            $this->get(["id" => $last_insert_id]);
 
             $this->setQuery($query);
             $this->setQueryValue($query_value_list);
@@ -622,25 +640,43 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
+            $this->setDump($query_fetch_all);
+
             $query_fetch_all_list = [];
 
             if (!empty($query_fetch_all)) {
-                $class_name = $this->className();
+                $class_name = $this->getClassName();
                 $table_name = $this->getTableName();
-                $column_list = $this->column();
+                $column_list = $this->getTableColumn();
                 $transaction = $this->getTransaction();
 
                 foreach ($query_fetch_all as $i => $fetch) {
                     $obj = new $class_name($transaction);
 
-                    print "<pre>";
-                    print_r($obj->schema());
-                    exit();
-
-                    foreach ($column_list as $column => $ii) {
+                    foreach ($column_list as $column => $value) {
                         $table_column = vsprintf("%s__%s",[$table_name,$column]);
 
                         $obj->$column = $fetch->$table_column;
+                    }
+
+                    $obj_column_list = $obj->getTableColumn();
+                    $obj_schema_dict = $obj->schema();
+
+                    foreach ($obj_column_list as $column => $value) {
+                        if ($obj_schema_dict[$column]->method == "foreignKey") {
+                            $obj_foreignkey = $obj_schema_dict[$column]->rule["table"];
+
+                            $obj_foreignkey_table_name = $obj_foreignkey->getTableName();
+                            $obj_foreignkey_column_list = $obj_foreignkey->getTableColumn();
+
+                            foreach ($obj_foreignkey_column_list as $column_ => $value_) {
+                                $table_column = vsprintf("%s__%s",[$obj_foreignkey_table_name,$column_]);
+
+                                $obj_foreignkey->$column_ = $fetch->$table_column;
+                            }
+
+                            $obj->$column = $obj_foreignkey;
+                        }
                     }
 
                     $query_fetch_all_list[] = $obj;

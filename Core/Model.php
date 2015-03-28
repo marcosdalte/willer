@@ -14,6 +14,10 @@ namespace Core {
             }
         }
 
+        public function __debugInfo() {
+            return $this->column();
+        }
+
         protected function className() {
             return get_class($this);
         }
