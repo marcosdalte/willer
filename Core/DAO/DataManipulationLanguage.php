@@ -552,16 +552,6 @@ namespace Core\DAO {
             return $this;
         }
 
-        public function lastQuery() {
-            $query = $this->getQuery();
-            $query_value = $this->getQueryValue();
-
-            return (object) [
-                "query" => $query,
-                "query_value" => $query_value,
-            ];
-        }
-
         public function execute($setting = []) {
             $transaction_resource = $this->transaction->getResource();
 
@@ -684,6 +674,16 @@ namespace Core\DAO {
             }
 
             return $query_fetch_all_list;
+        }
+
+        public function lastQuery() {
+            $query = $this->getQuery();
+            $query_value = $this->getQueryValue();
+
+            return (object) [
+                "query" => $query,
+                "query_value" => $query_value,
+            ];
         }
 
         public function dump() {
