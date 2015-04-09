@@ -21,20 +21,6 @@ namespace Core {
 			}
 		}
 
-		public static function isEmpty($list = []) {
-			if (empty($list)) {
-				return false;
-			}
-
-			foreach ($list as $value) {
-				if (empty($value)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-
 		public static function datetimeNow() {
 			$date_time = new DateTime();
 			$format = $date_time->format("Y-m-d H:i:s");

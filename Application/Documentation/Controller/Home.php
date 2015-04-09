@@ -33,6 +33,9 @@ namespace Application\Documentation\Controller {
                 // $log_error->get([
                 //     "name" => "test4"]);
 
+                // $log_error->name = "test5";
+                // $log_error->save();
+
                 // $log_user->get([
                 //     "name" => "test4"]);
 
@@ -105,12 +108,12 @@ namespace Application\Documentation\Controller {
                 // exit();
 
                 foreach ($log_register_list as $i => $log_register_) {
-                    $log_register_->url = "132";
+                    $log_register_->url = "1231232ewewrf";
                     $log_register_->save();
 
                 }
 
-                $this->transaction_log->commit();
+                // $this->transaction_log->commit();
 
             } catch (Exception $error) {
                 $this->transaction_log->rollBack();
@@ -119,29 +122,9 @@ namespace Application\Documentation\Controller {
             }
 
             print "<pre>";
-            print_r($log_register->dump());
+            // print_r($log_register->dump());
             print_r($log_register_list);
             exit();
-
-            // print "<pre>";
-            // print_r($log_register->lastQuery());
-            // foreach ($log_register_list as $i => $log_register) {
-            //     print_r($log_register);
-            // }
-
-            // $log_register
-            //     ->where(["register.id" => [1,11,10,9,8]])
-            //     ->orderBy(["id" => "asc"])
-            //     ->limit($page = 1,$limit = 5)
-            //     ->execute(["join" => "left"]);
-
-            // Util::renderToJson([
-            //     "last_query" => $log_register->lastQuery(),
-            //     "log_error" => $log_error,
-            //     "log_errortype" => $log_errortype,
-            //     "log_errortype_dump" => $log_errortype,
-            //     "log_user" => $log_user,
-            //     "log_register" => $log_register->dump()]);
         }
 
         public function contact($url_fragment) {}

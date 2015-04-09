@@ -1,7 +1,7 @@
 <?php
 /*urls*/
 $URL = [
-    "/^\/?$/"        => ["controller" => "Documentation/Home/index","request_method" => ["GET","POST"]],
-    "/^home\/?$/"    => ["controller" => "Documentation/Home/index","request_method" => "GET"],
-    "/^contato\/?$/" => ["controller" => "Documentation/Home/contact","request_method" => "GET"],
+    "/^\/?$/"        => ["Documentation/Home/index",["GET","POST"]],
+    "/^home\/?$/"    => ["Documentation/Home/index","GET"],
+    "/^contato\/?$/" => ["Documentation/Home/contact",null],
 ];

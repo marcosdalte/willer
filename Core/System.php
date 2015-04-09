@@ -79,10 +79,10 @@ namespace Core {
                     $flag = true;
                     $request_method = null;
 
-                    $controller = explode("/",$application["controller"]);
+                    $controller = explode("/",$application[0]);
 
-                    if (Util::get($application,"request_method",null)) {
-                        $request_method = $application["request_method"];
+                    if (!empty($application[1])) {
+                        $request_method = $application[1];
                     }
 
                     $application = Util::str("Application\\%s\\Controller\\%s",[$controller[0],$controller[1]]);

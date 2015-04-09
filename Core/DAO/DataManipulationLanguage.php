@@ -676,6 +676,10 @@ namespace Core\DAO {
             return $query_fetch_all_list;
         }
 
+        private function relatedFetch($query_fetch_all,$query_fetch_all_list = []) {
+
+        }
+
         public function lastQuery() {
             $query = $this->getQuery();
             $query_value = $this->getQueryValue();

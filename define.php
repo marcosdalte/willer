@@ -1,8 +1,6 @@
 <?php
 
 const URL_SITE = "127.0.0.1/willer";
-const API_KEY = "12345";
-const API_USER = "wborba";
 const DB_MAIN_DRIVER = "pgsql";
 const DB_MAIN_HOST = "127.0.0.1";
 const DB_MAIN_NAME = "main";

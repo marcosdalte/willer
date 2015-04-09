@@ -22,8 +22,6 @@ define("PATH_404","404.html");
 define("URL_NOT_FOUND",Util::str("%s/%s",[URL_BASE,PATH_404]));
 define("QUERY_LIMIT_ROW",15);
 define("SESSION_LIMIT",10);
-define("API_AUTH_KEY",API_KEY);
-define("API_AUTH_USER",API_USER);
 define("DB_DEFAULT",DB_MAIN_NAME);
 define("DB_LOG",DB_LOG_NAME);
 
