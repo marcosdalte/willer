@@ -652,32 +652,40 @@ namespace Core\DAO {
                     $obj_column_list = $obj->getTableColumn();
                     $obj_schema_dict = $obj->schema();
 
-                    foreach ($obj_column_list as $column => $value) {
-                        if ($obj_schema_dict[$column]->method == "foreignKey") {
-                            $obj_foreignkey = $obj_schema_dict[$column]->rule["table"];
+                    $related_fetch = $this->relatedFetch($obj_column_list,$obj_schema_dict,$fetch,$transaction,$obj);
 
-                            $obj_foreignkey_table_name = $obj_foreignkey->getTableName();
-                            $obj_foreignkey_column_list = $obj_foreignkey->getTableColumn();
-
-                            foreach ($obj_foreignkey_column_list as $column_ => $value_) {
-                                $table_column = vsprintf("%s__%s",[$obj_foreignkey_table_name,$column_]);
-
-                                $obj_foreignkey->$column_ = $fetch->$table_column;
-                            }
-
-                            $obj->$column = $obj_foreignkey;
-                        }
-                    }
-
-                    $query_fetch_all_list[] = $obj;
+                    $query_fetch_all_list[] = $related_fetch;
                 }
             }
 
             return $query_fetch_all_list;
         }
 
-        private function relatedFetch($query_fetch_all,$query_fetch_all_list = []) {
+        private function relatedFetch($obj_column_list,$obj_schema_dict,$fetch,$transaction,$obj) {
+            foreach ($obj_column_list as $column => $value) {
+                if ($obj_schema_dict[$column]->method == "foreignKey") {
+                    $obj_foreignkey = $obj_schema_dict[$column]->rule["table"];
 
+                    $obj_foreignkey_class_name = $obj_foreignkey->getClassName();
+                    $obj_foreignkey_table_name = $obj_foreignkey->getTableName();
+                    $obj_foreignkey_column_list = $obj_foreignkey->getTableColumn();
+                    $obj_foreignkey_schema_dict = $obj_foreignkey->schema();
+
+                    $obj_foreignkey = new $obj_foreignkey_class_name($transaction);
+
+                    foreach ($obj_foreignkey_column_list as $column_ => $value_) {
+                        $table_column = vsprintf("%s__%s",[$obj_foreignkey_table_name,$column_]);
+
+                        $obj_foreignkey->$column_ = $fetch->$table_column;
+                    }
+
+                    $obj->$column = $obj_foreignkey;
+
+                    $this->relatedFetch($obj_foreignkey_column_list,$obj_foreignkey_schema_dict,$fetch,$transaction,$obj_foreignkey);
+                }
+            }
+
+            return $obj;
         }
 
         public function lastQuery() {

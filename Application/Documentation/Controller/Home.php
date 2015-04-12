@@ -107,13 +107,25 @@ namespace Application\Documentation\Controller {
                 // print_r($log_register_list);
                 // exit();
 
-                foreach ($log_register_list as $i => $log_register_) {
-                    $log_register_->url = "1231232ewewrf";
-                    $log_register_->save();
+                // foreach ($log_register_list as $i => $log_register_) {
+                    // $log_register_->url = "1231232ewewrf";
+                    // $log_register_->save();
 
-                }
+                    // print "</br>------------------------</br>";
+                    // print_r(get_class_methods($log_register_));
+                    // print "</br>------------------------</br>";
+                    // print_r(get_class_methods($log_register_->error_id));
+                    // print "</br>------------------------</br>";
 
-                // $this->transaction_log->commit();
+                    // $log_register_->error_id->describe = "alallalalalal";
+                    // $log_register_->error_id->save();
+
+                    // $log_register_->error_id->type_id->name = mt_rand();
+                    // $log_register_->error_id->type_id->save();
+
+                // }
+
+                $this->transaction_log->commit();
 
             } catch (Exception $error) {
                 $this->transaction_log->rollBack();
