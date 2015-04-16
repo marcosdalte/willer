@@ -24,6 +24,7 @@ namespace Application\Documentation\Controller {
 
             try {
                 $this->transaction_log->beginTransaction();
+
                 // $this->transaction_log->connect();
 
                 // $log_error->save([
@@ -93,6 +94,14 @@ namespace Application\Documentation\Controller {
                 // get
                 // $log_error->get([
                 //     "name" => "test4"]);
+
+                $log_register
+                    ->where(["register.id" => [11,10,9,8,1]])
+                    ->update("url" => "blabla-bla blaaaaa");
+
+                $log_register
+                    ->where(["register.id" => [11,10,9,8,1]])
+                    ->delete();
  
                 // filter
                 $log_register_list = $log_register
@@ -134,7 +143,6 @@ namespace Application\Documentation\Controller {
             }
 
             print "<pre>";
-            // print_r($log_register->dump());
             print_r($log_register_list);
             exit();
         }

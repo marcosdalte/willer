@@ -2,8 +2,6 @@
 
 namespace Core {
 	use \Exception as Exception;
-    use \Core\Util;
-    use \Application\ALog\Model\Log;
 
     abstract class Controller {
         public function __construct($request_method = null) {

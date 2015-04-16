@@ -16,7 +16,6 @@ namespace Core\DAO {
         private $where_value;
         private $query;
         private $query_value;
-        private $dump;
 
         public function __construct(Transaction $transaction = null) {
             if (empty($transaction)) {
@@ -130,14 +129,6 @@ namespace Core\DAO {
 
         private function setQueryValue($query_value) {
             $this->query_value = $query_value;
-        }
-
-        private function getDump() {
-            return $this->dump;
-        }
-
-        private function setDump($dump) {
-            $this->dump = $dump;
         }
 
         protected function definePrimaryKey($column = null) {
@@ -630,8 +621,6 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            $this->setDump($query_fetch_all);
-
             $query_fetch_all_list = [];
 
             if (!empty($query_fetch_all)) {
@@ -696,10 +685,6 @@ namespace Core\DAO {
                 "query" => $query,
                 "query_value" => $query_value,
             ];
-        }
-
-        public function dump() {
-            return $this->getDump();
         }
 
         public function __destruct() {
