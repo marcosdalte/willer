@@ -59,7 +59,7 @@ namespace Core\DAO {
             $database_info = $this->getDatabaseInfo();
 
             try {
-                $pdo = new PDO($database_info["DB_DRIVER"].":host=".$database_info["DB_HOST"].";port=".$database_info["DB_PORT"].";dbname=".$database_info["DB_NAME"],$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
+                $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"],$database_info["DB_PORT"],$database_info["DB_NAME"]]),$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
 
                 if ($database_info["DB_DRIVER"] == "mysql") {
                     if ($database_info["DB_AUTOCOMMIT"] == 0) {

@@ -89,26 +89,39 @@ namespace Application\Documentation\Controller {
                 //     "id" => $log_user->id]);
 
                 // $log_register->delete([
-                //     "id" => $log_register->id]); 
+                //     "id" => $log_register->id]);
 
                 // get
                 // $log_error->get([
                 //     "name" => "test4"]);
 
-                $log_register
-                    ->where(["register.id" => [11,10,9,8,1]])
-                    ->update("url" => "blabla-bla blaaaaa");
+                // $log_errortype->get([
+                //     "id" => "1"]);
+                //
+                // $log_error->save([
+                //     "tipo_id" => $log_errortype,
+                //     "nome" => "erro_teste",
+                //     "descricao" => "descricao_teste"]);
 
-                $log_register
-                    ->where(["register.id" => [11,10,9,8,1]])
-                    ->delete();
- 
+                $log_error->get([
+                    "nome" => "erro_teste"]);
+
+                // print_r($log_errortype->lastQuery());
+
+                // $log_register
+                //     ->where(["register.id" => [11,10,9,8,1]])
+                //     ->update("url" => "blabla-bla blaaaaa");
+                //
+                // $log_register
+                //     ->where(["register.id" => [11,10,9,8,1]])
+                //     ->delete();
+
                 // filter
-                $log_register_list = $log_register
-                    ->where(["register.id" => [11,10,9,8,1]])
-                    ->orderBy(["id" => "asc"])
-                    ->limit($page = 1,$limit = 5)
-                    ->execute(["join" => "left"]);
+                // $log_register_list = $log_register
+                //     ->where(["register.id" => [11,10,9,8,1]])
+                //     ->orderBy(["id" => "asc"])
+                //     ->limit($page = 1,$limit = 5)
+                //     ->execute(["join" => "left"]);
 
                 // print "<pre>";
                 // print_r($log_register->lastQuery());
@@ -143,7 +156,8 @@ namespace Application\Documentation\Controller {
             }
 
             print "<pre>";
-            print_r($log_register_list);
+            // print_r($log_errortype);
+            print_r($log_error);
             exit();
         }
 

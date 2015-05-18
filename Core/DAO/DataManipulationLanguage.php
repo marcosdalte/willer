@@ -341,9 +341,9 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            // foreach ($query_fetch as $i => $value) {
-            //     $this->$i = $value;
-            // }
+            foreach ($query_fetch as $i => $value) {
+                $this->$i = $value;
+            }
 
             $this->setQuery($query);
             $this->setQueryValue($query_value_list);
@@ -571,7 +571,7 @@ namespace Core\DAO {
             $related_join = null;
             $related_column = [];
 
-            if (!empty($related)) {
+            if (!empty($related) && !empty($related["join"])) {
                 $related_join = vsprintf("%s %s",[$join,implode(vsprintf(" %s ",[$join,]),$related["join"])]);
 
                 foreach ($related["column"] as $i => $column) {

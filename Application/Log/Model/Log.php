@@ -5,87 +5,83 @@ namespace Application\Log\Model\Log {
 
     class ErrorType extends Model {
         public $id;
-        public $name;
+        public $nome;
 
         protected function schema() {
             return [
                 "id" => Model::primaryKey(),
-                "name" => Model::char(["length" => 40])];
+                "nome" => Model::char(["length" => 40])];
         }
 
         protected function name() {
-            return "errortype";
+            return "errotipo";
         }
     }
 
     class Error extends Model {
         public $id;
-        public $type_id;
-        public $name;
-        public $describe;
+        public $tipo_id;
+        public $nome;
+        public $descricao;
 
         protected function schema() {
             return [
                 "id" => Model::primaryKey(),
-                "type_id" => Model::foreignKey(["table" => new ErrorType,"null" => 0]),
-                "name" => Model::char(["length" => 40]),
-                "describe" => Model::text(["null" => 1])];
+                "tipo_id" => Model::foreignKey(["table" => new ErrorType,"null" => 0]),
+                "nome" => Model::char(["length" => 40]),
+                "descricao" => Model::text(["null" => 1])];
         }
 
         protected function name() {
-            return "error";
+            return "erro";
         }
     }
 
     class User extends Model {
         public $id;
-        public $active;
-        public $name;
-        public $publickey;
-        public $dateadd;
-        public $dateupdate;
-        public $datecancel;
+        public $ativo;
+        public $nome;
+        public $chavepublica;
+        public $data;
+        public $datacancelamento;
 
         protected function schema() {
             return [
                 "id" => Model::primaryKey([]),
-                "active" => Model::integer(["length" => 1]),
-                "name" => Model::char(["length" => 30]),
-                "publickey" => Model::char(["length" => 40]),
-                "dateadd" => Model::datetime([]),
-                "dateupdate" => Model::datetime([]),
-                "datecancel" => Model::datetime(["null" => 1])];
+                "ativo" => Model::integer(["length" => 1]),
+                "nome" => Model::char(["length" => 30]),
+                "chavepublica" => Model::char(["length" => 40]),
+                "data" => Model::datetime([]),
+                "datacancelamento" => Model::datetime(["null" => 1])];
         }
 
         protected function name() {
-            return "user";
+            return "usuario";
         }
     }
 
     class Register extends Model {
         public $id;
-        public $user_id;
-        public $error_id;
+        public $usuario_id;
+        public $erro_id;
         public $url;
         public $post;
         public $get;
-        public $message;
-        public $dateadd;
+        public $data;
 
         protected function schema() {
             return [
                 "id" => Model::primaryKey([]),
-                "user_id" => Model::foreignKey(["table" => new User,"null" => 1]),
-                "error_id" => Model::foreignKey(["table" => new Error,"null" => 1]),
+                "usuario_id" => Model::foreignKey(["table" => new User,"null" => 1]),
+                "erro_id" => Model::foreignKey(["table" => new Error,"null" => 1]),
                 "url" => Model::char(["length" => 255]),
                 "post" => Model::text(["null" => 1]),
                 "get" => Model::text(["null" => 1]),
-                "message" => Model::text(["null" => 1]),
-                "dateadd" => Model::datetime([]),];
+                "data" => Model::datetime([]),];
         }
 
         protected function name() {
-            return "register";
+            return "registro";
         }
     }
 }
