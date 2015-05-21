@@ -490,6 +490,82 @@ namespace Core\DAO {
             return $this;
         }
 
+        public function update($set = null) {
+            if (empty($set)) {
+                throw new Exception("set update is null");
+            }
+
+            $transaction_resource = $this->transaction->getResource();
+
+            if (empty($transaction_resource)) {
+                throw new Exception("conection resource dont initiated");
+            }
+
+            if (!is_array($set)) {
+                throw new Exception("set is not a list");
+            }
+
+            $table_column = $this->getTableColumn();
+
+            foreach ($table_column as $i => $value) {
+                if (!array_key_exists($i,$table_column)) {
+                    throw new Exception("field missing, check our model");
+                }
+
+                if (!array_key_exists($i,$table_schema)) {
+                    throw new Exception("field missing, check our schema");
+                }
+
+                $method = $table_schema[$i]->method;
+                $rule = $table_schema[$i]->rule;
+
+                try {
+                    $value = $this->$method($rule,$value,true);
+
+                } catch (Exception $error) {
+                    throw new Exception($error);
+                }
+
+                $set_escape[] = vsprintf("%s=?",[$i,]);
+                $query_value_update_list[] = $value;
+
+                $column_list[] = $i;
+                $query_value_add_list[] = $value;
+                $query_escape_list[] = "?";
+            }
+
+            $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
+
+            $get_where = $this->getWhere();
+            $get_where_value = $this->getWhereValue();
+
+            $query_value = [];
+
+            if (empty($get_where)) {
+                $where = "";
+
+            } else {
+                $where = vsprintf("where %s",[implode(" and ",$get_where),]);
+
+                $query_value = array_merge($query_value,$get_where_value);
+            }
+
+            $query = vsprintf("update %s set %s %s",[$table_name_with_escape,$?,$where]);
+
+            try {
+                $query = $transaction_resource->prepare($query);
+                $query->execute($query_value);
+
+            } catch (Exception $error) {
+                throw new Exception($error);
+            }
+
+            $this->setQuery($query);
+            $this->setQueryValue($query_value);
+
+            return $this;
+        }
+
         public function delete($where = null) {
             $transaction_resource = $this->transaction->getResource();
 
@@ -617,7 +693,7 @@ namespace Core\DAO {
             } else {
                 $where = vsprintf("where %s",[implode(" and ",$get_where),]);
 
-                $query_value = array_merge([],$get_where_value);
+                $query_value = array_merge($query_value,$get_where_value);
             }
 
             if (empty($order_by)) {
