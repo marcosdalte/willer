@@ -7,12 +7,15 @@ namespace Application\Documentation\Controller {
     use \Core\Controller;
     use \Core\DAO\Transaction;
     use \Application\Log\Model\Log;
+    use \Application\Container\Model\Service;
+    use \Application\Container\Model\Container;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
             parent::__construct($request_method);
 
             $this->transaction_main = new Transaction(DB_DEFAULT);
+            $this->transaction_mysql = new Transaction(DB_MYSQL);
             $this->transaction_log = new Transaction(DB_LOG);
         }
 
@@ -22,8 +25,32 @@ namespace Application\Documentation\Controller {
             $log_user = new Log\User($this->transaction_log);
             $log_register = new Log\Register($this->transaction_log);
 
+            $log_service = new Service\Service($this->transaction_mysql);
+            $log_container = new Container\Container($this->transaction_mysql);
+
             try {
-                $this->transaction_log->beginTransaction();
+                // $this->transaction_log->beginTransaction();
+                $this->transaction_mysql->beginTransaction();
+
+                // $log_service->save([
+                //     "nome" => "testeeee123",
+                //     "descricao" => "descricao de testeeee"]);
+
+                // $log_container->save([
+                //     "nome" => "testeeee123234234",
+                //     "descricao" => "descricao de testeeee34234"]);
+
+                $log_service_list = $log_service
+                    ->where()
+                    ->orderBy()
+                    ->limit(1,5)
+                    ->execute();
+
+                $log_container_list = $log_container
+                    ->where()
+                    ->orderBy()
+                    ->limit(1,5)
+                    ->execute();
 
                 // $this->transaction_log->connect();
 
@@ -108,9 +135,9 @@ namespace Application\Documentation\Controller {
 
                 // print_r($log_errortype->lastQuery());
 
-                $log_register
-                    ->where(["register.id" => [11,10,9,8,1]])
-                    ->update("url" => "blabla-bla blaaaaa");
+                // $log_register
+                //     ->where(["register.id" => [11,10,9,8,1]])
+                //     ->update("url" => "blabla-bla blaaaaa");
                 //
                 // $log_register
                 //     ->where(["register.id" => [11,10,9,8,1]])
@@ -147,18 +174,20 @@ namespace Application\Documentation\Controller {
 
                 // }
 
-                $this->transaction_log->commit();
+                // $this->transaction_log->commit();
+                $this->transaction_mysql->commit();
 
             } catch (Exception $error) {
-                $this->transaction_log->rollBack();
+                // $this->transaction_log->rollBack();
+                $this->transaction_mysql->rollBack();
 
                 throw new Exception($error);
             }
-
-            print "<pre>";
             // print_r($log_errortype);
-            print_r($log_error);
-            exit();
+            // print_r($log_error);
+            $this->varDump(array(
+                $log_service_list,
+                $log_container_list));
         }
 
         public function contact($url_fragment) {}
