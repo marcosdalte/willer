@@ -6,6 +6,8 @@ namespace Core {
 
     trait System {
         public static function appReady($url = []) {
+            define("REQUEST_METHOD",$_SERVER["REQUEST_METHOD"]);
+
             System::iniSetReady();
             System::autoLoadReady();
             System::sessionReady();
@@ -21,6 +23,7 @@ namespace Core {
         private static function autoLoadReady() {
             spl_autoload_register(function ($class) {
                 $class_ = $class;
+                $flag_class_exist = false;
 
                 $class = str_replace("\\","/",$class);
                 $class = vsprintf("%s/%s.php",[ROOT_PATH,$class]);
@@ -41,8 +44,6 @@ namespace Core {
                             $class = null;
 
                         } else {
-                            $class = null;
-
                             foreach ($scan_dir as $dir) {
                                 $class = Util::str("%s/Vendor/%s/%s.php",[ROOT_PATH,$dir,$class_]);
                                 $class = str_replace("\\","/",$class);
@@ -50,6 +51,8 @@ namespace Core {
                                 if (file_exists($class)) {
                                     break;
                                 }
+
+                                $class = null;
                             }
                         }
                     }

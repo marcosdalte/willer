@@ -103,14 +103,14 @@ namespace Application\Documentation\Controller {
                 //     "nome" => "erro_teste",
                 //     "descricao" => "descricao_teste"]);
 
-                // $log_error->get([
-                //     "nome" => "erro_teste"]);
+                $log_error->get([
+                    "nome" => "erro_teste"]);
 
                 // print_r($log_errortype->lastQuery());
 
-                $log_register
-                    ->where(["register.id" => [11,10,9,8,1]])
-                    ->update("url" => "blabla-bla blaaaaa");
+                // $log_register
+                //     ->where(["register.id" => [11,10,9,8,1]])
+                //     ->update("url" => "blabla-bla blaaaaa");
                 //
                 // $log_register
                 //     ->where(["register.id" => [11,10,9,8,1]])
