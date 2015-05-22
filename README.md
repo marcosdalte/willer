@@ -190,7 +190,7 @@ $log_register_list = $log_register
     ->execute(["join" => "left"]);
 ```
 
-Operações de CRUD no resultado de consultadas
+Operações de CRUD no resultado de consultas
 ```
 foreach ($log_register_list as $i => $obj_register) {
     $obj_register->url = "1231232ewewrf";
