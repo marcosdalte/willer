@@ -133,11 +133,17 @@ namespace Core\DAO {
 
         protected function definePrimaryKey($column = null) {
             $table_schema = $this->schema();
+            $primarykey_flag = false;
 
             foreach ($table_schema as $i => $value) {
                 if ($value->method == "primaryKey") {
+                    if (!empty($primarykey_flag)) {
+                        throw new Exception("primary key need be unique");
+                    }
+
                     $column = $i;
-                    break;
+
+                    $primarykey_flag = true;
                 }
             }
 
@@ -321,21 +327,21 @@ namespace Core\DAO {
             $query = vsprintf("select %s from %s %s",[$field,$table_name_with_escape,$where]);
 
             try {
-                $query_total = $this->transaction->getResource()->prepare($query_total);
-                $query_total->execute($query_value_list);
-                $query_total = $query_total->fetch(PDO::FETCH_OBJ);
+                $pdo_query_total = $transaction_resource->prepare($query_total);
+                $pdo_query_total->execute($query_value_list);
+                $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
 
-                if ($query_total->total <= 0) {
+                if ($pdo_query_total->total <= 0) {
                     throw new Exception("error in get, don't register");
                 }
 
-                if ($query_total->total > 1) {
+                if ($pdo_query_total->total > 1) {
                     throw new Exception("error in get, don't unique register");
                 }
 
-                $query = $transaction_resource->prepare($query);
-                $query->execute($query_value_list);
-                $query_fetch = $query->fetch(PDO::FETCH_OBJ);
+                $pdo_query = $transaction_resource->prepare($query);
+                $pdo_query->execute($query_value_list);
+                $query_fetch = $pdo_query->fetch(PDO::FETCH_OBJ);
 
             } catch (Exception $error) {
                 throw new Exception($error);
@@ -345,10 +351,24 @@ namespace Core\DAO {
                 $this->$i = $value;
             }
 
+            $class_name = $this->getClassName();
+            $transaction = $this->getTransaction();
+
+            $obj = new $class_name($transaction);
+
+            foreach ($query_fetch as $i => $value) {
+                $obj->$i = $value;
+            }
+
+            $obj_column_list = $obj->getTableColumn();
+            $obj_schema_dict = $obj->schema();
+
+            $related_fetch = $this->relatedFetch($obj_column_list,$obj_schema_dict,$query_fetch,$transaction,$obj);
+
             $this->setQuery($query);
             $this->setQueryValue($query_value_list);
 
-            return $this;
+            return $related_fetch;
         }
 
         public function save($field = null) {
@@ -466,6 +486,82 @@ namespace Core\DAO {
 
             $this->setQuery($query);
             $this->setQueryValue($query_value_list);
+
+            return $this;
+        }
+
+        public function update($set = null) {
+            if (empty($set)) {
+                throw new Exception("set update is null");
+            }
+
+            $transaction_resource = $this->transaction->getResource();
+
+            if (empty($transaction_resource)) {
+                throw new Exception("conection resource dont initiated");
+            }
+
+            if (!is_array($set)) {
+                throw new Exception("set is not a list");
+            }
+
+            $table_column = $this->getTableColumn();
+
+            foreach ($table_column as $i => $value) {
+                if (!array_key_exists($i,$table_column)) {
+                    throw new Exception("field missing, check our model");
+                }
+
+                if (!array_key_exists($i,$table_schema)) {
+                    throw new Exception("field missing, check our schema");
+                }
+
+                $method = $table_schema[$i]->method;
+                $rule = $table_schema[$i]->rule;
+
+                try {
+                    $value = $this->$method($rule,$value,true);
+
+                } catch (Exception $error) {
+                    throw new Exception($error);
+                }
+
+                $set_escape[] = vsprintf("%s=?",[$i,]);
+                $query_value_update_list[] = $value;
+
+                $column_list[] = $i;
+                $query_value_add_list[] = $value;
+                $query_escape_list[] = "?";
+            }
+
+            $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
+
+            $get_where = $this->getWhere();
+            $get_where_value = $this->getWhereValue();
+
+            $query_value = [];
+
+            if (empty($get_where)) {
+                $where = "";
+
+            } else {
+                $where = vsprintf("where %s",[implode(" and ",$get_where),]);
+
+                $query_value = array_merge($query_value,$get_where_value);
+            }
+
+            $query = vsprintf("update %s set %s %s",[$table_name_with_escape,$?,$where]);
+
+            try {
+                $query = $transaction_resource->prepare($query);
+                $query->execute($query_value);
+
+            } catch (Exception $error) {
+                throw new Exception($error);
+            }
+
+            $this->setQuery($query);
+            $this->setQueryValue($query_value);
 
             return $this;
         }
@@ -597,7 +693,7 @@ namespace Core\DAO {
             } else {
                 $where = vsprintf("where %s",[implode(" and ",$get_where),]);
 
-                $query_value = array_merge([],$get_where_value);
+                $query_value = array_merge($query_value,$get_where_value);
             }
 
             if (empty($order_by)) {
@@ -629,19 +725,19 @@ namespace Core\DAO {
                 $column_list = $this->getTableColumn();
                 $transaction = $this->getTransaction();
 
-                foreach ($query_fetch_all as $i => $fetch) {
+                foreach ($query_fetch_all as $i => $query_fetch) {
                     $obj = new $class_name($transaction);
 
                     foreach ($column_list as $column => $value) {
                         $table_column = vsprintf("%s__%s",[$table_name,$column]);
 
-                        $obj->$column = $fetch->$table_column;
+                        $obj->$column = $query_fetch->$table_column;
                     }
 
                     $obj_column_list = $obj->getTableColumn();
                     $obj_schema_dict = $obj->schema();
 
-                    $related_fetch = $this->relatedFetch($obj_column_list,$obj_schema_dict,$fetch,$transaction,$obj);
+                    $related_fetch = $this->relatedFetch($obj_column_list,$obj_schema_dict,$query_fetch,$transaction,$obj);
 
                     $query_fetch_all_list[] = $related_fetch;
                 }
