@@ -490,71 +490,81 @@ namespace Core\DAO {
             return $this;
         }
 
-        public function update($set = null) {
-            if (empty($set)) {
-                throw new Exception("set update is null");
-            }
+        // public function update($set = null) {
+        //     if (empty($set)) {
+        //         throw new Exception("set update is null");
+        //     }
 
-            $transaction_resource = $this->transaction->getResource();
+        //     $transaction_resource = $this->transaction->getResource();
 
-            if (empty($transaction_resource)) {
-                throw new Exception("conection resource dont initiated");
-            }
+        //     if (empty($transaction_resource)) {
+        //         throw new Exception("conection resource dont initiated");
+        //     }
 
-            if (!is_array($set)) {
-                throw new Exception("set is not a list");
-            }
+        //     if (!is_array($set)) {
+        //         throw new Exception("set is not a list");
+        //     }
 
-            $table_column = $this->getTableColumn();
-            $table_schema = $this->getTableSchema();
+        //     $table_column = $this->getTableColumn();
 
-            $set_list = [];
+        //     foreach ($table_column as $i => $value) {
+        //         if (!array_key_exists($i,$table_column)) {
+        //             throw new Exception("field missing, check our model");
+        //         }
 
-            foreach ($set as $i => $value) {
-                if (!array_key_exists($i,$table_column)) {
-                    throw new Exception("field missing, check our model");
-                }
+        //         if (!array_key_exists($i,$table_schema)) {
+        //             throw new Exception("field missing, check our schema");
+        //         }
 
-                if (!array_key_exists($i,$table_schema)) {
-                    throw new Exception("field missing, check our schema");
-                }
+        //         $method = $table_schema[$i]->method;
+        //         $rule = $table_schema[$i]->rule;
 
-                $set_list[] = vsprintf("%='%s'",[$i,$value]);
-            }
+        //         try {
+        //             $value = $this->$method($rule,$value,true);
 
-            $set_list = implode(" and ",$set_list);
+        //         } catch (Exception $error) {
+        //             throw new Exception($error);
+        //         }
 
-            $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
+        //         $set_escape[] = vsprintf("%s=?",[$i,]);
+        //         $query_value_update_list[] = $value;
 
-            $get_where = $this->getWhere();
-            $get_where_value = $this->getWhereValue();
+        //         $column_list[] = $i;
+        //         $query_value_add_list[] = $value;
+        //         $query_escape_list[] = "?";
+        //     }
 
-            $query_value = [];
+        //     $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
-            if (empty($get_where)) {
-                $where = "";
+        //     $get_where = $this->getWhere();
+        //     $get_where_value = $this->getWhereValue();
 
-            } else {
-                $where = vsprintf("where %s",[implode(" and ",$get_where),]);
+        //     $query_value = [];
 
-                $query_value = array_merge($query_value,$get_where_value);
-            }
+        //     if (empty($get_where)) {
+        //         $where = "";
 
-            $query = vsprintf("update %s set %s %s",[$table_name_with_escape,$set_list,$where]);
+        //     } else {
+        //         $where = vsprintf("where %s",[implode(" and ",$get_where),]);
 
-            try {
-                $query = $transaction_resource->prepare($query);
-                $query->execute($query_value);
+        //         $query_value = array_merge($query_value,$get_where_value);
+        //     }
 
-            } catch (Exception $error) {
-                throw new Exception($error);
-            }
+        //     $query = vsprintf("update %s set %s %s",[$table_name_with_escape,$?,$where]);
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value);
+        //     try {
+        //         $query = $transaction_resource->prepare($query);
+        //         $query->execute($query_value);
 
-            return $this;
-        }
+        //     } catch (Exception $error) {
+        //         throw new Exception($error);
+        //     }
+
+        //     $this->setQuery($query);
+        //     $this->setQueryValue($query_value);
+
+        //     return $this;
+        // }
 
         public function delete($where = null) {
             $transaction_resource = $this->transaction->getResource();
