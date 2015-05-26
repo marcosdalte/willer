@@ -7,8 +7,10 @@ Recursos:
 - ORM/DAO: 90%
 - Multiplos Aplicativos: 100%
 - URL clean: 100%
-- REST: 90%
-- Mysql e Postgres: 90% 
+- REST: 95%
+- Mysql: 90%
+- Postgres: 90% 
+- SQLite: 90%
 
 Recursos em fase de desenvolvimento:
 - Suporte há SQLite e Mongodb
