@@ -59,7 +59,12 @@ namespace Core\DAO {
             $database_info = $this->getDatabaseInfo();
 
             try {
-                $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"],$database_info["DB_PORT"],$database_info["DB_NAME"]]),$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
+                if ($database_info["DB_DRIVER"] == "sqlite") {
+                    $pdo = new PDO(vsprintf("%s:host=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"]]));
+
+                } else {
+                    $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"],$database_info["DB_PORT"],$database_info["DB_NAME"]]),$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
+                }
 
                 if ($database_info["DB_DRIVER"] == "mysql") {
                     if ($database_info["DB_AUTOCOMMIT"] == 0) {
@@ -85,62 +90,62 @@ namespace Core\DAO {
 
             return $this;
         }
-  
+
         public function beginTransaction() {
             try {
                 $this->connect();
-  
-            } catch (Exception $error) {  
+
+            } catch (Exception $error) {
                 throw new Exception($error);
             }
 
             try {
                 $this->resource->beginTransaction();
-  
-            } catch (Exception $error) {  
+
+            } catch (Exception $error) {
                 throw new Exception($error);
             }
-  
+
             return $this;
         }
-  
+
         public function commit() {
             if (!empty($this->resource)) {
                 try {
                     $this->resource->commit();
-      
-                } catch (Exception $error) {  
-                    throw new Exception($error);
-                }
-            }
-  
-            return $this;
-        }
-  
-        public function rollBack() {
-            if (!empty($this->resource)) {
-                try {
-                    $this->resource->rollBack();
-      
+
                 } catch (Exception $error) {
                     throw new Exception($error);
                 }
             }
-  
+
             return $this;
         }
-  
+
+        public function rollBack() {
+            if (!empty($this->resource)) {
+                try {
+                    $this->resource->rollBack();
+
+                } catch (Exception $error) {
+                    throw new Exception($error);
+                }
+            }
+
+            return $this;
+        }
+
         public function lastInsertId($sequence_name = null) {
             try {
                 $this->setLastInsertId($this->resource->lastInsertId($sequence_name));
-  
-            } catch (Exception $error) {  
+
+            } catch (Exception $error) {
                 throw new Exception($error);
             }
-  
+
             return $this->getLastInsertId();
         }
-  
+
         public function __destruct() {
             unset($this);
         }

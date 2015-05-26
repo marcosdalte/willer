@@ -9,6 +9,7 @@ namespace Application\Documentation\Controller {
     use \Application\Log\Model\Log;
     use \Application\Container\Model\Service;
     use \Application\Container\Model\Container;
+    use \Application\Client\Model\Client;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
@@ -17,6 +18,7 @@ namespace Application\Documentation\Controller {
             $this->transaction_main = new Transaction(DB_DEFAULT);
             $this->transaction_mysql = new Transaction(DB_MYSQL);
             $this->transaction_log = new Transaction(DB_LOG);
+            $this->transaction_sqlite = new Transaction(DB_SQLITE);
         }
 
         public function index($url_fragment) {
@@ -25,32 +27,45 @@ namespace Application\Documentation\Controller {
             $log_user = new Log\User($this->transaction_log);
             $log_register = new Log\Register($this->transaction_log);
 
-            $log_service = new Service\Service($this->transaction_mysql);
-            $log_container = new Container\Container($this->transaction_mysql);
+            $service = new Service\Service($this->transaction_mysql);
+            $container = new Container\Container($this->transaction_mysql);
+
+            $client = new Client\Client($this->transaction_sqlite);
 
             try {
                 // $this->transaction_log->beginTransaction();
-                $this->transaction_mysql->beginTransaction();
+                // $this->transaction_mysql->beginTransaction();
+                $this->transaction_sqlite->beginTransaction();
 
-                // $log_service->save([
+                // $service->save([
                 //     "nome" => "testeeee123",
                 //     "descricao" => "descricao de testeeee"]);
 
-                // $log_container->save([
+                // $container->save([
                 //     "nome" => "testeeee123234234",
                 //     "descricao" => "descricao de testeeee34234"]);
 
-                $log_service_list = $log_service
+                $client->save([
+                    "nome" => "teste123456",
+                    "descricao" => "lalalalalal"]);
+
+                $client_list = $client
                     ->where()
                     ->orderBy()
                     ->limit(1,5)
                     ->execute();
 
-                $log_container_list = $log_container
-                    ->where()
-                    ->orderBy()
-                    ->limit(1,5)
-                    ->execute();
+                // $service_list = $service
+                //     ->where()
+                //     ->orderBy()
+                //     ->limit(1,5)
+                //     ->execute();
+
+                // $container_list = $container
+                //     ->where()
+                //     ->orderBy()
+                //     ->limit(1,5)
+                //     ->execute();
 
                 // $this->transaction_log->connect();
 
@@ -175,19 +190,19 @@ namespace Application\Documentation\Controller {
                 // }
 
                 // $this->transaction_log->commit();
-                $this->transaction_mysql->commit();
+                // $this->transaction_mysql->commit();
+                $this->transaction_sqlite->commit();
 
             } catch (Exception $error) {
                 // $this->transaction_log->rollBack();
-                $this->transaction_mysql->rollBack();
+                // $this->transaction_mysql->rollBack();
+                $this->transaction_sqlite->rollBack();
 
                 throw new Exception($error);
             }
-            // print_r($log_errortype);
-            // print_r($log_error);
+
             $this->varDump(array(
-                $log_service_list,
-                $log_container_list));
+                $client_list));
         }
 
         public function contact($url_fragment) {}

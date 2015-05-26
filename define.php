@@ -23,4 +23,11 @@ const DB_MYSQL_USER = "root";
 const DB_MYSQL_PASSWORD = "";
 const DB_MYSQL_PORT = "3306";
 
+const DB_SQLITE_DRIVER = "sqlite";
+const DB_SQLITE_HOST = "/home/wborba/Downloads/test";
+const DB_SQLITE_NAME = "test";
+const DB_SQLITE_USER = "";
+const DB_SQLITE_PASSWORD = "";
+const DB_SQLITE_PORT = "";
+
 ?>

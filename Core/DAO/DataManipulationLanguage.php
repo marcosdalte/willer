@@ -30,6 +30,9 @@ namespace Core\DAO {
             if ($db_driver == "mysql") {
                 $this->db_escape = "";
 
+            } else if ($db_driver == "sqlite") {
+                $this->db_escape = "\"";
+
             } else if ($db_driver == "pgsql") {
                 $this->db_escape = "\"";
             }

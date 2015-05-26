@@ -24,6 +24,7 @@ define("QUERY_LIMIT_ROW",15);
 define("SESSION_LIMIT",10);
 define("DB_DEFAULT",DB_MAIN_NAME);
 define("DB_MYSQL",DB_MYSQL_NAME);
+define("DB_SQLITE",DB_SQLITE_NAME);
 define("DB_LOG",DB_LOG_NAME);
 
 const DATABASE_INFO = [
@@ -44,6 +45,16 @@ const DATABASE_INFO = [
         "DB_USER" => DB_MYSQL_USER,
         "DB_PASSWORD" => DB_MYSQL_PASSWORD,
         "DB_PORT" => DB_MYSQL_PORT,
+        "DB_AUTOCOMMIT" => 0,
+        "DB_DEBUG" => 0,
+    ],
+    DB_SQLITE => [
+        "DB_DRIVER" => DB_SQLITE_DRIVER,
+        "DB_HOST" => DB_SQLITE_HOST,
+        "DB_NAME" => DB_SQLITE_NAME,
+        "DB_USER" => DB_SQLITE_USER,
+        "DB_PASSWORD" => DB_SQLITE_PASSWORD,
+        "DB_PORT" => DB_SQLITE_PORT,
         "DB_AUTOCOMMIT" => 0,
         "DB_DEBUG" => 0,
     ],
