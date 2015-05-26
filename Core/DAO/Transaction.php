@@ -59,11 +59,11 @@ namespace Core\DAO {
             $database_info = $this->getDatabaseInfo();
 
             try {
-                if ($database_info["DB_DRIVER"] == "sqlite") {
-                    $pdo = new PDO(vsprintf("%s:host=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"]]));
-
-                } else {
+                if (in_array($database_info["DB_DRIVER"],["mysql","pgsql"])) {
                     $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"],$database_info["DB_PORT"],$database_info["DB_NAME"]]),$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
+
+                } else if ($database_info["DB_DRIVER"] == "sqlite") {
+                    $pdo = new PDO(vsprintf("%s:%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"]]));
                 }
 
                 if ($database_info["DB_DRIVER"] == "mysql") {

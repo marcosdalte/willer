@@ -331,6 +331,13 @@ namespace Core\DAO {
 
             try {
                 $pdo_query_total = $transaction_resource->prepare($query_total);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != "00000") {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
                 $pdo_query_total->execute($query_value_list);
                 $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
 
@@ -343,6 +350,13 @@ namespace Core\DAO {
                 }
 
                 $pdo_query = $transaction_resource->prepare($query);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != "00000") {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
                 $pdo_query->execute($query_value_list);
                 $query_fetch = $pdo_query->fetch(PDO::FETCH_OBJ);
 
@@ -457,16 +471,23 @@ namespace Core\DAO {
 
             try {
                 $pdo_query = $transaction_resource->prepare($query);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != "00000") {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
                 $pdo_query->execute($query_value_list);
 
             } catch (Exception $error) {
                 throw new Exception($error);
             }
 
-            $query_error_info = $pdo_query->errorInfo();
+            $pdo_query_error_info = $pdo_query->errorInfo();
 
-            if ($query_error_info[0] != "00000") {
-                throw new Exception($query_error_info[2]);
+            if ($pdo_query_error_info[0] != "00000") {
+                throw new Exception($pdo_query_error_info[2]);
             }
 
             if (empty($add_flag)) {
@@ -547,6 +568,13 @@ namespace Core\DAO {
 
             try {
                 $query = $transaction_resource->prepare($query);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != "00000") {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
                 $query->execute($query_value);
 
             } catch (Exception $error) {
@@ -614,16 +642,23 @@ namespace Core\DAO {
 
             try {
                 $pdo_query = $transaction_resource->prepare($query);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != "00000") {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
                 $pdo_query->execute($query_value_list);
 
             } catch (Exception $error) {
                 throw new Exception($error);
             }
 
-            $query_error_info = $pdo_query->errorInfo();
+            $pdo_query_error_info = $pdo_query->errorInfo();
 
-            if ($query_error_info[0] != "00000") {
-                throw new Exception($query_error_info[2]);
+            if ($pdo_query_error_info[0] != "00000") {
+                throw new Exception($pdo_query_error_info[2]);
             }
 
             $this->setQuery($query);
@@ -702,9 +737,16 @@ namespace Core\DAO {
             $this->setQueryValue($query_value);
 
             try {
-                $query = $transaction_resource->prepare($query);
-                $query->execute($query_value);
-                $query_fetch_all = $query->fetchAll(PDO::FETCH_OBJ);
+                $pdo_query = $transaction_resource->prepare($query);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != "00000") {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
+                $pdo_query->execute($query_value);
+                $query_fetch_all = $pdo_query->fetchAll(PDO::FETCH_OBJ);
 
             } catch (Exception $error) {
                 throw new Exception($error);

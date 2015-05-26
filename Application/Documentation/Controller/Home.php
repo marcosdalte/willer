@@ -42,17 +42,17 @@ namespace Application\Documentation\Controller {
                 //     "descricao" => "descricao de testeeee"]);
 
                 // $container->save([
-                //     "nome" => "testeeee123234234",
+                //     "nome" => "testeeee123234234dsadsad",
                 //     "descricao" => "descricao de testeeee34234"]);
 
                 $client->save([
-                    "nome" => "teste123456",
-                    "descricao" => "lalalalalal"]);
+                    "nome" => "teste123456rewrewr3424",
+                    "descricao" => "lalalalalawqwqewqewqel"]);
 
                 $client_list = $client
                     ->where()
                     ->orderBy()
-                    ->limit(1,5)
+                    ->limit(2,5)
                     ->execute();
 
                 // $service_list = $service
@@ -201,8 +201,7 @@ namespace Application\Documentation\Controller {
                 throw new Exception($error);
             }
 
-            $this->varDump(array(
-                $client_list));
+            $this->varDump($client_list);
         }
 
         public function contact($url_fragment) {}
