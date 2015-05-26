@@ -13,7 +13,7 @@ Recursos:
 - SQLite: 90%
 
 Recursos em fase de desenvolvimento:
-- Suporte há SQLite e Mongodb
+- Suporte há Mongodb
 - Template engine Twig
 - ThirdParty de terceiros
 
