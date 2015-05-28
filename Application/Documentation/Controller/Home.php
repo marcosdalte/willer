@@ -15,17 +15,16 @@ namespace Application\Documentation\Controller {
         public function __construct($request_method = null) {
             parent::__construct($request_method);
 
-            $this->transaction_main = new Transaction(DB_DEFAULT);
+            $this->transaction_default = new Transaction(DB_DEFAULT);
             $this->transaction_mysql = new Transaction(DB_MYSQL);
-            $this->transaction_log = new Transaction(DB_LOG);
             $this->transaction_sqlite = new Transaction(DB_SQLITE);
         }
 
         public function index($url_fragment) {
-            $log_error = new Log\Error($this->transaction_log);
-            $log_errortype = new Log\ErrorType($this->transaction_log);
-            $log_user = new Log\User($this->transaction_log);
-            $log_register = new Log\Register($this->transaction_log);
+            $log_error = new Log\Error($this->transaction_default);
+            $log_errortype = new Log\ErrorType($this->transaction_default);
+            $log_user = new Log\User($this->transaction_default);
+            $log_register = new Log\Register($this->transaction_default);
 
             $service = new Service\Service($this->transaction_mysql);
             $container = new Container\Container($this->transaction_mysql);
@@ -33,7 +32,7 @@ namespace Application\Documentation\Controller {
             $client = new Client\Client($this->transaction_sqlite);
 
             try {
-                // $this->transaction_log->beginTransaction();
+                // $this->transaction_default->beginTransaction();
                 // $this->transaction_mysql->beginTransaction();
                 $this->transaction_sqlite->beginTransaction();
 
@@ -67,7 +66,7 @@ namespace Application\Documentation\Controller {
                 //     ->limit(1,5)
                 //     ->execute();
 
-                // $this->transaction_log->connect();
+                // $this->transaction_default->connect();
 
                 // $log_error->save([
                 //     "name" => "test4",
@@ -189,19 +188,19 @@ namespace Application\Documentation\Controller {
 
                 // }
 
-                // $this->transaction_log->commit();
+                // $this->transaction_default->commit();
                 // $this->transaction_mysql->commit();
                 $this->transaction_sqlite->commit();
 
             } catch (Exception $error) {
-                // $this->transaction_log->rollBack();
+                // $this->transaction_default->rollBack();
                 // $this->transaction_mysql->rollBack();
                 $this->transaction_sqlite->rollBack();
 
                 throw new Exception($error);
             }
 
-            $this->varDump($client_list);
+            Util::renderToJson($client_list);
         }
 
         public function contact($url_fragment) {}

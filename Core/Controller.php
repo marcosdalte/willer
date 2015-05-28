@@ -27,10 +27,5 @@ namespace Core {
                 }
             }
         }
-
-        protected function varDump($data = array()) {
-            header("Content-Type: application/json");
-            exit(json_encode($data));
-        }
     }
 }

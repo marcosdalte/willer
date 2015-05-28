@@ -9,7 +9,6 @@ use Core\Util;
 use Core\System;
 
 define("HTTP_PATH",Util::get($_GET,"http_path",null));
-define("VERSION","0.0.3");
 define("DISPLAY_ERRORS",1);
 define("ERROR_REPORTING",E_ALL);
 define("TIMEZONE","America/Sao_Paulo");
@@ -18,23 +17,21 @@ define("HTTP_TYPE","http");
 define("PUBLIC_PATH",Util::str("%s://%s/public",[HTTP_TYPE,URL_SITE]));
 define("URL_BASE",Util::str("%s://%s",[HTTP_TYPE,URL_SITE]));
 define("REQUEST_METHOD",Util::get($_SERVER,"REQUEST_METHOD",null));
-define("PATH_404","404.html");
-define("URL_NOT_FOUND",Util::str("%s/%s",[URL_BASE,PATH_404]));
+define("URL_NOT_FOUND",Util::str("%s/404.html",[URL_BASE,]));
 define("QUERY_LIMIT_ROW",15);
 define("SESSION_LIMIT",10);
-define("DB_DEFAULT",DB_MAIN_NAME);
-define("DB_MYSQL",DB_MYSQL_NAME);
-define("DB_SQLITE",DB_SQLITE_NAME);
-define("DB_LOG",DB_LOG_NAME);
+define("DB_DEFAULT","db_default");
+define("DB_MYSQL","db_mysql");
+define("DB_SQLITE","db_sqlite");
 
 const DATABASE_INFO = [
     DB_DEFAULT => [
-        "DB_DRIVER" => DB_MAIN_DRIVER,
-        "DB_HOST" => DB_MAIN_HOST,
-        "DB_NAME" => DB_MAIN_NAME,
-        "DB_USER" => DB_MAIN_USER,
-        "DB_PASSWORD" => DB_MAIN_PASSWORD,
-        "DB_PORT" => DB_MAIN_PORT,
+        "DB_DRIVER" => DB_PGSQL_DRIVER,
+        "DB_HOST" => DB_PGSQL_HOST,
+        "DB_NAME" => DB_PGSQL_NAME,
+        "DB_USER" => DB_PGSQL_USER,
+        "DB_PASSWORD" => DB_PGSQL_PASSWORD,
+        "DB_PORT" => DB_PGSQL_PORT,
 		"DB_AUTOCOMMIT" => 0,
 		"DB_DEBUG" => 0,
     ],
@@ -57,16 +54,6 @@ const DATABASE_INFO = [
         "DB_PORT" => DB_SQLITE_PORT,
         "DB_AUTOCOMMIT" => 0,
         "DB_DEBUG" => 0,
-    ],
-    DB_LOG => [
-        "DB_DRIVER" => DB_LOG_DRIVER,
-        "DB_HOST" => DB_LOG_HOST,
-        "DB_NAME" => DB_LOG_NAME,
-        "DB_USER" => DB_LOG_USER,
-        "DB_PASSWORD" => DB_LOG_PASSWORD,
-        "DB_PORT" => DB_LOG_PORT,
-		"DB_AUTOCOMMIT" => 0,
-		"DB_DEBUG" => 0,
     ],
 ];
 
