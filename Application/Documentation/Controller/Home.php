@@ -33,26 +33,26 @@ namespace Application\Documentation\Controller {
 
             try {
                 // $this->transaction_default->beginTransaction();
-                // $this->transaction_mysql->beginTransaction();
-                $this->transaction_sqlite->beginTransaction();
+                $this->transaction_mysql->beginTransaction();
+                // $this->transaction_sqlite->beginTransaction();
 
-                // $service->save([
-                //     "nome" => "testeeee123",
-                //     "descricao" => "descricao de testeeee"]);
+                $service->save([
+                    "nome" => "testeeee123",
+                    "descricao" => "descricao de testeeee"]);
 
-                // $container->save([
-                //     "nome" => "testeeee123234234dsadsad",
-                //     "descricao" => "descricao de testeeee34234"]);
+                $container->save([
+                    "nome" => "testeeee123234234dsadsad",
+                    "descricao" => "descricao de testeeee34234"]);
 
-                $client->save([
-                    "nome" => "teste123456rewrewr3424",
-                    "descricao" => "lalalalalawqwqewqewqel"]);
-
-                $client_list = $client
-                    ->where()
-                    ->orderBy()
-                    ->limit(2,5)
-                    ->execute();
+                // $client->save([
+                //     "nome" => "teste123456rewrewr3424",
+                //     "descricao" => "lalalalalawqwqewqewqel"]);
+                //
+                // $client_list = $client
+                //     ->where()
+                //     ->orderBy()
+                //     ->limit(2,5)
+                //     ->execute();
 
                 // $service_list = $service
                 //     ->where()
@@ -189,18 +189,18 @@ namespace Application\Documentation\Controller {
                 // }
 
                 // $this->transaction_default->commit();
-                // $this->transaction_mysql->commit();
-                $this->transaction_sqlite->commit();
+                $this->transaction_mysql->commit();
+                // $this->transaction_sqlite->commit();
 
             } catch (Exception $error) {
                 // $this->transaction_default->rollBack();
-                // $this->transaction_mysql->rollBack();
-                $this->transaction_sqlite->rollBack();
+                $this->transaction_mysql->rollBack();
+                // $this->transaction_sqlite->rollBack();
 
                 throw new Exception($error);
             }
 
-            Util::renderToJson($client_list);
+            // Util::renderToJson($client_list);
         }
 
         public function contact($url_fragment) {}
