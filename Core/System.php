@@ -6,10 +6,26 @@ namespace Core {
 
     trait System {
         public static function appReady($url = []) {
+            System::errorHandler();
             System::iniSetReady();
             System::autoLoadReady();
             System::sessionReady();
             System::urlRouteReady($url,HTTP_PATH);
+        }
+
+        private static function errorHandler() {
+            set_error_handler(function($errno,$errstr,$errfile,$errline,$errcontext) {
+                header("Content-Type: application/json");
+
+                $exception = json_encode(array(
+    				"message" => $errstr,
+    				"file" => $errfile,
+                    "line" => $errline
+    			));
+
+    			exit($exception);
+
+            });
         }
 
         private static function iniSetReady() {

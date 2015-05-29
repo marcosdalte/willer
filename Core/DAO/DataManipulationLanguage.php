@@ -197,16 +197,18 @@ namespace Core\DAO {
             return $this;
         }
 
-        private function related($query_list = []) {
-            $table_name = $this->getTableName();
-            $table_schema = $this->getTableSchema();
+        private function related($table_related,$query_list = []) {
+            $table_name = $table_related->getTableName();
+            $table_schema = $table_related->getTableSchema();
 
             $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
-            $query_list = [
-                "column" => [],
-                "join" => [],
-            ];
+            if (empty($query_list)) {
+                $query_list = [
+                    "column" => [],
+                    "join" => [],
+                ];
+            }
 
             foreach ($table_schema as $i => $table) {
                 if ($table->method == "foreignKey") {
@@ -230,6 +232,8 @@ namespace Core\DAO {
                     $query_list = $this->related($table_related,$query_list);
                 }
             }
+
+
 
             return $query_list;
         }
@@ -309,7 +313,7 @@ namespace Core\DAO {
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
-            $related = $this->related();
+            $related = $this->related($this);
 
             $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
@@ -329,14 +333,6 @@ namespace Core\DAO {
             $query_value_list = [];
 
             foreach ($where as $i => $value) {
-                if (!array_key_exists($i,$table_column)) {
-                    throw new Exception("field missing, check our model");
-                }
-
-                if (!array_key_exists($i,$table_schema)) {
-                    throw new Exception("field missing, check our schema");
-                }
-
                 $where_escape_list[] = vsprintf("%s=?",[$i,]);
                 $query_value_list[] = $value;
             }
@@ -367,6 +363,10 @@ namespace Core\DAO {
                 $pdo_query_total->execute($query_value_list);
                 $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
 
+                if (empty($pdo_query_total)) {
+                    throw new Exception("Trying to get property of non-object");
+                }
+
                 if ($pdo_query_total->total <= 0) {
                     throw new Exception("error in get, don't register");
                 }
@@ -390,24 +390,19 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            $class_name = $this->getClassName();
-            $transaction = $this->getTransaction();
+            foreach ($table_column as $column => $value) {
+                $table_column_str = vsprintf("%s__%s",[$table_name,$column]);
 
-            $obj = new $class_name($transaction);
-
-            $query_fetch = (object) [];
-
-            foreach ($pdo_query_fetch as $i => $value) {
-                $this->$i = $value;
-                $obj->$i = $value;
-
-                $value_str = vsprintf("%s__%s",[$table_name,$i]);
-
-                $query_fetch->$value_str = $value;
+                $this->$column = $pdo_query_fetch->$table_column_str;
             }
 
-            $obj_column_list = $obj->getTableColumn();
-            $obj_schema_dict = $obj->schema();
+            $class_name = $this->getClassName();
+            $transaction = $this->getTransaction();
+            $obj_column_list = $this->getTableColumn();
+            $obj_schema_dict = $table_schema;
+
+            $query_fetch = $pdo_query_fetch;
+            $obj = $this;
 
             $related_fetch = $this->relatedFetch($obj_column_list,$obj_schema_dict,$query_fetch,$transaction,$obj);
 
@@ -442,6 +437,8 @@ namespace Core\DAO {
                 if (!is_array($field)) {
                     throw new Exception("wrong type of filter");
                 }
+
+                $last_insert_id = $this->setLastInsertId(null);
 
                 $table_column = $field;
             }
@@ -495,8 +492,6 @@ namespace Core\DAO {
                 $query = vsprintf("insert into %s (%s) values(%s)",[$table_name_with_escape,$column_list,$query_escape_list]);
                 $query_value_list = $query_value_add_list;
 
-                print_r($query_value_list);
-
                 $add_flag = true;
             }
 
@@ -522,7 +517,8 @@ namespace Core\DAO {
             }
 
             if (empty($add_flag)) {
-                $this->get(["id" => $table_column[$primary_key]]);
+                $this->get([
+                    vsprintf("%s.id",[$table_name_with_escape,]) => $table_column[$primary_key]]);
 
             } else {
                 $get_database_info = $this->transaction->getDatabaseInfo();
@@ -536,7 +532,8 @@ namespace Core\DAO {
                 $last_insert_id = $this->transaction->lastInsertId($sequence_name);
 
                 $this->setLastInsertId($last_insert_id);
-                $this->get(["id" => $last_insert_id]);
+                $this->get([
+                    vsprintf("%s.id",[$table_name_with_escape,]) => $last_insert_id]);
             }
 
             $this->setQuery($query);
@@ -719,7 +716,7 @@ namespace Core\DAO {
             $get_where_value = $this->getWhereValue();
             $order_by = $this->getOrderBy();
             $limit = $this->getLimit();
-            $related = $this->related();
+            $related = $this->related($this);
 
             $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
@@ -826,18 +823,6 @@ namespace Core\DAO {
 
                     foreach ($obj_foreignkey_column_list as $column_ => $value_) {
                         $table_column = vsprintf("%s__%s",[$obj_foreignkey_table_name,$column_]);
-
-                        print "\n\n";
-                        print "----------------------------------------------";
-                        print "\n\n";
-                        print_r($fetch);
-                        print "\n\n";
-                        print $table_column;
-                        print "\n\n";
-                        print $column_;
-                        print "\n\n";
-                        print "----------------------------------------------";
-                        print "\n\n";
 
                         $obj_foreignkey->$column_ = $fetch->$table_column;
                     }

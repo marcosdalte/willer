@@ -36,19 +36,28 @@ namespace Application\Documentation\Controller {
                 $this->transaction_mysql->beginTransaction();
                 // $this->transaction_sqlite->beginTransaction();
 
-                print "<pre>";
                 $service->save([
                     "nome" => "servico",
                     "descricao" => "servico"]);
 
-                print_r($service);
+                $container->save([
+                    "nome" => "container",
+                    "servico_id" => $service,
+                    "descricao" => "container"]);
 
-                // $container->save([
-                //     "nome" => "container",
-                //     "servico_id" => $service,
-                //     "descricao" => "container"]);
+                $container_list = $container
+                    ->where()
+                    ->orderBy()
+                    ->limit(1,5)
+                    ->execute();
 
-                exit();
+                // $service_list = $service
+                //     ->where()
+                //     ->orderBy()
+                //     ->limit(1,5)
+                //     ->execute();
+
+                // print_r($service->lastQuery());
 
                 // $container_list = $container
                 //     ->where()
@@ -212,7 +221,7 @@ namespace Application\Documentation\Controller {
                 throw new Exception($error);
             }
 
-            // Util::renderToJson($container_list);
+            Util::renderToJson($container_list);
         }
 
         public function contact($url_fragment) {}
