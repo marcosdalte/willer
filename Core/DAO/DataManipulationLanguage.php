@@ -197,18 +197,16 @@ namespace Core\DAO {
             return $this;
         }
 
-        private function related($table_object,$query_list = []) {
-            $table_name = $table_object->getTableName();
-            $table_schema = $table_object->getTableSchema();
+        private function related($query_list = []) {
+            $table_name = $this->getTableName();
+            $table_schema = $this->getTableSchema();
 
             $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
-            if (empty($query_list)) {
-                $query_list = [
-                    "column" => [],
-                    "join" => [],
-                ];
-            }
+            $query_list = [
+                "column" => [],
+                "join" => [],
+            ];
 
             foreach ($table_schema as $i => $table) {
                 if ($table->method == "foreignKey") {
@@ -289,7 +287,7 @@ namespace Core\DAO {
             return $this;
         }
 
-        public function get($where = []) {
+        public function get($where = [],$setting = []) {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
@@ -300,11 +298,32 @@ namespace Core\DAO {
                 throw new Exception("error in get, where don't set");
             }
 
+            $join = "inner";
+
+            if (!empty($setting)) {
+                if (array_key_exists("join",$setting)) {
+                    $join = $setting["join"];
+                }
+            }
+
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
+            $related = $this->related();
 
             $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
+
+            $related_join = null;
+            $related_column = [];
+
+            if (!empty($related) && !empty($related["join"])) {
+                $related_join = vsprintf("%s %s",[$join,implode(vsprintf(" %s ",[$join,]),$related["join"])]);
+
+                foreach ($related["column"] as $i => $column) {
+                    $related_column[] = implode(",",$column);
+                }
+
+            }
 
             $where_escape_list = [];
             $query_value_list = [];
@@ -322,12 +341,19 @@ namespace Core\DAO {
                 $query_value_list[] = $value;
             }
 
+            $column_list = [];
+
+            foreach ($table_column as $i => $column) {
+                $column_list[] = vsprintf("%s.%s %s__%s",[$table_name_with_escape,$i,$table_name,$i]);
+            }
+
+            $column_list = array_merge($related_column,$column_list);
+            $column_list = implode(",",$column_list);
+
             $where = vsprintf("where %s",[implode(" and ",$where_escape_list),]);
 
-            $field = implode(",",array_keys($table_column));
-
-            $query_total = vsprintf("select count(1) total from %s %s",[$table_name_with_escape,$where]);
-            $query = vsprintf("select %s from %s %s",[$field,$table_name_with_escape,$where]);
+            $query_total = vsprintf("select count(1) total from %s %s %s",[$table_name_with_escape,$related_join,$where]);
+            $query = vsprintf("select %s from %s %s %s",[$column_list,$table_name_with_escape,$related_join,$where]);
 
             try {
                 $pdo_query_total = $transaction_resource->prepare($query_total);
@@ -358,14 +384,10 @@ namespace Core\DAO {
                 }
 
                 $pdo_query->execute($query_value_list);
-                $query_fetch = $pdo_query->fetch(PDO::FETCH_OBJ);
+                $pdo_query_fetch = $pdo_query->fetch(PDO::FETCH_OBJ);
 
             } catch (Exception $error) {
                 throw new Exception($error);
-            }
-
-            foreach ($query_fetch as $i => $value) {
-                $this->$i = $value;
             }
 
             $class_name = $this->getClassName();
@@ -373,8 +395,15 @@ namespace Core\DAO {
 
             $obj = new $class_name($transaction);
 
-            foreach ($query_fetch as $i => $value) {
+            $query_fetch = (object) [];
+
+            foreach ($pdo_query_fetch as $i => $value) {
+                $this->$i = $value;
                 $obj->$i = $value;
+
+                $value_str = vsprintf("%s__%s",[$table_name,$i]);
+
+                $query_fetch->$value_str = $value;
             }
 
             $obj_column_list = $obj->getTableColumn();
@@ -465,6 +494,8 @@ namespace Core\DAO {
             } else {
                 $query = vsprintf("insert into %s (%s) values(%s)",[$table_name_with_escape,$column_list,$query_escape_list]);
                 $query_value_list = $query_value_add_list;
+
+                print_r($query_value_list);
 
                 $add_flag = true;
             }
@@ -688,7 +719,7 @@ namespace Core\DAO {
             $get_where_value = $this->getWhereValue();
             $order_by = $this->getOrderBy();
             $limit = $this->getLimit();
-            $related = $this->related($this);
+            $related = $this->related();
 
             $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
@@ -795,6 +826,18 @@ namespace Core\DAO {
 
                     foreach ($obj_foreignkey_column_list as $column_ => $value_) {
                         $table_column = vsprintf("%s__%s",[$obj_foreignkey_table_name,$column_]);
+
+                        print "\n\n";
+                        print "----------------------------------------------";
+                        print "\n\n";
+                        print_r($fetch);
+                        print "\n\n";
+                        print $table_column;
+                        print "\n\n";
+                        print $column_;
+                        print "\n\n";
+                        print "----------------------------------------------";
+                        print "\n\n";
 
                         $obj_foreignkey->$column_ = $fetch->$table_column;
                     }

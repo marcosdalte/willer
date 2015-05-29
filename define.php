@@ -13,7 +13,7 @@ const DB_MYSQL_DRIVER = "mysql";
 const DB_MYSQL_HOST = "localhost";
 const DB_MYSQL_NAME = "test";
 const DB_MYSQL_USER = "root";
-const DB_MYSQL_PASSWORD = "";
+const DB_MYSQL_PASSWORD = "123456";
 const DB_MYSQL_PORT = "3306";
 
 const DB_SQLITE_DRIVER = "sqlite";
