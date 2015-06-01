@@ -13,7 +13,6 @@ namespace Core {
             System::urlRouteReady($url,HTTP_PATH);
         }
 
-
         private static function errorHandler() {
             set_error_handler(function($errno,$errstr,$errfile,$errline,$errcontext) {
                 header("Content-Type: application/json");
