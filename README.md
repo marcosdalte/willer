@@ -1,7 +1,7 @@
 willer
 ===========
 
-micro-framework php
+framework php
 
 Recursos:
 - ORM/DAO: 90%
@@ -9,13 +9,13 @@ Recursos:
 - URL clean: 100%
 - REST: 95%
 - Mysql: 90%
-- Postgres: 90% 
+- Postgres: 90%
 - SQLite: 90%
 
 Recursos em fase de desenvolvimento:
 - Suporte há Mongodb
 - Template engine Twig
-- ThirdParty de terceiros
+- ThirdParty para inclusão de plugins
 
 Exemplo de Model: (Inspirado pelo framework em python Django)
 

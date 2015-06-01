@@ -36,20 +36,26 @@ namespace Application\Documentation\Controller {
                 $this->transaction_mysql->beginTransaction();
                 // $this->transaction_sqlite->beginTransaction();
 
-                $service->save([
-                    "nome" => "servico",
-                    "descricao" => "servico"]);
+                // $service->save([
+                //     "nome" => "servico",
+                //     "descricao" => "servico"]);
 
-                $container->save([
-                    "nome" => "container",
-                    "servico_id" => $service,
-                    "descricao" => "container"]);
+                // $container->save([
+                //     "nome" => "container",
+                //     "servico_id" => $service,
+                //     "descricao" => "container"]);
 
-                $container_list = $container
-                    ->where()
-                    ->orderBy()
-                    ->limit(1,5)
-                    ->execute();
+                $service->get([
+                    "nome" => "servico"]);
+
+                $container->get([
+                    "servico_id" => $service->id]);
+
+                // $container_list = $container
+                //     ->where()
+                //     ->orderBy()
+                //     ->limit(1,5)
+                //     ->execute();
 
                 // $service_list = $service
                 //     ->where()
@@ -221,7 +227,7 @@ namespace Application\Documentation\Controller {
                 throw new Exception($error);
             }
 
-            Util::renderToJson($container_list);
+            Util::renderToJson(array($container,$service));
         }
 
         public function contact($url_fragment) {}
