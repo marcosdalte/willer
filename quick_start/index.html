@@ -167,7 +167,110 @@ $URL += [
 
 </code></pre>
 
-<h2 id="the-model-layer">The model layer</h2></div>
+<h2 id="the-model-layer">The model layer</h2>
+<p>Exemplo da tabela Pessoa que se relaciona com a tabela Compras</p>
+<pre><code>CREATE TABLE person (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;first_name&quot; varchar(30) NOT NULL,
+    &quot;last_name&quot; varchar(30) NOT NULL
+);
+
+CREATE TABLE purchase (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;person_id&quot; int(11) NOT NULL,
+    &quot;product&quot; varchar(100) NOT NULL
+);
+</code></pre>
+
+<p>Agora o exemplo da estrutura dos model, conforme a entidade relacional das tabelas</p>
+<pre><code>class Person extends Model {
+    public $id;
+    public $first_name;
+    public $last_name;
+
+    protected function schema() {
+        return [
+            &quot;id&quot; =&gt; Model::primaryKey(),
+            &quot;first_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 30]),
+            &quot;last_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 30])];
+    }
+
+    protected function name() {
+        return &quot;person&quot;; //real table name
+    }
+}
+
+class Purchase extends Model {
+    public $id;
+    public $person_id;
+    public $product;
+
+    protected function schema() {
+        return [
+            &quot;id&quot; =&gt; Model::primaryKey(),
+            &quot;person_id&quot; =&gt; Model::foreignKey([&quot;table&quot; =&gt; new Person,&quot;null&quot; =&gt; 0]), //person is not null
+            &quot;product&quot; =&gt; Model::char([&quot;length&quot; =&gt; 100])];
+    }
+
+    protected function name() {
+        return &quot;purchase&quot;;
+    }
+}
+</code></pre>
+
+<p>In controller temos uma query simples</p>
+<pre><code>$db_transaction_instance = new Transaction(DB_POSTGRES);
+
+$person = new Person\Person($db_transaction_instance);
+$purchase = new Purchase\Purchase($db_transaction_instance);
+
+$person-&gt;save([
+    &quot;first_name&quot; =&gt; &quot;william&quot;,
+    &quot;last_name&quot; =&gt; &quot;borba&quot;]);
+
+$purchase-&gt;save([
+    &quot;person_id&quot; =&gt; $person, //instance of person
+    &quot;product&quot; =&gt; &quot;beer&quot;]);
+
+$purchase_filter = $purchase
+    -&gt;where()
+    -&gt;orderBy([&quot;id&quot; =&gt; &quot;asc&quot;])
+    -&gt;limit(1,5)
+    -&gt;execute([&quot;join&quot; =&gt; &quot;left&quot;]);
+
+/*return of purchase_filter
+
+[
+    {
+        &quot;id&quot;: &quot;1&quot;,
+        &quot;person_id&quot;: {
+            &quot;id&quot;: &quot;1&quot;,
+            &quot;first_name&quot;: &quot;william&quot;,
+            &quot;last_name&quot;: &quot;borba&quot;
+        },
+        &quot;product&quot;: &quot;beer&quot;,
+    },
+]
+
+*/
+</code></pre>
+
+<p>Cada index da lista é um registro mapeado, representado por um objeto da mesma entidade, contendo todas as funções CRUD.</p>
+<pre><code>foreach ($purchase_filter as $i =&gt; $purchase_obj) {
+    $purchase_obj-&gt;product = &quot;chocolate&quot;;
+    $purchase_obj-&gt;save();
+
+    print_r($purchase_obj-&gt;person_id); // retorna o objeto Person referenciado por Purchase
+
+    $purchase_obj-&gt;person_id-&gt;last_name = &quot;rosa borba&quot;; // atualizando Person
+    $purchase_obj-&gt;person_id-&gt;save();
+
+}
+</code></pre>
+
+<p>Para cada query efetuada podemos a qualquer momento fazer um debug da consulta realizada.</p>
+<pre><code>$purchase-&gt;lastQuery();
+</code></pre></div>
             
         </div>
 
