@@ -25,7 +25,7 @@
         
     </head>
 
-    <body class="homepage">
+    <body>
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -53,7 +53,7 @@
                 <ul class="nav navbar-nav">
                 
                 
-                    <li class="active">
+                    <li >
                         <a href=".">Index</a>
                     </li>
                 
@@ -85,8 +85,8 @@
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
-                    <li >
-                        <a rel="prev" href="configuration/">
+                    <li class="disabled">
+                        <a rel="prev" >
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -108,126 +108,15 @@
 
         <div class="container">
             
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-    
-        <li class="main active"><a href="#willer-framework">Willer Framework</a></li>
-        
-            <li><a href="#prerequisites-dependencies">Prerequisites  Dependencies</a></li>
-        
-            <li><a href="#download-install">Download  Install</a></li>
-        
-            <li><a href="#usage">Usage</a></li>
-        
-            <li><a href="#license">License</a></li>
-        
-    
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
 
-<h1 id="willer-framework">Willer Framework</h1>
-<p>Willer is a PHP framework, it was created based on ideas coming from other frameworks like Codeigniter(php) and Django(python).</p>
-<h2 id="prerequisites-dependencies">Prerequisites &amp; Dependencies</h2>
-<ul>
-<li>PHP &gt;= 5.6</li>
-<li>Nginx &gt;= 1.2</li>
-</ul>
-<h2 id="download-install">Download &amp; Install</h2>
-<p>Make direct <code>git clone</code> the <a href="https://github.com/williamborba/willer/">GitHub project page</a> on your folder localhost</p>
-<h2 id="usage">Usage</h2>
-<p>Example with transactions, controller Application\Example\Controller\Home</p>
-<pre><code>&lt;?php
-namespace Application\Example\Controller {
+    <div class="row-fluid">
+      <div id="main-content" class="span12">
+        <h1 id="404-page-not-found" style="text-align: center">404</h1>
+        <p style="text-align: center"><strong>Page not found</strong></p>
+      </div>
+    </div>
 
-    use \Exception as Exception;
-    use \Core\Controller;
-    use \Core\DAO\Transaction;
-    use \Application\Log\Model\Log;
 
-    class Home extends Controller {
-        public function __construct($request_method = null) {
-
-            parent::__construct($request_method);
-
-            $this-&gt;transaction_mysql = new Transaction(DB_MYSQL);
-        }
-
-        public function index($url_fragment) {
-
-            $log_error = new Log\Error($this-&gt;transaction_mysql);
-            $log_errortype = new Log\ErrorType($this-&gt;transaction_mysql);
-            $log_user = new Log\User($this-&gt;transaction_mysql);
-            $log_register = new Log\Register($this-&gt;transaction_mysql);
-
-            try {
-
-                $this-&gt;transaction_mysql-&gt;beginTransaction();
-
-                $log_errortype-&gt;save([
-                    &quot;name&quot; =&gt; &quot;error_type_test&quot;]);
-
-                /* or ...
-                // $log_errortype-&gt;name = &quot;error_test&quot;;
-                // $log_errortype-&gt;save();
-                */
-
-                $log_error-&gt;save([
-                    &quot;name&quot; =&gt; &quot;error_test&quot;,
-                    &quot;tipe_id&quot; =&gt; $log_errortype,
-                    &quot;describe&quot; =&gt; &quot;test describe&quot;]);
-
-                /* or ...
-                // $log_error-&gt;name = &quot;error_test&quot;;
-                // $log_error-&gt;describe = &quot;test describe&quot;;
-                // $log_error-&gt;save();
-                */
-
-                $log_user-&gt;save([
-                    &quot;name&quot; =&gt; &quot;user_test&quot;
-                    &quot;publickey&quot; =&gt; &quot;123456&quot;]);
-
-                $log_register-&gt;save([
-                    &quot;user_id&quot; =&gt; $log_user,
-                    &quot;error_id&quot; =&gt; $log_error]);
-
-                $log_register_list = $log_register
-                    -&gt;where([&quot;register.id&quot; =&gt; [1,]])
-                    -&gt;orderBy([&quot;id&quot; =&gt; &quot;asc&quot;])
-                    -&gt;limit(1,5)
-                    -&gt;execute([&quot;join&quot; =&gt; &quot;left&quot;]);
-
-                /* view last query
-                print_r($log_register-&gt;lastQuery());
-                */
-
-                foreach ($log_register_list as $i =&gt; $obj_register) {
-                    $obj_register-&gt;user_id-&gt;name = &quot;other user name&quot;;
-                    $obj_register-&gt;user_id-&gt;save();
-
-                    $obj_register-&gt;error_id-&gt;describe = &quot;other error description&quot;;
-                    $obj_register-&gt;error_id-&gt;save();
-
-                    $obj_register-&gt;error_id-&gt;type_id-&gt;name = &quot;other error_type name&quot;;
-                    $obj_register-&gt;error_id-&gt;type_id-&gt;save();
-                }
-
-                $this-&gt;transaction_mysql-&gt;commit();
-
-            } catch (Exception $error) {
-
-                $this-&gt;transaction_mysql-&gt;rollBack();
-
-                throw new Exception($error);
-            }
-        }
-    }
-}
-</code></pre>
-
-<h2 id="license">License</h2>
-<p>The MIT License (MIT). Please see <a href="https://github.com/williamborba/willer/blob/master/LICENSE">License File</a> for more information.</p></div>
-            
         </div>
 
         <footer class="col-md-12">
@@ -270,8 +159,3 @@ namespace Application\Example\Controller {
 
     </body>
 </html>
-
-<!--
-MkDocs version : 0.13.2
-Build Date UTC : 2015-06-03 21:03:50.316536
--->

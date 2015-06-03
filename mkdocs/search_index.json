@@ -1,0 +1,74 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Willer Framework\n\n\nWiller is a PHP framework, it was created based on ideas coming from other frameworks like Codeigniter(php) and Django(python).\n\n\nPrerequisites \n Dependencies\n\n\n\n\nPHP \n= 5.6\n\n\nNginx \n= 1.2\n\n\n\n\nDownload \n Install\n\n\nMake direct \ngit clone\n the \nGitHub project page\n on your folder localhost\n\n\nUsage\n\n\nExample with transactions, controller Application\\Example\\Controller\\Home\n\n\n?php\nnamespace Application\\Example\\Controller {\n\n    use \\Exception as Exception;\n    use \\Core\\Controller;\n    use \\Core\\DAO\\Transaction;\n    use \\Application\\Log\\Model\\Log;\n\n    class Home extends Controller {\n        public function __construct($request_method = null) {\n\n            parent::__construct($request_method);\n\n            $this-\ntransaction_mysql = new Transaction(DB_MYSQL);\n        }\n\n        public function index($url_fragment) {\n\n            $log_error = new Log\\Error($this-\ntransaction_mysql);\n            $log_errortype = new Log\\ErrorType($this-\ntransaction_mysql);\n            $log_user = new Log\\User($this-\ntransaction_mysql);\n            $log_register = new Log\\Register($this-\ntransaction_mysql);\n\n            try {\n\n                $this-\ntransaction_mysql-\nbeginTransaction();\n\n                $log_errortype-\nsave([\n                    \nname\n =\n \nerror_type_test\n]);\n\n                /* or ...\n                // $log_errortype-\nname = \nerror_test\n;\n                // $log_errortype-\nsave();\n                */\n\n                $log_error-\nsave([\n                    \nname\n =\n \nerror_test\n,\n                    \ntipe_id\n =\n $log_errortype,\n                    \ndescribe\n =\n \ntest describe\n]);\n\n                /* or ...\n                // $log_error-\nname = \nerror_test\n;\n                // $log_error-\ndescribe = \ntest describe\n;\n                // $log_error-\nsave();\n                */\n\n                $log_user-\nsave([\n                    \nname\n =\n \nuser_test\n\n                    \npublickey\n =\n \n123456\n]);\n\n                $log_register-\nsave([\n                    \nuser_id\n =\n $log_user,\n                    \nerror_id\n =\n $log_error]);\n\n                $log_register_list = $log_register\n                    -\nwhere([\nregister.id\n =\n [1,]])\n                    -\norderBy([\nid\n =\n \nasc\n])\n                    -\nlimit(1,5)\n                    -\nexecute([\njoin\n =\n \nleft\n]);\n\n                /* view last query\n                print_r($log_register-\nlastQuery());\n                */\n\n                foreach ($log_register_list as $i =\n $obj_register) {\n                    $obj_register-\nuser_id-\nname = \nother user name\n;\n                    $obj_register-\nuser_id-\nsave();\n\n                    $obj_register-\nerror_id-\ndescribe = \nother error description\n;\n                    $obj_register-\nerror_id-\nsave();\n\n                    $obj_register-\nerror_id-\ntype_id-\nname = \nother error_type name\n;\n                    $obj_register-\nerror_id-\ntype_id-\nsave();\n                }\n\n                $this-\ntransaction_mysql-\ncommit();\n\n            } catch (Exception $error) {\n\n                $this-\ntransaction_mysql-\nrollBack();\n\n                throw new Exception($error);\n            }\n        }\n    }\n}\n\n\n\n\nLicense\n\n\nThe MIT License (MIT). Please see \nLicense File\n for more information.", 
+            "title": "Index"
+        }, 
+        {
+            "location": "/#willer-framework", 
+            "text": "Willer is a PHP framework, it was created based on ideas coming from other frameworks like Codeigniter(php) and Django(python).", 
+            "title": "Willer Framework"
+        }, 
+        {
+            "location": "/#prerequisites-dependencies", 
+            "text": "PHP  = 5.6  Nginx  = 1.2", 
+            "title": "Prerequisites  Dependencies"
+        }, 
+        {
+            "location": "/#download-install", 
+            "text": "Make direct  git clone  the  GitHub project page  on your folder localhost", 
+            "title": "Download  Install"
+        }, 
+        {
+            "location": "/#usage", 
+            "text": "Example with transactions, controller Application\\Example\\Controller\\Home  ?php\nnamespace Application\\Example\\Controller {\n\n    use \\Exception as Exception;\n    use \\Core\\Controller;\n    use \\Core\\DAO\\Transaction;\n    use \\Application\\Log\\Model\\Log;\n\n    class Home extends Controller {\n        public function __construct($request_method = null) {\n\n            parent::__construct($request_method);\n\n            $this- transaction_mysql = new Transaction(DB_MYSQL);\n        }\n\n        public function index($url_fragment) {\n\n            $log_error = new Log\\Error($this- transaction_mysql);\n            $log_errortype = new Log\\ErrorType($this- transaction_mysql);\n            $log_user = new Log\\User($this- transaction_mysql);\n            $log_register = new Log\\Register($this- transaction_mysql);\n\n            try {\n\n                $this- transaction_mysql- beginTransaction();\n\n                $log_errortype- save([\n                     name  =   error_type_test ]);\n\n                /* or ...\n                // $log_errortype- name =  error_test ;\n                // $log_errortype- save();\n                */\n\n                $log_error- save([\n                     name  =   error_test ,\n                     tipe_id  =  $log_errortype,\n                     describe  =   test describe ]);\n\n                /* or ...\n                // $log_error- name =  error_test ;\n                // $log_error- describe =  test describe ;\n                // $log_error- save();\n                */\n\n                $log_user- save([\n                     name  =   user_test \n                     publickey  =   123456 ]);\n\n                $log_register- save([\n                     user_id  =  $log_user,\n                     error_id  =  $log_error]);\n\n                $log_register_list = $log_register\n                    - where([ register.id  =  [1,]])\n                    - orderBy([ id  =   asc ])\n                    - limit(1,5)\n                    - execute([ join  =   left ]);\n\n                /* view last query\n                print_r($log_register- lastQuery());\n                */\n\n                foreach ($log_register_list as $i =  $obj_register) {\n                    $obj_register- user_id- name =  other user name ;\n                    $obj_register- user_id- save();\n\n                    $obj_register- error_id- describe =  other error description ;\n                    $obj_register- error_id- save();\n\n                    $obj_register- error_id- type_id- name =  other error_type name ;\n                    $obj_register- error_id- type_id- save();\n                }\n\n                $this- transaction_mysql- commit();\n\n            } catch (Exception $error) {\n\n                $this- transaction_mysql- rollBack();\n\n                throw new Exception($error);\n            }\n        }\n    }\n}", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/#license", 
+            "text": "The MIT License (MIT). Please see  License File  for more information.", 
+            "title": "License"
+        }, 
+        {
+            "location": "/configuration/", 
+            "text": "Configuration\n\n\nIt is recommended a linux server with nginx and php5-fpm setup.\n\n\nTests were conducted with \nNginx\n version \n= 1.2\n\n\nYou must use the \nPHP\n version \n= 5.6\n\n\nNginx\n\n\nenable URL rewrite(is required), on file \ndefault\n and also in other in your sites-avaliable path\n\n\nlocation /willer {\n    rewrite ^/willer/(.*) /willer/bootstrap.php?http_path=$1 last;\n}\n\n\n\n\nreplace \nwiller\n by the path where its application will run.\n\n\nphp5-fpm\n\n\nconfigure the php for php-fpm\n\n\nlocation ~ \\.php$ {\n    include snippets/fastcgi-php.conf;\n    fastcgi_pass unix:/var/run/php5-fpm.sock;\n}", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/configuration/#configuration", 
+            "text": "It is recommended a linux server with nginx and php5-fpm setup.  Tests were conducted with  Nginx  version  = 1.2  You must use the  PHP  version  = 5.6", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/configuration/#nginx", 
+            "text": "enable URL rewrite(is required), on file  default  and also in other in your sites-avaliable path  location /willer {\n    rewrite ^/willer/(.*) /willer/bootstrap.php?http_path=$1 last;\n}  replace  willer  by the path where its application will run.", 
+            "title": "Nginx"
+        }, 
+        {
+            "location": "/configuration/#php5-fpm", 
+            "text": "configure the php for php-fpm  location ~ \\.php$ {\n    include snippets/fastcgi-php.conf;\n    fastcgi_pass unix:/var/run/php5-fpm.sock;\n}", 
+            "title": "php5-fpm"
+        }, 
+        {
+            "location": "/quick_start/", 
+            "text": "Quick start\n\n\nIn this section are some definitions to be respected for the correct functioning of the willer, we present the three main layers - \nModel, Controllers and View\n - in addition to working with routes in\nurl.php\n\n\nURL route\n\n\nNa raiz do willer temos o arquivo \nurl.php\n, neste ser\u00e3o definidos os padr\u00f5es de URL, ligando cada padr\u00e3o h\u00e1 uma \naplica\u00e7\u00e3o/controller/view\n\n\nExample:\n\n\n// url's frontend\n$URL = [\n    \n/^\\/?$/\n                     =\n [\nMyFrontend/Home/index\n,null],\n    \n/^home\\/?$/\n                 =\n [\nMyFrontend/Company/index\n,null],\n    \n/^product\\/?$/\n              =\n [\nMyFrontend/Product/index\n,null],\n    \n/^product\\/([a-z0-9]+)\\/?$/\n =\n [\nMyFrontend/Product/detail\n,null],\n    \n/^contato\\/?$/\n              =\n [\nMyFrontend/Contact/contact\n,null],\n];\n\n// ajax requests\n// limiting the request by the HTTP protocol type (REST)\n$URL += [\n    \n/^request\\/product\\/?$/\n           =\n [\nMyFrontend/Request/productList\n,[\nGET\n]],\n    \n/^request\\/product\\/([0-9]+)\\/?$/\n =\n [\nMyFrontend/Request/productDetail\n,[\nGET\n]],\n    \n/^request\\/product\\/add\\/?$/\n      =\n [\nMyFrontend/Request/productAdd\n,[\nPOST\n]],\n];\n\n// url's backend\n$URL += [\n    \n/^admin\\/?$/\n =\n [\nMyBackend/Dashboard/index\n,null],\n];\n\n// blog\n$URL += [\n    \n/^blog\\/?$/\n            =\n [\nMyBlog/Blog/index\n,null],\n    \n/^blog\\/([\\w\\d]+)\\/?$/\n =\n [\nMyBlog/Blog/detail\n,null],\n];\n\n\n\n\n\nThe model layer", 
+            "title": "Quick Start"
+        }, 
+        {
+            "location": "/quick_start/#quick-start", 
+            "text": "In this section are some definitions to be respected for the correct functioning of the willer, we present the three main layers -  Model, Controllers and View  - in addition to working with routes in url.php", 
+            "title": "Quick start"
+        }, 
+        {
+            "location": "/quick_start/#url-route", 
+            "text": "Na raiz do willer temos o arquivo  url.php , neste ser\u00e3o definidos os padr\u00f5es de URL, ligando cada padr\u00e3o h\u00e1 uma  aplica\u00e7\u00e3o/controller/view  Example:  // url's frontend\n$URL = [\n     /^\\/?$/                      =  [ MyFrontend/Home/index ,null],\n     /^home\\/?$/                  =  [ MyFrontend/Company/index ,null],\n     /^product\\/?$/               =  [ MyFrontend/Product/index ,null],\n     /^product\\/([a-z0-9]+)\\/?$/  =  [ MyFrontend/Product/detail ,null],\n     /^contato\\/?$/               =  [ MyFrontend/Contact/contact ,null],\n];\n\n// ajax requests\n// limiting the request by the HTTP protocol type (REST)\n$URL += [\n     /^request\\/product\\/?$/            =  [ MyFrontend/Request/productList ,[ GET ]],\n     /^request\\/product\\/([0-9]+)\\/?$/  =  [ MyFrontend/Request/productDetail ,[ GET ]],\n     /^request\\/product\\/add\\/?$/       =  [ MyFrontend/Request/productAdd ,[ POST ]],\n];\n\n// url's backend\n$URL += [\n     /^admin\\/?$/  =  [ MyBackend/Dashboard/index ,null],\n];\n\n// blog\n$URL += [\n     /^blog\\/?$/             =  [ MyBlog/Blog/index ,null],\n     /^blog\\/([\\w\\d]+)\\/?$/  =  [ MyBlog/Blog/detail ,null],\n];", 
+            "title": "URL route"
+        }, 
+        {
+            "location": "/quick_start/#the-model-layer", 
+            "text": "", 
+            "title": "The model layer"
+        }
+    ]
+}
