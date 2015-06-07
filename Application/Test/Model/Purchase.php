@@ -13,7 +13,7 @@ namespace Application\Test\Model\Purchase {
             return [
                 "id" => Model::primaryKey(),
                 "client_id" => Model::foreignKey(["table" => new Client\Client,"null" => 0]),
-                "product" => Model::char(["length" => 40]),
+                "product" => Model::char(["length" => 40])];
         }
 
         protected function name() {

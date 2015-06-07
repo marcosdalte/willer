@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Log\Model\Log {
+namespace Application\Test\Model\Client {
     use \Core\Model;
 
     class Client extends Model {
