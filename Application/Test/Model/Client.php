@@ -1,22 +1,20 @@
 <?php
 
-namespace Application\Client\Model\Client {
+namespace Application\Log\Model\Log {
     use \Core\Model;
 
     class Client extends Model {
         public $id;
-        public $nome;
-        public $descricao;
+        public $name;
 
         protected function schema() {
             return [
                 "id" => Model::primaryKey(),
-                "nome" => Model::char(),
-                "descricao" => Model::text()];
+                "name" => Model::char(["length" => 40])];
         }
 
         protected function name() {
-            return "cliente";
+            return "client";
         }
     }
 }
