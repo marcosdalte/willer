@@ -45,11 +45,38 @@ namespace Application\Documentation\Controller {
                 //     "servico_id" => $service,
                 //     "descricao" => "container"]);
 
-                $service->get([
-                    "nome" => "servico"]);
+                // $service->delete();
 
-                $container->get([
-                    "servico_id" => $service->id]);
+                // $service->delete([
+                //     "descricao" => "servico123"]);
+
+                // $service->get([
+                //     "nome" => "servico"]);
+
+                // $service->delete();
+
+                $container->where([
+                    "nome" => "container"]);
+
+                $container->delete();
+
+                // $service->update([
+                //     "descricao" => "servico123"]);
+                //
+                // $service->get([
+                //     "nome" => "servico"]);
+                //
+                // $service->update([
+                //     "descricao" => "servico123"]);
+                //
+                // $container->where([
+                //     "descricao" => "conta"]);
+                //
+                // $container->update([
+                //     "descricao" => "container123"]);
+                //
+                // $container->get([
+                //     "servico_id" => $service->id]);
 
                 // $container_list = $container
                 //     ->where()
