@@ -1,7 +1,5 @@
 .settings
 .buildpath
 .project
-.define
 dummy.php
-define.php
 *.rtpl.php

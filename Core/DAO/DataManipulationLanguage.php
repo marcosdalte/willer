@@ -178,12 +178,11 @@ namespace Core\DAO {
         public function orderBy($order_by = []) {
             if (!empty($order_by)) {
                 $table_name = $this->getTableName();
-                $table_name_with_escape = vsprintf("%s%s%s",[$this->db_escape,$table_name,$this->db_escape]);
 
                 $order_by_list = [];
 
                 foreach ($order_by as $i => $value) {
-                    $order_by_list[] = vsprintf("%s.%s %s",[$table_name_with_escape,$i,$value]);
+                    $order_by_list[] = vsprintf("%s %s",[$i,$value]);
                 }
 
                 $get_order_by = $this->getOrderBy();

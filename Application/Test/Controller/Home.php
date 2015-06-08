@@ -6,7 +6,7 @@ namespace Application\Test\Controller {
     use \Core\TplEngine;
     use \Core\Controller;
     use \Core\DAO\Transaction;
-    use \Application\Test\Model\Client;
+    use \Application\Test\Model\Person;
     use \Application\Test\Model\Purchase;
 
     class Home extends Controller {
@@ -17,25 +17,38 @@ namespace Application\Test\Controller {
         }
 
         public function index($url_fragment) {
-            $client = new Client\Client($this->transaction_default);
+            $person = new Person\Person($this->transaction_default);
             $purchase = new Purchase\Purchase($this->transaction_default);
 
             try {
                 $this->transaction_default->beginTransaction();
 
-                $client->name = "william";
-                $client->save();
+                $person->name = "william";
+                $person->save();
 
                 $purchase->save([
-                    "client_id" => $client,
-                    "product" => "radio"]);
+                    "person_id" => $person,
+                    "product" => "beer"]);
 
-                $purchase
-                    ->where()
-                    ->orderBy()
-                    ->limit()
+                $purchase_filter = $purchase
+                    ->where([
+                        "person_id" => $person->id
+                        ])
+                    ->orderBy([
+                        "person.name" => "desc"
+                        ])
+                    ->limit(1,5)
                     ->execute([
                         "join" => "left"]);
+
+                foreach ($purchase_filter as $i => $purchase_obj) {
+                    $purchase_obj->product = "whiskey";
+                    $purchase_obj->save();
+
+                    $purchase_obj->person_id->name = "william borba";
+                    $purchase_obj->person_id->save();
+
+                }
 
                 $this->transaction_default->commit();
 
@@ -44,6 +57,8 @@ namespace Application\Test\Controller {
 
                 throw new Exception($error);
             }
+
+            Util::renderTojson($purchase_filter);
         }
     }
 }

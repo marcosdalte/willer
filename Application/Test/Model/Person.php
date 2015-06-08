@@ -1,9 +1,9 @@
 <?php
 
-namespace Application\Test\Model\Client {
+namespace Application\Test\Model\Person {
     use \Core\Model;
 
-    class Client extends Model {
+    class Person extends Model {
         public $id;
         public $name;
 
@@ -14,7 +14,7 @@ namespace Application\Test\Model\Client {
         }
 
         protected function name() {
-            return "client";
+            return "person";
         }
     }
 }
