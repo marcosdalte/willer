@@ -219,24 +219,40 @@ class Purchase extends Model {
 </code></pre>
 
 <p>In controller temos uma query simples</p>
-<pre><code>$db_transaction_instance = new Transaction(DB_POSTGRES);
+<pre><code>$db_transaction = new Transaction(DB_POSTGRES);
 
-$person = new Person\Person($db_transaction_instance);
-$purchase = new Purchase\Purchase($db_transaction_instance);
+$person = new Person\Person($db_transaction);
+$purchase = new Purchase\Purchase($db_transaction);
 
-$person-&gt;save([
-    &quot;first_name&quot; =&gt; &quot;william&quot;,
-    &quot;last_name&quot; =&gt; &quot;borba&quot;]);
+try {
+    $db_transaction-&gt;beginTransaction();
 
-$purchase-&gt;save([
-    &quot;person_id&quot; =&gt; $person, //instance of person
-    &quot;product&quot; =&gt; &quot;beer&quot;]);
+    $person-&gt;first_name = &quot;william&quot;;
+    $person-&gt;last_name = &quot;boorba&quot;;
+    $person-&gt;save();
 
-$purchase_filter = $purchase
-    -&gt;where()
-    -&gt;orderBy([&quot;id&quot; =&gt; &quot;asc&quot;])
-    -&gt;limit(1,5)
-    -&gt;execute([&quot;join&quot; =&gt; &quot;left&quot;]);
+    $purchase-&gt;save([
+        &quot;person_id&quot; =&gt; $person,
+        &quot;product&quot; =&gt; &quot;beer&quot;]);
+
+    $purchase_filter = $purchase
+        -&gt;where([
+            &quot;person_id&quot; =&gt; $person-&gt;id
+            ])
+        -&gt;orderBy([
+            &quot;person.name&quot; =&gt; &quot;desc&quot;
+            ])
+        -&gt;limit(1,5)
+        -&gt;execute([
+            &quot;join&quot; =&gt; &quot;left&quot;]);
+
+    $db_transaction-&gt;commit();
+
+} catch (Exception $error) {
+    $db_transaction-&gt;rollBack();
+
+    throw new Exception($error);
+}
 
 /*return of purchase_filter
 
@@ -257,12 +273,12 @@ $purchase_filter = $purchase
 
 <p>Cada index da lista é um registro mapeado, representado por um objeto da mesma entidade, contendo todas as funções CRUD.</p>
 <pre><code>foreach ($purchase_filter as $i =&gt; $purchase_obj) {
-    $purchase_obj-&gt;product = &quot;chocolate&quot;;
+    $purchase_obj-&gt;product = &quot;whiskey&quot;;
     $purchase_obj-&gt;save();
 
     print_r($purchase_obj-&gt;person_id); // retorna o objeto Person referenciado por Purchase
 
-    $purchase_obj-&gt;person_id-&gt;last_name = &quot;rosa borba&quot;; // atualizando Person
+    $purchase_obj-&gt;person_id-&gt;last_name = &quot;rosa borba&quot;;
     $purchase_obj-&gt;person_id-&gt;save();
 
 }
