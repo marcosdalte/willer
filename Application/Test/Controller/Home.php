@@ -23,7 +23,8 @@ namespace Application\Test\Controller {
             try {
                 $this->transaction_default->beginTransaction();
 
-                $person->name = "william";
+                $person->first_name = "william";
+                $person->last_name = "borba";
                 $person->save();
 
                 $purchase->save([
@@ -35,7 +36,7 @@ namespace Application\Test\Controller {
                         "person_id" => $person->id
                         ])
                     ->orderBy([
-                        "person.name" => "desc"
+                        "person.first_name" => "desc"
                         ])
                     ->limit(1,5)
                     ->execute([
@@ -45,7 +46,7 @@ namespace Application\Test\Controller {
                     $purchase_obj->product = "whiskey";
                     $purchase_obj->save();
 
-                    $purchase_obj->person_id->name = "william borba";
+                    $purchase_obj->person_id->last_name = "rosa borba";
                     $purchase_obj->person_id->save();
 
                 }

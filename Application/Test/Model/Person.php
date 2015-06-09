@@ -5,12 +5,14 @@ namespace Application\Test\Model\Person {
 
     class Person extends Model {
         public $id;
-        public $name;
+        public $first_name;
+        public $last_name;
 
         protected function schema() {
             return [
                 "id" => Model::primaryKey(),
-                "name" => Model::char(["length" => 40])];
+                "first_name" => Model::char(["length" => 40]),
+                "last_name" => Model::char(["length" => 40])];
         }
 
         protected function name() {
