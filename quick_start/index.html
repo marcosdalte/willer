@@ -168,57 +168,97 @@ $URL += [
 </code></pre>
 
 <h2 id="the-model-layer">The model layer</h2>
-<p>Exemplo da tabela Pessoa que se relaciona com a tabela Compras</p>
-<pre><code>CREATE TABLE person (
-    &quot;id&quot; serial NOT NULL PRIMARY KEY,
-    &quot;first_name&quot; varchar(30) NOT NULL,
-    &quot;last_name&quot; varchar(30) NOT NULL
+<p>Exemplo das tabela Pessoa e Produto que se relacionam com a tabela Compras</p>
+<pre><code>CREATE TABLE `person` (
+    `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
+    `first_name`    TEXT,
+    `last_name` TEXT
 );
 
-CREATE TABLE purchase (
-    &quot;id&quot; serial NOT NULL PRIMARY KEY,
-    &quot;person_id&quot; int(11) NOT NULL,
-    &quot;product&quot; varchar(100) NOT NULL
+CREATE TABLE `product` (
+    `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
+    `name`  TEXT NOT NULL,
+    `price` REAL NOT NULL
+);
+
+CREATE TABLE `purchase` (
+    `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
+    `person_id` INTEGER NOT NULL,
+    `product_id`    NUMERIC NOT NULL,
+    `quantity`  INTEGER NOT NULL
 );
 </code></pre>
 
 <p>Agora o exemplo da estrutura dos model, conforme a entidade relacional das tabelas</p>
-<pre><code>class Person extends Model {
-    public $id;
-    public $first_name;
-    public $last_name;
+<pre><code>namespace Application\Test\Model\Person {
+    use \Core\Model;
 
-    protected function schema() {
-        return [
-            &quot;id&quot; =&gt; Model::primaryKey(),
-            &quot;first_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 30]),
-            &quot;last_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 30])];
-    }
+    class Person extends Model {
+        public $id;
+        public $first_name;
+        public $last_name;
 
-    protected function name() {
-        return &quot;person&quot;; //real table name
+        protected function schema() {
+            return [
+                &quot;id&quot; =&gt; Model::primaryKey(),
+                &quot;first_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 40]),
+                &quot;last_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 40])];
+        }
+
+        protected function name() {
+            return &quot;person&quot;;
+        }
     }
 }
 
-class Purchase extends Model {
-    public $id;
-    public $person_id;
-    public $product;
+namespace Application\Test\Model\Product {
+    use \Core\Model;
 
-    protected function schema() {
-        return [
-            &quot;id&quot; =&gt; Model::primaryKey(),
-            &quot;person_id&quot; =&gt; Model::foreignKey([&quot;table&quot; =&gt; new Person,&quot;null&quot; =&gt; 0]), //person is not null
-            &quot;product&quot; =&gt; Model::char([&quot;length&quot; =&gt; 100])];
+    class Product extends Model {
+        public $id;
+        public $name;
+        public $price;
+
+        protected function schema() {
+            return [
+                &quot;id&quot; =&gt; Model::primaryKey(),
+                &quot;name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 40]),
+                &quot;price&quot; =&gt; Model::float([&quot;length&quot; =&gt; 20])];
+        }
+
+        protected function name() {
+            return &quot;product&quot;;
+        }
     }
+}
 
-    protected function name() {
-        return &quot;purchase&quot;;
+namespace Application\Test\Model\Purchase {
+    use \Core\Model;
+    use \Application\Test\Model\Person;
+    use \Application\Test\Model\Product;
+
+    class Purchase extends Model {
+        public $id;
+        public $person_id;
+        public $product_id;
+        public $quantity;
+
+        protected function schema() {
+            return [
+                &quot;id&quot; =&gt; Model::primaryKey(),
+                &quot;person_id&quot; =&gt; Model::foreignKey([&quot;table&quot; =&gt; new Person\Person,&quot;null&quot; =&gt; 0]),
+                &quot;product_id&quot; =&gt; Model::foreignKey([&quot;table&quot; =&gt; new Product\Product,&quot;null&quot; =&gt; 0]),
+                &quot;quantity&quot; =&gt; Model::integer([&quot;length&quot; =&gt; 20])];
+        }
+
+        protected function name() {
+            return &quot;purchase&quot;;
+        }
     }
 }
 </code></pre>
 
-<p>In controller temos uma query simples</p>
+<p>In controller temos algumas simples querys</p>
 <pre><code>$db_transaction = new Transaction(DB_POSTGRES);
 
 $person = new Person\Person($db_transaction);
@@ -227,17 +267,29 @@ $purchase = new Purchase\Purchase($db_transaction);
 try {
     $db_transaction-&gt;beginTransaction();
 
+    $product-&gt;save([
+        &quot;name&quot; =&gt; &quot;beer&quot;,
+        &quot;price&quot; =&gt; 1.99,
+        ]);
+
+    $person-&gt;save([
+        &quot;first_name&quot; =&gt; &quot;wilian&quot;,
+        &quot;last_name&quot; =&gt; &quot;borba&quot;,
+        ]);
+
+    // update
     $person-&gt;first_name = &quot;william&quot;;
-    $person-&gt;last_name = &quot;borba&quot;;
     $person-&gt;save();
 
     $purchase-&gt;save([
-        &quot;person_id&quot; =&gt; $person, // instance of person
-        &quot;product&quot; =&gt; &quot;beer&quot;]);
+        &quot;person_id&quot; =&gt; $person,
+        &quot;product_id&quot; =&gt; $product,
+        &quot;quantity&quot; =&gt; 3]);
 
     $purchase_filter = $purchase
         -&gt;where([
-            &quot;person_id&quot; =&gt; $person-&gt;id
+            &quot;person.id&quot; =&gt; $person-&gt;id,
+            &quot;product.name&quot; =&gt; [$product-&gt;name] // values arrays result in 'IN' sql operator
             ])
         -&gt;orderBy([
             &quot;person.first_name&quot; =&gt; &quot;desc&quot;
@@ -258,13 +310,18 @@ try {
 
 [
     {
-        &quot;id&quot;: &quot;1&quot;,
+        &quot;id&quot;: &quot;18&quot;,
         &quot;person_id&quot;: {
-            &quot;id&quot;: &quot;1&quot;,
+            &quot;id&quot;: &quot;18&quot;,
             &quot;first_name&quot;: &quot;william&quot;,
-            &quot;last_name&quot;: &quot;borba&quot;
+            &quot;last_name&quot;: &quot;rosa borba&quot;
         },
-        &quot;product&quot;: &quot;beer&quot;
+        &quot;product_id&quot;: {
+            &quot;id&quot;: &quot;18&quot;,
+            &quot;name&quot;: &quot;whiskey&quot;,
+            &quot;price&quot;: &quot;1.99&quot;
+        },
+        &quot;quantity&quot;: &quot;4&quot;
     }
 ]
 
@@ -273,13 +330,16 @@ try {
 
 <p>Cada index da lista é um registro mapeado, representado por um objeto da mesma entidade, contendo todas as funções CRUD.</p>
 <pre><code>foreach ($purchase_filter as $i =&gt; $purchase_obj) {
-    $purchase_obj-&gt;product = &quot;whiskey&quot;;
-    $purchase_obj-&gt;save();
+    $purchase_obj-&gt;product_id-&gt;name = &quot;whiskey&quot;;
+    $purchase_obj-&gt;product_id-&gt;save();
 
     print_r($purchase_obj-&gt;person_id); // retorna o objeto Person referenciado por Purchase
 
     $purchase_obj-&gt;person_id-&gt;last_name = &quot;rosa borba&quot;;
     $purchase_obj-&gt;person_id-&gt;save();
+
+    $purchase_obj-&gt;quantity = 4;
+    $purchase_obj-&gt;save();
 
 }
 </code></pre>
