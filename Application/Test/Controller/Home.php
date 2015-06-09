@@ -8,6 +8,7 @@ namespace Application\Test\Controller {
     use \Core\DAO\Transaction;
     use \Application\Test\Model\Person;
     use \Application\Test\Model\Purchase;
+    use \Application\Test\Model\Product;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
@@ -19,21 +20,34 @@ namespace Application\Test\Controller {
         public function index($url_fragment) {
             $person = new Person\Person($this->transaction_default);
             $purchase = new Purchase\Purchase($this->transaction_default);
+            $product = new Product\Product($this->transaction_default);
 
             try {
                 $this->transaction_default->beginTransaction();
 
+                $product->save([
+                    "name" => "beer",
+                    "price" => 1.99,
+                    ]);
+
+                $person->save([
+                    "first_name" => "wilian",
+                    "last_name" => "borba",
+                    ]);
+
+                // update
                 $person->first_name = "william";
-                $person->last_name = "borba";
                 $person->save();
 
                 $purchase->save([
                     "person_id" => $person,
-                    "product" => "beer"]);
+                    "product_id" => $product,
+                    "quantity" => 3]);
 
                 $purchase_filter = $purchase
                     ->where([
-                        "person_id" => $person->id
+                        "person.id" => $person->id,
+                        "product.name" => [$product->name] // values arrays result in 'IN' sql operator
                         ])
                     ->orderBy([
                         "person.first_name" => "desc"
@@ -43,11 +57,14 @@ namespace Application\Test\Controller {
                         "join" => "left"]);
 
                 foreach ($purchase_filter as $i => $purchase_obj) {
-                    $purchase_obj->product = "whiskey";
-                    $purchase_obj->save();
+                    $purchase_obj->product_id->name = "whiskey";
+                    $purchase_obj->product_id->save();
 
                     $purchase_obj->person_id->last_name = "rosa borba";
                     $purchase_obj->person_id->save();
+
+                    $purchase_obj->quantity = 4;
+                    $purchase_obj->save();
 
                 }
 

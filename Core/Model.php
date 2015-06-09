@@ -400,7 +400,7 @@ namespace Core {
                         $filter_var_option = [
                             "options" => [
                                 "default" => null,
-                                "decimal" => ","],
+                                "decimal" => "."],
                             "flags" => []];
 
                         if (!filter_var($value,FILTER_VALIDATE_FLOAT,$filter_var_option)) {
