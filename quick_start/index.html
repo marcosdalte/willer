@@ -262,6 +262,7 @@ namespace Application\Test\Model\Purchase {
 <pre><code>$db_transaction = new Transaction(DB_POSTGRES);
 
 $person = new Person\Person($db_transaction);
+$product = new Product\Product($db_transaction);
 $purchase = new Purchase\Purchase($db_transaction);
 
 try {
