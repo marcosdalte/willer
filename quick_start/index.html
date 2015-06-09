@@ -232,7 +232,7 @@ try {
     $person-&gt;save();
 
     $purchase-&gt;save([
-        &quot;person_id&quot; =&gt; $person,
+        &quot;person_id&quot; =&gt; $person, // instance of person
         &quot;product&quot; =&gt; &quot;beer&quot;]);
 
     $purchase_filter = $purchase
