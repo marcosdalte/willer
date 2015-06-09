@@ -240,7 +240,7 @@ try {
             &quot;person_id&quot; =&gt; $person-&gt;id
             ])
         -&gt;orderBy([
-            &quot;person.name&quot; =&gt; &quot;desc&quot;
+            &quot;person.first_name&quot; =&gt; &quot;desc&quot;
             ])
         -&gt;limit(1,5)
         -&gt;execute([
@@ -264,8 +264,8 @@ try {
             &quot;first_name&quot;: &quot;william&quot;,
             &quot;last_name&quot;: &quot;borba&quot;
         },
-        &quot;product&quot;: &quot;beer&quot;,
-    },
+        &quot;product&quot;: &quot;beer&quot;
+    }
 ]
 
 */
