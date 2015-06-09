@@ -3,3 +3,4 @@
 .project
 dummy.php
 *.rtpl.php
+.idea

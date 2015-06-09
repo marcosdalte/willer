@@ -30,8 +30,8 @@ const DATABASE_INFO = [
         "DB_USER" => DB_DEFAULT_USER,
         "DB_PASSWORD" => DB_DEFAULT_PASSWORD,
         "DB_PORT" => DB_DEFAULT_PORT,
-		"DB_AUTOCOMMIT" => 0,
-		"DB_DEBUG" => 0,
+        "DB_AUTOCOMMIT" => 0,
+        "DB_DEBUG" => 0,
     ],
 ];
 
