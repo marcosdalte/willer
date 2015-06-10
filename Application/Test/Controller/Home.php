@@ -78,5 +78,25 @@ namespace Application\Test\Controller {
 
             Util::renderTojson($purchase_filter);
         }
+
+        public function test() {
+            $person = new Person\Person($this->transaction_default);
+
+            try {
+                $this->transaction_default->beginTransaction();
+
+                $person->save([
+                    "first_name" => "wilian",
+                    "last_name" => "borba",
+                    ]);
+
+                $this->transaction_default->commit();
+
+            } catch (Exception $error) {
+                $this->transaction_default->rollBack();
+
+                throw new Exception($error);
+            }
+        }
     }
 }
