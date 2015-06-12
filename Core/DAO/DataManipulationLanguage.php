@@ -19,6 +19,8 @@ namespace Core\DAO {
         private $query;
         private $query_value;
 
+        private $flag_getnotest;
+
         public function __construct(Transaction $transaction = null) {
             if (empty($transaction)) {
                 throw new Exception("transaction object doesn't loaded");
@@ -372,28 +374,32 @@ namespace Core\DAO {
             $query = vsprintf("select %s from %s %s %s",[$column_list,$table_name_with_escape,$related_join,$where]);
 
             try {
-                $pdo_query_total = $transaction_resource->prepare($query_total);
+                if (empty($this->flag_getnotest)) {
+                    $pdo_query_total = $transaction_resource->prepare($query_total);
 
-                $transaction_resource_error_info = $transaction_resource->errorInfo();
+                    $transaction_resource_error_info = $transaction_resource->errorInfo();
 
-                if ($transaction_resource_error_info[0] != "00000") {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    if ($transaction_resource_error_info[0] != "00000") {
+                        throw new Exception($transaction_resource_error_info[2]);
+                    }
+
+                    $pdo_query_total->execute($query_value_list);
+                    $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
+
+                    if (empty($pdo_query_total)) {
+                        throw new Exception("Trying to get property of non-object");
+                    }
+
+                    if ($pdo_query_total->total <= 0) {
+                        throw new Exception("error in get, don't register");
+                    }
+
+                    if ($pdo_query_total->total > 1) {
+                        throw new Exception("error in get, don't unique register");
+                    }
                 }
 
-                $pdo_query_total->execute($query_value_list);
-                $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
-
-                if (empty($pdo_query_total)) {
-                    throw new Exception("Trying to get property of non-object");
-                }
-
-                if ($pdo_query_total->total <= 0) {
-                    throw new Exception("error in get, don't register");
-                }
-
-                if ($pdo_query_total->total > 1) {
-                    throw new Exception("error in get, don't unique register");
-                }
+                $this->flag_getnotest = false;
 
                 $pdo_query = $transaction_resource->prepare($query);
 
@@ -444,6 +450,8 @@ namespace Core\DAO {
             if (empty($transaction_resource)) {
                 throw new Exception("conection resource dont initiated");
             }
+
+            $flag_getdiscard = false;
 
             $table_name = $this->getTableName();
             $table_column = $this->getTableColumn();
@@ -514,6 +522,8 @@ namespace Core\DAO {
                 $query = vsprintf("update %s set %s where %s",[$table_name_with_escape,$set_escape,$where]);
                 $query_value_list = $query_value_update_list;
 
+                $flag_getdiscard = true;
+
             } else {
                 $query = vsprintf("insert into %s (%s) values(%s)",[$table_name_with_escape,$column_list,$query_escape_list]);
                 $query_value_list = $query_value_add_list;
@@ -542,24 +552,28 @@ namespace Core\DAO {
                 throw new Exception($pdo_query_error_info[2]);
             }
 
-            if (empty($add_flag)) {
-                $this->get([
-                    vsprintf("%s.id",[$table_name_with_escape,]) => $table_column[$primary_key]]);
+            if (empty($flag_getdiscard)) {
+                $this->flag_getnotest = true;
 
-            } else {
-                $get_database_info = $this->transaction->getDatabaseInfo();
+                if (empty($add_flag)) {
+                    $this->get([
+                        vsprintf("%s.id",[$table_name_with_escape,]) => $table_column[$primary_key]]);
 
-                $sequence_name = null;
+                } else {
+                    $get_database_info = $this->transaction->getDatabaseInfo();
 
-                if ($get_database_info["DB_DRIVER"] == "pgsql") {
-                    $sequence_name = vsprintf("%s_id_seq",[$table_name,]);
-                }
+                    $sequence_name = null;
 
-                $last_insert_id = $this->transaction->lastInsertId($sequence_name);
+                    if ($get_database_info["DB_DRIVER"] == "pgsql") {
+                        $sequence_name = vsprintf("%s_id_seq",[$table_name,]);
+                    }
 
-                $this->setLastInsertId($last_insert_id);
-                $this->get([
-                    vsprintf("%s.id",[$table_name_with_escape,]) => $last_insert_id]);
+                    $last_insert_id = $this->transaction->lastInsertId($sequence_name);
+
+                    $this->setLastInsertId($last_insert_id);
+                    $this->get([
+                        vsprintf("%s.id",[$table_name_with_escape,]) => $last_insert_id]);
+                }    
             }
 
             $this->setQuery($query);

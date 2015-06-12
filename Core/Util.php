@@ -9,7 +9,7 @@ namespace Core {
 		}
 
 		public static function get($input,$key,$default = null) {
-			if (!is_array($input) and !(is_object($input))) {
+			if (!is_array($input) && !(is_object($input))) {
 				return $default;
 			}
 

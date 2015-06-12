@@ -90,6 +90,18 @@ namespace Application\Test\Controller {
                     "last_name" => "borba",
                     ]);
 
+                print_r($person);
+
+                $person->first_name = "lalala";
+                $person->save();
+
+                print_r($person);
+
+                $person->get([
+                    "first_name" => "wilian",
+                    "last_name" => "borba",
+                    ]);
+
                 $this->transaction_default->commit();
 
             } catch (Exception $error) {
