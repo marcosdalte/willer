@@ -111,7 +111,7 @@ namespace Core {
                     unset($matche[0]);
 
                     try {
-                        $new_application->$controller_action($matche);
+                        $new_application->$controller_action(...$matche);
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);

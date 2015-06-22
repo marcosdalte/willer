@@ -14,7 +14,7 @@ namespace Application\Test\Controller {
             $this->transaction_default = new Transaction(DB_DEFAULT);
         }
 
-        public function index($url_fragment) {
+        public function index() {
             $person = new Test\Person($this->transaction_default);
             $purchase = new Test\Purchase($this->transaction_default);
             $product = new Test\Product($this->transaction_default);
@@ -76,7 +76,7 @@ namespace Application\Test\Controller {
             Util::renderTojson($purchase_filter);
         }
 
-        public function test($url_fragment) {
+        public function test() {
             $person = new Person\Person($this->transaction_default);
 
             try {
@@ -104,7 +104,7 @@ namespace Application\Test\Controller {
             }
         }
 
-        public function tpl($url_fragment) {
+        public function tpl($var,$var2) {
             // $loader = new Twig_Loader_Filesystem("/path/to/templates");
             // $twig = new Twig_Environment($loader,array(
             //     "cache" => "/path/to/compilation_cache",
@@ -112,7 +112,8 @@ namespace Application\Test\Controller {
             //
             // echo $twig->render("index.html",array("name" => "Fabien"));
 
-            print_r($url_fragment);
+            print $var."<br/><br/>";
+            print $var2."<br/><br/>";
 
             $loader = new \Twig_Loader_Array(array(
                 'index' => 'Hello {{ name }}!',
