@@ -5,9 +5,7 @@ namespace Application\Test\Controller {
     use \Core\Util;
     use \Core\Controller;
     use \Core\DAO\Transaction;
-    use \Application\Test\Model\Person;
-    use \Application\Test\Model\Purchase;
-    use \Application\Test\Model\Product;
+    use \Application\Test\Model\Test;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
@@ -17,9 +15,9 @@ namespace Application\Test\Controller {
         }
 
         public function index($url_fragment) {
-            $person = new Person\Person($this->transaction_default);
-            $purchase = new Purchase\Purchase($this->transaction_default);
-            $product = new Product\Product($this->transaction_default);
+            $person = new Test\Person($this->transaction_default);
+            $purchase = new Test\Purchase($this->transaction_default);
+            $product = new Test\Product($this->transaction_default);
 
             try {
                 $this->transaction_default->beginTransaction();
@@ -78,7 +76,7 @@ namespace Application\Test\Controller {
             Util::renderTojson($purchase_filter);
         }
 
-        public function test() {
+        public function test($url_fragment) {
             $person = new Person\Person($this->transaction_default);
 
             try {
@@ -106,13 +104,15 @@ namespace Application\Test\Controller {
             }
         }
 
-        public function tpl() {
+        public function tpl($url_fragment) {
             // $loader = new Twig_Loader_Filesystem("/path/to/templates");
             // $twig = new Twig_Environment($loader,array(
             //     "cache" => "/path/to/compilation_cache",
             // ));
             //
             // echo $twig->render("index.html",array("name" => "Fabien"));
+
+            print_r($url_fragment);
 
             $loader = new \Twig_Loader_Array(array(
                 'index' => 'Hello {{ name }}!',

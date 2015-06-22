@@ -42,7 +42,7 @@ namespace Core {
                 $file = vsprintf("%s/%s.php",[ROOT_PATH,$file]);
 
                 if (!file_exists($file)) {
-                    if (strpos($file,"/Model/") === true) {
+                    if (!empty(strpos($file,"/Model/"))) {
                         $file_explode = explode("/",$file);
 
                         array_pop($file_explode);
@@ -107,6 +107,8 @@ namespace Core {
                     if (empty(method_exists($new_application,$controller_action))) {
                         Util::exceptionToJson(new Exception("method does not exist in object"));
                     }
+
+                    unset($matche[0]);
 
                     try {
                         $new_application->$controller_action($matche);
