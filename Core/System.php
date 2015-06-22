@@ -35,35 +35,36 @@ namespace Core {
         }
 
         private static function autoLoadReady() {
-            spl_autoload_register(function ($class) {
-                $class_ = $class;
+            spl_autoload_register(function ($file) {
+                spl_autoload_unregister(__FUNCTION__);
 
-                $class = str_replace("\\","/",$class);
-                $class = vsprintf("%s/%s.php",[ROOT_PATH,$class]);
+                $file = str_replace("\\","/",$file);
+                $file = vsprintf("%s/%s.php",[ROOT_PATH,$file]);
 
-                if (!file_exists($class)) {
-                    if (strpos($class,"/Model/") !== false) {
-                        $class_explode = explode("/",$class);
+                if (!file_exists($file)) {
+                    if (strpos($file,"/Model/") === true) {
+                        $file_explode = explode("/",$file);
 
-                        unset($class_explode[count($class_explode) - 1]);
+                        array_pop($file_explode);
 
-                        $class = implode("/",$class_explode);
-                        $class = vsprintf("%s.php",[$class,]);
+                        $file = implode("/",$file_explode);
+                        $file = vsprintf("%s.php",[$file,]);
 
                     } else {
-                        $scan_dir = array_diff(scandir(ROOT_PATH."/Vendor"),array("..","."));
+                        $lib_path = LIB_PATH;
 
-                        if (empty($scan_dir)) {
-                            $class = null;
+                        if (empty($lib_path)) {
+                            $file = null;
 
                         } else {
-                            $class = null;
+                            $file_explode = explode("/",$file);
+                            $file = array_pop($file_explode);
+                            $file = str_replace("_","/",$file);
 
-                            foreach ($scan_dir as $dir) {
-                                $class = Util::str("%s/Vendor/%s/%s.php",[ROOT_PATH,$dir,$class_]);
-                                $class = str_replace("\\","/",$class);
+                            foreach ($lib_path as $path) {
+                                $file = Util::str("%s/%s",[$path,$file]);
 
-                                if (file_exists($class)) {
+                                if (file_exists($file)) {
                                     break;
                                 }
                             }
@@ -71,12 +72,7 @@ namespace Core {
                     }
                 }
 
-                if (empty($class)) {
-                    Util::httpRedirect(URL_NOT_FOUND);
-
-                }
-
-                include_once $class;
+                include_once $file;
             });
         }
 

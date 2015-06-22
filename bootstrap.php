@@ -22,6 +22,10 @@ define("QUERY_LIMIT_ROW",15);
 define("SESSION_LIMIT",10);
 define("DB_DEFAULT","db_default");
 
+const LIB_PATH = [
+    ROOT_PATH."/vendor/twig/twig/lib",
+];
+
 const DATABASE_INFO = [
     DB_DEFAULT => [
         "DB_DRIVER" => DB_DEFAULT_DRIVER,

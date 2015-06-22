@@ -3,7 +3,6 @@
 namespace Application\Test\Controller {
     use \Exception as Exception;
     use \Core\Util;
-    use \Core\TplEngine;
     use \Core\Controller;
     use \Core\DAO\Transaction;
     use \Application\Test\Model\Person;
@@ -47,7 +46,7 @@ namespace Application\Test\Controller {
                 $purchase_filter = $purchase
                     ->where([
                         "person.id" => $person->id,
-                        "product.name" => [$product->name] // values arrays result in 'IN' sql operator
+                        "product.name" => [$product->name]
                         ])
                     ->orderBy([
                         "person.first_name" => "desc"
@@ -105,6 +104,23 @@ namespace Application\Test\Controller {
 
                 throw new Exception($error);
             }
+        }
+
+        public function tpl() {
+            // $loader = new Twig_Loader_Filesystem("/path/to/templates");
+            // $twig = new Twig_Environment($loader,array(
+            //     "cache" => "/path/to/compilation_cache",
+            // ));
+            //
+            // echo $twig->render("index.html",array("name" => "Fabien"));
+
+            $loader = new \Twig_Loader_Array(array(
+                'index' => 'Hello {{ name }}!',
+            ));
+
+            $twig = new \Twig_Environment($loader);
+
+            echo $twig->render('index', array('name' => 'Fabien'));
         }
     }
 }

@@ -76,7 +76,6 @@ namespace Core {
 
 			$http = curl_init();
 			curl_setopt($http,CURLOPT_URL,$url);
-			// curl_setopt($http,CURLOPT_USERPWD,"AXwWTbM2FCotK4Sv4Sj349kONiUhpIjoQYhnYskzdLOCMTuqGrTJpaGWz47BAz0zFcAJ5zb025DwE1fQ:EPZdjBpbQU1GnkjNkx1pxDjE9Lf3f0FwEzmpLAajg0e5jDNfCxlCM9Vwavr8uF4gFjG_ROO6OSP8Y_fM");
 			curl_setopt($http,CURLOPT_POST,1);
 			curl_setopt($http,CURLOPT_POSTFIELDS,$params_post);
 			curl_setopt($http,CURLOPT_HEADER,0);
