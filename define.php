@@ -8,5 +8,3 @@ const DB_DEFAULT_NAME = "";
 const DB_DEFAULT_USER = "";
 const DB_DEFAULT_PASSWORD = "";
 const DB_DEFAULT_PORT = "";
-
-?>

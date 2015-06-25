@@ -6,6 +6,7 @@ namespace Application\Test\Controller {
     use \Core\Controller;
     use \Core\DAO\Transaction;
     use \Application\Test\Model\Test;
+    use \Application\Test\Model\Person;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
@@ -111,6 +112,16 @@ namespace Application\Test\Controller {
             // ));
             //
             // echo $twig->render("index.html",array("name" => "Fabien"));
+
+            $person = new Person\Person($this->transaction_default);
+
+            $this->transaction_default->connect();
+
+            $person_filter = $person
+                ->where()
+                ->orderBy()
+                ->limit(1,5)
+                ->execute();
 
             print $var."<br/><br/>";
             print $var2."<br/><br/>";
