@@ -13,7 +13,7 @@ Na raiz do willer temos o arquivo `url.php`, neste serão definidos os padrões 
 
 Example:
 
-```
+```php
 // url's frontend
 $URL = [
     "/^\/?$/"                     => ["MyFrontend/Home/index",null],
