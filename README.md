@@ -9,7 +9,7 @@ In this section are some definitions to be respected for the correct functioning
 
 ## URL route
 
-Na raiz do willer temos o arquivo ```php url.php```, neste serão definidos os padrões de URL, ligando cada padrão há uma `aplicação/controller/view`
+Na raiz do willer temos o arquivo `url.php`, neste serão definidos os padrões de URL, ligando cada padrão há uma `aplicação/controller/view`
 
 Example:
 
