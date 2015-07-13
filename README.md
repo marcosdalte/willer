@@ -47,7 +47,7 @@ $URL += [
 ## The model layer
 
 Exemplo das tabela Pessoa e Produto que se relacionam com a tabela Compras
-```
+```mysql
 CREATE TABLE `person` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`first_name`	TEXT,
@@ -69,7 +69,7 @@ CREATE TABLE `purchase` (
 ```
 Agora o exemplo da estrutura dos model, conforme a entidade relacional das tabelas
 
-```
+```php
 namespace Application\Test\Model\Person {
     use \Core\Model;
 
@@ -140,7 +140,7 @@ namespace Application\Test\Model\Purchase {
 
 In controller temos algumas simples querys
 
-```
+```php
 $db_transaction = new Transaction(DB_POSTGRES);
 
 $person = new Person\Person($db_transaction);
@@ -212,7 +212,7 @@ try {
 ```
 Cada index da lista é um registro mapeado, representado por um objeto da mesma entidade, contendo todas as funções CRUD.
 
-```
+```php
 foreach ($purchase_filter as $i => $purchase_obj) {
     $purchase_obj->product_id->name = "whiskey";
     $purchase_obj->product_id->save();
@@ -230,6 +230,6 @@ foreach ($purchase_filter as $i => $purchase_obj) {
 
 Para cada query efetuada podemos a qualquer momento fazer um debug da consulta realizada.
 
-```
+```php
 $purchase->lastQuery();
 ```
