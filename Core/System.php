@@ -34,16 +34,40 @@ namespace Core {
             ini_set("display_errors",DISPLAY_ERRORS);
         }
 
+        private static function autoloadPSR0($path,$file) {
+            $file_path = vsprintf("%s/%s",[$path,$file]);
+            $file_path = ltrim($file_path,"\\");
+            $directory_separator = "/";
+
+            $file = vsprintf("%s.php",[str_replace("_",$directory_separator,$file_path),".php"]);
+
+            return $file;
+        }
+
+        private static function autoloadPSR4($path,file) {
+            $prefix = strstr($file,"/",true);
+            $len = strlen($prefix);
+            $relative_class = substr($file,$len);
+            $relative_class = str_replace("\\","/",$relative_class);
+
+            $file = vsprintf("%s%s.php",[$path,$relative_class,".php"]);
+
+            return $file;
+        }
+
         private static function autoLoadReady() {
             spl_autoload_register(function ($file) {
                 spl_autoload_unregister(__FUNCTION__);
 
                 $file = str_replace("\\","/",$file);
-                $file = vsprintf("%s/%s.php",[ROOT_PATH,$file]);
+                $root_path_file = vsprintf("%s/%s.php",[ROOT_PATH,$file]);
 
-                if (!file_exists($file)) {
-                    if (!empty(strpos($file,"/Model/"))) {
-                        $file_explode = explode("/",$file);
+                if (file_exists($root_path_file)) {
+                    $file = $root_path_file;
+
+                } else  {
+                    if (!empty(strpos($root_path_file,"/Model/"))) {
+                        $file_explode = explode("/",$root_path_file);
 
                         array_pop($file_explode);
 
@@ -57,14 +81,20 @@ namespace Core {
                             $file = null;
 
                         } else {
-                            $file_explode = explode("/",$file);
-                            $file = array_pop($file_explode);
-                            $file = str_replace("_","/",$file);
-
                             foreach ($lib_path as $path) {
-                                $file = Util::str("%s/%s",[$path,$file]);
+                                $file_path = System::autoloadPSR0($path,$file);
 
-                                if (file_exists($file)) {
+                                if (file_exists($file_path)) {
+                                    $file = $file_path;
+
+                                    break;
+                                }
+
+                                $file_path = System::autoloadPSR4($path,$file);
+
+                                if (file_exists($file_path)) {
+                                    $file = $file_path;
+
                                     break;
                                 }
                             }
