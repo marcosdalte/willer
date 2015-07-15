@@ -1,7 +1,10 @@
 {
     "name": "wborba/willer",
     "description": "php framework - influenced by django and codeigniter",
-    "type": "framework",
+    "type": "library",
+    "require": {
+        "twig/twig": "^1.18"
+    },
     "license": "MIT",
     "authors": [
         {
@@ -9,8 +12,5 @@
             "email": "william.borba@absoluta.net"
         }
     ],
-    "require": {
-        "php":">=5.6",
-        "twig/twig": ">=2.0"
-    }
+    "minimum-stability": "stable"
 }
