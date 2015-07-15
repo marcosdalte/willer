@@ -4,5 +4,9 @@
 dummy.php
 *.rtpl.php
 .idea
+<<<<<<< HEAD
 
+=======
+composer.lock
+>>>>>>> development
 /vendor/
