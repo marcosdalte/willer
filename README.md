@@ -1,7 +1,7 @@
 willer
 ===========
 
-## framework in php - based in django and codeigniter
+## php framework - influenced by django and codeigniter 
 
 ## Documentation
 
