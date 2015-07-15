@@ -4,3 +4,4 @@
 dummy.php
 *.rtpl.php
 .idea
+/vendor/
