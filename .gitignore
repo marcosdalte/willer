@@ -4,4 +4,5 @@
 dummy.php
 *.rtpl.php
 .idea
+composer.lock
 /vendor/
