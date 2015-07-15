@@ -3,7 +3,6 @@
     "description": "php framework - influenced by django and codeigniter",
     "keywords": ["orm", "active record", "framework", "django like", "codeigniter like"],
     "homepage": "http://williamborba.github.io/willer",
-    "version": "0.0.1",
     "type": "library",
     "require": {
         "php": ">=5.6",
