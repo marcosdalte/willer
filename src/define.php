@@ -1,6 +1,6 @@
 <?php
 
-const URL_SITE = "127.0.0.1/willer";
+const URL_SITE = "127.0.0.1";
 
 const DB_DEFAULT_DRIVER = "sqlite";
 const DB_DEFAULT_HOST = "/home/wborba/Downloads/sqlite";

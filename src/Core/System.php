@@ -44,7 +44,7 @@ namespace Core {
             return $file;
         }
 
-        private static function autoloadPSR4($path,file) {
+        private static function autoloadPSR4($path,$file) {
             $prefix = strstr($file,"/",true);
             $len = strlen($prefix);
             $relative_class = substr($file,$len);
@@ -110,38 +110,72 @@ namespace Core {
             session_start();
         }
 
+        private static function urlRoute($application_route,$matche,$flag_url_core) {
+            $application_route = explode("/",$application_route);
+
+            if (count($application_route) != 3) {
+                if (!empty($flag_url_core)) {
+                    return false;
+                }
+
+                Util::exceptionToJson(new Exception("application format error"));
+            }
+
+            $application = $application_route[0];
+            $controller = $application_route[1];
+            $controller_action = $application_route[2];
+
+            $application = Util::str("Application\\%s\\Controller\\%s",[$application,$controller]);
+
+            if (!file_exists(ROOT_PATH."/".str_replace("\\","/",$application).".php")) {
+                Util::exceptionToJson(new Exception("file not found"));
+            }
+
+            try {
+                $new_application = new $application();
+
+            } catch (Exception $error) {
+                Util::exceptionToJson($error);
+            }
+
+            if (empty(method_exists($new_application,$controller_action))) {
+                Util::exceptionToJson(new Exception("method does not exist in object"));
+            }
+
+            if (!empty($matche)) {
+                unset($matche[0]);
+            }
+
+            try {
+                $new_application->$controller_action(...$matche);
+
+            } catch (Exception $error) {
+                Util::exceptionToJson($error);
+            }
+
+            return true;
+        }
+
         private static function urlRouteReady($url,$http_path) {
             $flag = false;
 
-            foreach ($url as $url_er => $application) {
+            try {
+                $url_route = System::urlRoute($http_path,null,true);
+
+            } catch (Exception $error) {
+                Util::exceptionToJson($error);
+            }
+
+            if (!empty($url_route)) {
+                return true;
+            }
+
+            foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$http_path,$matche)) {
                     $flag = true;
-                    $request_method = null;
-
-                    $controller = explode("/",$application[0]);
-
-                    if (!empty($application[1])) {
-                        $request_method = $application[1];
-                    }
-
-                    $application = Util::str("Application\\%s\\Controller\\%s",[$controller[0],$controller[1]]);
-                    $controller_action = $controller[2];
 
                     try {
-                        $new_application = new $application($request_method);
-
-                    } catch (Exception $error) {
-                        Util::exceptionToJson($error);
-                    }
-
-                    if (empty(method_exists($new_application,$controller_action))) {
-                        Util::exceptionToJson(new Exception("method does not exist in object"));
-                    }
-
-                    unset($matche[0]);
-
-                    try {
-                        $new_application->$controller_action(...$matche);
+                        System::urlRoute($application_route,$matche,false);
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);

@@ -8,7 +8,7 @@ include_once("url.php");
 use Core\Util;
 use Core\System;
 
-define("HTTP_PATH",Util::get($_GET,"http_path",null));
+define("HTTP_PATH",Util::get($_SERVER,"REQUEST_URI",null));
 define("DISPLAY_ERRORS",1);
 define("ERROR_REPORTING",E_ALL);
 define("TIMEZONE","America/Sao_Paulo");
@@ -23,7 +23,7 @@ define("SESSION_LIMIT",10);
 define("DB_DEFAULT","db_default");
 
 const LIB_PATH = [
-    ROOT_PATH."/vendor/twig/twig/lib",
+    "../vendor/twig/twig/lib",
 ];
 
 const DATABASE_INFO = [

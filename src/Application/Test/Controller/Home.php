@@ -9,9 +9,7 @@ namespace Application\Test\Controller {
     use \Application\Test\Model\Person;
 
     class Home extends Controller {
-        public function __construct($request_method = null) {
-            parent::__construct($request_method);
-
+        public function __construct() {
             $this->transaction_default = new Transaction(DB_DEFAULT);
         }
 
@@ -78,31 +76,7 @@ namespace Application\Test\Controller {
         }
 
         public function test() {
-            $person = new Person\Person($this->transaction_default);
-
-            try {
-                $this->transaction_default->beginTransaction();
-
-                $person->save([
-                    "first_name" => "wilian",
-                    "last_name" => "borba",
-                    ]);
-
-                $person->first_name = "lalala";
-                $person->save();
-
-                $person->get([
-                    "first_name" => "wilian",
-                    "last_name" => "borba",
-                    ]);
-
-                $this->transaction_default->commit();
-
-            } catch (Exception $error) {
-                $this->transaction_default->rollBack();
-
-                throw new Exception($error);
-            }
+            print "okoookokokokokok";
         }
 
         public function tpl($var,$var2) {
