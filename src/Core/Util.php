@@ -21,13 +21,6 @@ namespace Core {
 			}
 		}
 
-		public static function datetimeNow() {
-			$date_time = new DateTime();
-			$format = $date_time->format("Y-m-d H:i:s");
-
-			return $format;
-		}
-
 		public static function csrf() {
 			$mt_rand = mt_rand();
 			$csrf = Util::str("%s/%s",[$_SERVER["REMOTE_ADDR"],$mt_rand]);

@@ -1,9 +1,8 @@
 <?php
-/*urls*/
-$URL = [
+
+$url = [
 	"/^\/?$/" => "Test/Home/test",
-    // "/^\/?$/"        => ["Test/Home/index",["GET","POST"]],
+	"/^test\/?$/" => "Test/Home/test",
     "/^home\/?$/" => "Test/Home/index",
-    "/^test\/?$/" => "Test/Home/test",
     "/^tpl\/([1-9]+)\/([a-z]+)?$/"  => "Test/Home/tpl",
 ];

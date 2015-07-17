@@ -6,7 +6,37 @@ namespace Core {
 
     trait System {
         public static function appReady($url = []) {
+
+            define("DISPLAY_ERRORS",1);
+            define("ERROR_REPORTING","E_ALL");
+            define("TIMEZONE","America/Sao_Paulo");
+            // define("HTTP_TYPE","http");
+            // define("PUBLIC_PATH",Util::str("%s://%s/public",[HTTP_TYPE,URL_SITE]));
+            // define("URL_BASE",Util::str("%s://%s",[HTTP_TYPE,URL_SITE]));
+            // define("URL_NOT_FOUND",Util::str("%s/404.html",[URL_BASE,]));
+            // define("QUERY_LIMIT_ROW",15);
+            // define("SESSION_LIMIT",10);
+            // define("DB_DEFAULT","db_default");
+            //
+            // const LIB_PATH = [
+            //     "../vendor/twig/twig/lib",
+            // ];
+            //
+            // const DATABASE_INFO = [
+            //     DB_DEFAULT => [
+            //         "DB_DRIVER" => DB_DEFAULT_DRIVER,
+            //         "DB_HOST" => DB_DEFAULT_HOST,
+            //         "DB_NAME" => DB_DEFAULT_NAME,
+            //         "DB_USER" => DB_DEFAULT_USER,
+            //         "DB_PASSWORD" => DB_DEFAULT_PASSWORD,
+            //         "DB_PORT" => DB_DEFAULT_PORT,
+            //         "DB_AUTOCOMMIT" => 0,
+            //         "DB_DEBUG" => 0,
+            //     ],
+            // ];
+
             System::errorHandler();
+            System::loadConfig();
             System::iniSetReady();
             System::autoLoadReady();
             System::sessionReady();
@@ -26,6 +56,16 @@ namespace Core {
     			exit($exception);
 
             });
+        }
+
+        private static function loadConfig() {
+            define("HTTP_PATH",Util::get($_SERVER,"REQUEST_URI",null));
+            define("ROOT_PATH",__DIR__);
+
+            $config_yaml = yaml_parse_file(ROOT_PATH."/config.php");
+
+            print_r($config_yaml);
+            exit();
         }
 
         private static function iniSetReady() {
@@ -129,6 +169,10 @@ namespace Core {
             $application = Util::str("Application\\%s\\Controller\\%s",[$application,$controller]);
 
             if (!file_exists(ROOT_PATH."/".str_replace("\\","/",$application).".php")) {
+                if (!empty($flag_url_core)) {
+                    return false;
+                }
+
                 Util::exceptionToJson(new Exception("file not found"));
             }
 
@@ -145,6 +189,7 @@ namespace Core {
 
             if (!empty($matche)) {
                 unset($matche[0]);
+
             }
 
             try {
@@ -158,10 +203,10 @@ namespace Core {
         }
 
         private static function urlRouteReady($url,$http_path) {
-            $flag = false;
+            $http_path = preg_replace("/^(\/{1})(.*)/","$2",$http_path);
 
             try {
-                $url_route = System::urlRoute($http_path,null,true);
+                $url_route = System::urlRoute($http_path,[],true);
 
             } catch (Exception $error) {
                 Util::exceptionToJson($error);
@@ -173,10 +218,8 @@ namespace Core {
 
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$http_path,$matche)) {
-                    $flag = true;
-
                     try {
-                        System::urlRoute($application_route,$matche,false);
+                        $url_route = System::urlRoute($application_route,$matche,false);
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);
@@ -186,7 +229,7 @@ namespace Core {
                 }
             }
 
-            if (empty($flag)) {
+            if (empty($url_route)) {
                 Util::httpRedirect(URL_NOT_FOUND);
             }
         }

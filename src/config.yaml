@@ -1,0 +1,26 @@
+---
+URL_SITE: 127.0.0.1
+URL_PORT: 8000
+
+DISPLAY_ERRORS: 1
+ERROR_REPORTING: E_ALL
+TIMEZONE: America/Sao_Paulo
+HTTP_TYPE: http
+STATIC_PATH: public
+URL_NOT_FOUND: 404.html
+QUERY_LIMIT_ROW: 15
+SESSION_LIMIT: 5
+
+VENDOR_PATH:
+    - ../vendor/twig/twig/lib
+
+DATABASE_INFO:
+    default:
+        DRIVER: sqlite
+        HOST: /home/wborba/Downloads/sqlite
+        NAME:
+        USER:
+        PASSWORD:
+        PORT:
+        AUTOCOMMIT: 0
+        DEBUG: 0
