@@ -21,6 +21,10 @@ namespace Core {
 			}
 		}
 
+		public static function loadJsonFile($file_path,$assoc = false) {
+        	return json_decode(file_get_contents($file_path),$assoc);
+        }
+
 		public static function csrf() {
 			$mt_rand = mt_rand();
 			$csrf = Util::str("%s/%s",[$_SERVER["REMOTE_ADDR"],$mt_rand]);

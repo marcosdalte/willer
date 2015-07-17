@@ -5,42 +5,11 @@ namespace Core {
     use \Core\Util;
 
     trait System {
-        public static function appReady($url = []) {
-
-            define("DISPLAY_ERRORS",1);
-            define("ERROR_REPORTING","E_ALL");
-            define("TIMEZONE","America/Sao_Paulo");
-            // define("HTTP_TYPE","http");
-            // define("PUBLIC_PATH",Util::str("%s://%s/public",[HTTP_TYPE,URL_SITE]));
-            // define("URL_BASE",Util::str("%s://%s",[HTTP_TYPE,URL_SITE]));
-            // define("URL_NOT_FOUND",Util::str("%s/404.html",[URL_BASE,]));
-            // define("QUERY_LIMIT_ROW",15);
-            // define("SESSION_LIMIT",10);
-            // define("DB_DEFAULT","db_default");
-            //
-            // const LIB_PATH = [
-            //     "../vendor/twig/twig/lib",
-            // ];
-            //
-            // const DATABASE_INFO = [
-            //     DB_DEFAULT => [
-            //         "DB_DRIVER" => DB_DEFAULT_DRIVER,
-            //         "DB_HOST" => DB_DEFAULT_HOST,
-            //         "DB_NAME" => DB_DEFAULT_NAME,
-            //         "DB_USER" => DB_DEFAULT_USER,
-            //         "DB_PASSWORD" => DB_DEFAULT_PASSWORD,
-            //         "DB_PORT" => DB_DEFAULT_PORT,
-            //         "DB_AUTOCOMMIT" => 0,
-            //         "DB_DEBUG" => 0,
-            //     ],
-            // ];
-
+        public static function appReady($url) {
             System::errorHandler();
-            System::loadConfig();
             System::iniSetReady();
             System::autoLoadReady();
-            System::sessionReady();
-            System::urlRouteReady($url,HTTP_PATH);
+            System::urlRouteReady($url,REQUEST_URI);
         }
 
         private static function errorHandler() {
@@ -56,16 +25,6 @@ namespace Core {
     			exit($exception);
 
             });
-        }
-
-        private static function loadConfig() {
-            define("HTTP_PATH",Util::get($_SERVER,"REQUEST_URI",null));
-            define("ROOT_PATH",__DIR__);
-
-            $config_yaml = yaml_parse_file(ROOT_PATH."/config.php");
-
-            print_r($config_yaml);
-            exit();
         }
 
         private static function iniSetReady() {
@@ -147,10 +106,6 @@ namespace Core {
             });
         }
 
-        private static function sessionReady() {
-            session_start();
-        }
-
         private static function urlRoute($application_route,$matche,$flag_url_core) {
             $application_route = explode("/",$application_route);
 
@@ -202,11 +157,11 @@ namespace Core {
             return true;
         }
 
-        private static function urlRouteReady($url,$http_path) {
-            $http_path = preg_replace("/^(\/{1})(.*)/","$2",$http_path);
+        private static function urlRouteReady($url,$request_uri) {
+            $request_uri = preg_replace("/^(\/{1})(.*)/","$2",$request_uri);
 
             try {
-                $url_route = System::urlRoute($http_path,[],true);
+                $url_route = System::urlRoute($request_uri,[],true);
 
             } catch (Exception $error) {
                 Util::exceptionToJson($error);
@@ -217,7 +172,7 @@ namespace Core {
             }
 
             foreach ($url as $url_er => $application_route) {
-                if (preg_match($url_er,$http_path,$matche)) {
+                if (preg_match($url_er,$request_uri,$matche)) {
                     try {
                         $url_route = System::urlRoute($application_route,$matche,false);
 
@@ -230,7 +185,7 @@ namespace Core {
             }
 
             if (empty($url_route)) {
-                Util::httpRedirect(URL_NOT_FOUND);
+                Util::exceptionToJson(new Exception("request uri not found"));
             }
         }
     }
