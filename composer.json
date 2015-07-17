@@ -1,5 +1,19 @@
 {
+    "name": "wborba/willer",
+    "description": "php framework - influenced by django and codeigniter",
+    "keywords": ["orm", "active record", "framework", "django like", "codeigniter like"],
+    "homepage": "http://williamborba.github.io/willer",
+    "type": "library",
     "require": {
-        "twig/twig": "~1.0"
-    }
+        "php": ">=5.6",
+        "twig/twig": "^1.18"
+    },
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "William Borba",
+            "email": "wborba.dev@gmail.com"
+        }
+    ]
 }
