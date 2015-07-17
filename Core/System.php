@@ -38,13 +38,14 @@ namespace Core {
             $file_path = vsprintf("%s/%s",[$path,$file]);
             $file_path = ltrim($file_path,"\\");
             $directory_separator = "/";
+            $file = str_replace("_",$directory_separator,$file_path);
 
-            $file = vsprintf("%s.php",[str_replace("_",$directory_separator,$file_path),".php"]);
+            $file = vsprintf("%s.php",[$file,".php"]);
 
             return $file;
         }
 
-        private static function autoloadPSR4($path,file) {
+        private static function autoloadPSR4($path,$file) {
             $prefix = strstr($file,"/",true);
             $len = strlen($prefix);
             $relative_class = substr($file,$len);
