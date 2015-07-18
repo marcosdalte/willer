@@ -87,18 +87,8 @@ namespace Application\Test\Controller {
             //
             // echo $twig->render("index.html",array("name" => "Fabien"));
 
-            $person = new Person\Person($this->transaction_default);
-
-            $this->transaction_default->connect();
-
-            $person_filter = $person
-                ->where()
-                ->orderBy()
-                ->limit(1,5)
-                ->execute();
-
-            print $var."<br/><br/>";
-            print $var2."<br/><br/>";
+            // print $var."<br/><br/>";
+            // print $var2."<br/><br/>";
 
             $loader = new \Twig_Loader_Array(array(
                 'index' => 'Hello {{ name }}!',

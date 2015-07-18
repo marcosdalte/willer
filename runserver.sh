@@ -1,10 +1,10 @@
 #! /bin/bash
- 
+
 ROOT_PATH="$(pwd)/src"
-ROUTER="$(pwd)/src/bootstrap.php"
+ROUTER=${ROOT_PATH}"/bootstrap.php"
 HOST="0.0.0.0"
 PORT="8000"
- 
+
 PHP=$(which php)
 
 if [ $? != 0 ]; then
