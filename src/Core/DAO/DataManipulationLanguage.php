@@ -29,7 +29,7 @@ namespace Core\DAO {
             $this->setTransaction($transaction);
 
             $get_database_info = $this->transaction->getDatabaseInfo();
-            $db_driver = $get_database_info["DB_DRIVER"];
+            $db_driver = $get_database_info["driver"];
 
             if ($db_driver == "mysql") {
                 $this->db_escape = "";
@@ -199,7 +199,7 @@ namespace Core\DAO {
             return $this;
         }
 
-        public function limit($page = 1,$limit = QUERY_LIMIT_ROW) {
+        public function limit($page = 1,$limit = 1000) {
             $limit_value = null;
 
             if ($page <= 1) {
@@ -564,7 +564,7 @@ namespace Core\DAO {
 
                     $sequence_name = null;
 
-                    if ($get_database_info["DB_DRIVER"] == "pgsql") {
+                    if ($get_database_info["driver"] == "pgsql") {
                         $sequence_name = vsprintf("%s_id_seq",[$table_name,]);
                     }
 
@@ -573,7 +573,7 @@ namespace Core\DAO {
                     $this->setLastInsertId($last_insert_id);
                     $this->get([
                         vsprintf("%s.id",[$table_name_with_escape,]) => $last_insert_id]);
-                }    
+                }
             }
 
             $this->setQuery($query);

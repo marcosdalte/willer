@@ -10,7 +10,7 @@ namespace Application\Test\Controller {
 
     class Home extends Controller {
         public function __construct() {
-            $this->transaction_default = new Transaction(DB_DEFAULT);
+            $this->transaction_default = new Transaction();
         }
 
         public function index() {

@@ -3,19 +3,24 @@
 namespace Core\DAO {
     use \PDO as PDO;
     use \Exception as Exception;
+    use \Core\Util;
 
     class Transaction {
         private $resource;
         private $database;
         private $last_insert_id;
+        private $db_default = "default";
+        private $database_path = ROOT_PATH."/database.json";
 
         public function __construct($database = null) {
             if (empty($database)) {
-                $database = DB_DEFAULT;
+                $database = $this->db_default;
             }
 
-            if (!array_key_exists($database,DATABASE_INFO)) {
-                throw new Exception("database not found in DATABASE_INFO");
+            $this->database_path = Util::loadJsonFile($this->database_path,true);
+
+            if (!array_key_exists($database,$this->database_path)) {
+                throw new Exception("database not found in database.json");
             }
 
             $this->setDatabase($database);
@@ -49,36 +54,36 @@ namespace Core\DAO {
             $database = $this->getDatabase();
 
             if (empty($database)) {
-                $database = DB_DEFAULT;
+                $database = $this->db_default;
             }
 
-            return DATABASE_INFO[$database];
+            return $this->database_path[$database];
         }
 
         public function connect() {
             $database_info = $this->getDatabaseInfo();
 
             try {
-                if (in_array($database_info["DB_DRIVER"],["mysql","pgsql"])) {
-                    $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"],$database_info["DB_PORT"],$database_info["DB_NAME"]]),$database_info["DB_USER"],$database_info["DB_PASSWORD"]);
+                if (in_array($database_info["driver"],["mysql","pgsql"])) {
+                    $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["driver"],$database_info["host"],$database_info["port"],$database_info["name"]]),$database_info["user"],$database_info["password"]);
 
-                } else if ($database_info["DB_DRIVER"] == "sqlite") {
-                    $pdo = new PDO(vsprintf("%s:%s",[$database_info["DB_DRIVER"],$database_info["DB_HOST"]]));
+                } else if ($database_info["driver"] == "sqlite") {
+                    $pdo = new PDO(vsprintf("%s:%s",[$database_info["driver"],$database_info["host"]]));
                 }
 
-                if ($database_info["DB_DRIVER"] == "mysql") {
-                    if ($database_info["DB_AUTOCOMMIT"] == 0) {
+                if ($database_info["driver"] == "mysql") {
+                    if ($database_info["autocommit"] == 0) {
                         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
 
-                    } else if ($database_info["DB_AUTOCOMMIT"] == 1) {
+                    } else if ($database_info["autocommit"] == 1) {
                         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,1);
                     }
                 }
 
-                if ($database_info["DB_DEBUG"] == 0) {
+                if ($database_info["debug"] == 0) {
                     $pdo->setAttribute(PDO::ATTR_ERRMODE,0);
 
-                } else if ($database_info["DB_DEBUG"] == 1) {
+                } else if ($database_info["debug"] == 1) {
                     $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
                 }
 

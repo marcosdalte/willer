@@ -5,9 +5,10 @@ namespace Core {
     use \Core\Util;
 
     trait System {
+        private $vendor_path = ROOT_PATH."/vendor.json";
+
         public static function appReady($url) {
             System::errorHandler();
-            System::iniSetReady();
             System::autoLoadReady();
             System::urlRouteReady($url,REQUEST_URI);
         }
@@ -27,12 +28,6 @@ namespace Core {
             });
         }
 
-        private static function iniSetReady() {
-            date_default_timezone_set(TIMEZONE);
-            ini_set("error_reporting",ERROR_REPORTING);
-            ini_set("display_errors",DISPLAY_ERRORS);
-        }
-
         private static function autoloadPSR0($path,$file) {
             $file_path = vsprintf("%s/%s",[$path,$file]);
             $file_path = ltrim($file_path,"\\");
@@ -46,8 +41,8 @@ namespace Core {
 
         private static function autoloadPSR4($path,$file) {
             $prefix = strstr($file,"/",true);
-            $len = strlen($prefix);
-            $relative_class = substr($file,$len);
+            $prefix_len = strlen($prefix);
+            $relative_class = substr($file,$prefix_len);
             $relative_class = str_replace("\\","/",$relative_class);
 
             $file = vsprintf("%s%s.php",[$path,$relative_class,".php"]);
@@ -75,13 +70,13 @@ namespace Core {
                         $file = vsprintf("%s.php",[$file,]);
 
                     } else {
-                        $lib_path = LIB_PATH;
+                        $vendor_path = Util::loadJsonFile($this->vendor_path,true);
 
-                        if (empty($lib_path)) {
+                        if (empty($vendor_path)) {
                             $file = null;
 
                         } else {
-                            foreach ($lib_path as $path) {
+                            foreach ($vendor_path as $path) {
                                 $file_path = System::autoloadPSR0($path,$file);
 
                                 if (file_exists($file_path)) {
@@ -121,7 +116,7 @@ namespace Core {
             $controller = $application_route[1];
             $controller_action = $application_route[2];
 
-            $application = Util::str("Application\\%s\\Controller\\%s",[$application,$controller]);
+            $application = vsprintf("Application\\%s\\Controller\\%s",[$application,$controller]);
 
             if (!file_exists(ROOT_PATH."/".str_replace("\\","/",$application).".php")) {
                 if (!empty($flag_url_core)) {
