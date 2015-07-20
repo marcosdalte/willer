@@ -2,6 +2,7 @@
 
 namespace Core {
     use \Exception as Exception;
+    use \Core\Log;
     use \Core\Util;
 
     trait System {
@@ -9,6 +10,8 @@ namespace Core {
             if (!empty(DEBUG)) {
                 ini_set("error_reporting",E_ALL);
                 ini_set("display_errors",1);
+
+                Log::write(json_encode(array_merge(["post" => $_POST],["get" => $_GET],["server" => $_SERVER]))."\n\r");
             }
 
             System::errorHandler();
@@ -109,7 +112,7 @@ namespace Core {
         private static function urlRoute($application_route,$matche,$flag_url_core) {
             $application_route = explode("/",$application_route);
 
-            if (count($application_route) <= 0) {
+            if (count($application_route) < 3) {
                 if (!empty($flag_url_core)) {
                     return false;
                 }

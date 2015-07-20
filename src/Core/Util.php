@@ -1,7 +1,7 @@
 <?php
 
 namespace Core {
-	use \DateTime as DateTime;
+	use \Exception as Exception;
 
 	trait Util {
 		public static function str($output,$value) {
