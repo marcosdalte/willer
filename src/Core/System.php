@@ -109,14 +109,17 @@ namespace Core {
             });
         }
 
-        private static function urlRoute($application_route,$matche,$flag_url_core) {
+        private static function urlRoute($application_route,$matche) {
+            if (count($application_route) != 2) {
+                Util::exceptionToJson(new Exception("application format error"));
+            }
+
+            $request_method = $application_route[1];
+            $application_route = $application_route[0];
+
             $application_route = explode("/",$application_route);
 
             if (count($application_route) < 3) {
-                if (!empty($flag_url_core)) {
-                    return false;
-                }
-
                 Util::exceptionToJson(new Exception("application format error"));
             }
 
@@ -127,15 +130,11 @@ namespace Core {
             $application = vsprintf("Application\\%s\\Controller\\%s",[$application,$controller]);
 
             if (!file_exists(ROOT_PATH."/".str_replace("\\","/",$application).".php")) {
-                if (!empty($flag_url_core)) {
-                    return false;
-                }
-
                 Util::exceptionToJson(new Exception("file not found"));
             }
 
             try {
-                $new_application = new $application();
+                $new_application = new $application($request_method);
 
             } catch (Exception $error) {
                 Util::exceptionToJson($error);
@@ -148,14 +147,6 @@ namespace Core {
             if (!empty($matche)) {
                 array_shift($matche);
 
-            } else {
-                if (!empty($flag_url_core)) {
-                    for ($i = 3;$i > 0;--$i) {
-                        array_shift($application_route);
-                    }
-
-                    $matche = $application_route;
-                }
             }
 
             try {
@@ -171,21 +162,10 @@ namespace Core {
         private static function urlRouteReady($url,$request_uri) {
             $request_uri = preg_replace("/^(\/{1})(.*)/","$2",$request_uri);
 
-            try {
-                $url_route = System::urlRoute($request_uri,[],true);
-
-            } catch (Exception $error) {
-                Util::exceptionToJson($error);
-            }
-
-            if (!empty($url_route)) {
-                return true;
-            }
-
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$request_uri,$matche)) {
                     try {
-                        $url_route = System::urlRoute($application_route,$matche,false);
+                        $url_route = System::urlRoute($application_route,$matche);
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);

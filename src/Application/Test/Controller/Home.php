@@ -9,7 +9,9 @@ namespace Application\Test\Controller {
     use \Application\Test\Model\Person;
 
     class Home extends Controller {
-        public function __construct() {
+        public function __construct($request_method = null) {
+            parent::__construct($request_method);
+
             $this->transaction_default = new Transaction();
         }
 
@@ -76,7 +78,7 @@ namespace Application\Test\Controller {
         }
 
         public function test() {
-            print "okoookokokokokok";
+            print "ok, test success!";
         }
 
         public function tpl($var,$var2) {
@@ -91,12 +93,12 @@ namespace Application\Test\Controller {
             // print $var2."<br/><br/>";
 
             $loader = new \Twig_Loader_Array(array(
-                'index' => 'Hello {{ name }}!',
+                "index" => "Hello {{name}} {{last_name}}!",
             ));
 
             $twig = new \Twig_Environment($loader);
 
-            echo $twig->render('index', array('name' => 'Fabien'));
+            echo $twig->render("index",array("name" => $var,"last_name" => $var2));
         }
     }
 }
