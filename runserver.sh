@@ -3,7 +3,7 @@
 ROOT_PATH="$(pwd)/src"
 ROUTER=${ROOT_PATH}"/bootstrap.php"
 HOST="0.0.0.0"
-PORT="80"
+PORT="8000"
 
 PHP=$(which php)
 

@@ -8,10 +8,10 @@ namespace Core {
     trait System {
         public static function appReady($url) {
             if (!empty(DEBUG)) {
-                ini_set("error_reporting",E_ALL);
-                ini_set("display_errors",1);
+                ini_set('error_reporting',E_ALL);
+                ini_set('display_errors',1);
 
-                Log::write(json_encode(array_merge(["post" => $_POST],["get" => $_GET],["server" => $_SERVER]))."\n\r",dirname(ROOT_PATH)."/log.txt");
+                Log::write(json_encode(array_merge(['post' => $_POST],['get' => $_GET],['server' => $_SERVER]))."\n\r",dirname(ROOT_PATH).'/log.txt');
             }
 
             System::errorHandler();
@@ -21,12 +21,12 @@ namespace Core {
 
         private static function errorHandler() {
             set_error_handler(function($errno,$errstr,$errfile,$errline,$errcontext) {
-                header("Content-Type: application/json");
+                header('Content-Type: application/json');
 
                 $exception = json_encode(array(
-    				"message" => $errstr,
-    				"file" => $errfile,
-                    "line" => $errline
+    				'message' => $errstr,
+    				'file' => $errfile,
+                    'line' => $errline
     			));
 
     			exit($exception);
@@ -36,24 +36,24 @@ namespace Core {
 
         private static function autoloadPSR0($path,$file) {
             $path = dirname(ROOT_PATH).$path;
-            $file_path = vsprintf("%s/%s",[$path,$file]);
-            $file_path = ltrim($file_path,"\\");
-            $directory_separator = "/";
-            $file = str_replace("_",$directory_separator,$file_path);
+            $file_path = vsprintf('%s/%s',[$path,$file]);
+            $file_path = ltrim($file_path,'\\');
+            $directory_separator = '/';
+            $file = str_replace('_',$directory_separator,$file_path);
 
-            $file = vsprintf("%s.php",[$file,".php"]);
+            $file = vsprintf('%s.php',[$file,'.php']);
 
             return $file;
         }
 
         private static function autoloadPSR4($path,$file) {
             $path = dirname(ROOT_PATH).$path;
-            $prefix = strstr($file,"/",true);
+            $prefix = strstr($file,'/',true);
             $prefix_len = strlen($prefix);
             $relative_class = substr($file,$prefix_len);
-            $relative_class = str_replace("\\","/",$relative_class);
+            $relative_class = str_replace('\\','/',$relative_class);
 
-            $file = vsprintf("%s%s.php",[$path,$relative_class,".php"]);
+            $file = vsprintf('%s%s.php',[$path,$relative_class,'.php']);
 
             return $file;
         }
@@ -62,23 +62,23 @@ namespace Core {
             spl_autoload_register(function ($file) {
                 spl_autoload_unregister(__FUNCTION__);
 
-                $file = str_replace("\\","/",$file);
-                $root_path_file = vsprintf("%s/%s.php",[ROOT_PATH,$file]);
+                $file = str_replace('\\','/',$file);
+                $root_path_file = vsprintf('%s/%s.php',[ROOT_PATH,$file]);
 
                 if (file_exists($root_path_file)) {
                     $file = $root_path_file;
 
                 } else  {
-                    if (!empty(strpos($root_path_file,"/Model/"))) {
-                        $file_explode = explode("/",$root_path_file);
+                    if (!empty(strpos($root_path_file,'/Model/'))) {
+                        $file_explode = explode('/',$root_path_file);
 
                         array_pop($file_explode);
 
-                        $file = implode("/",$file_explode);
-                        $file = vsprintf("%s.php",[$file,]);
+                        $file = implode('/',$file_explode);
+                        $file = vsprintf('%s.php',[$file,]);
 
                     } else {
-                        $vendor_path = Util::loadJsonFile(ROOT_PATH."/vendor.json",true);
+                        $vendor_path = Util::loadJsonFile(ROOT_PATH.'/vendor.json',true);
 
                         if (empty($vendor_path)) {
                             $file = null;
@@ -105,32 +105,32 @@ namespace Core {
                     }
                 }
 
-                include_once($file);
+                require_once($file);
             });
         }
 
         private static function urlRoute($application_route,$matche) {
             if (count($application_route) != 2) {
-                Util::exceptionToJson(new Exception("application format error"));
+                Util::exceptionToJson(new Exception('application format error'));
             }
 
             $request_method = $application_route[1];
             $application_route = $application_route[0];
 
-            $application_route = explode("/",$application_route);
+            $application_route = explode('/',$application_route);
 
             if (count($application_route) < 3) {
-                Util::exceptionToJson(new Exception("application format error"));
+                Util::exceptionToJson(new Exception('application format error'));
             }
 
             $application = $application_route[0];
             $controller = $application_route[1];
             $controller_action = $application_route[2];
 
-            $application = vsprintf("Application\\%s\\Controller\\%s",[$application,$controller]);
+            $application = vsprintf('Application\\%s\\Controller\\%s',[$application,$controller]);
 
-            if (!file_exists(ROOT_PATH."/".str_replace("\\","/",$application).".php")) {
-                Util::exceptionToJson(new Exception("file not found"));
+            if (!file_exists(ROOT_PATH.'/'.str_replace('\\','/',$application).'.php')) {
+                Util::exceptionToJson(new Exception('file not found'));
             }
 
             try {
@@ -141,7 +141,7 @@ namespace Core {
             }
 
             if (empty(method_exists($new_application,$controller_action))) {
-                Util::exceptionToJson(new Exception("method does not exist in object"));
+                Util::exceptionToJson(new Exception('method does not exist in object'));
             }
 
             if (!empty($matche)) {
@@ -160,7 +160,7 @@ namespace Core {
         }
 
         private static function urlRouteReady($url,$request_uri) {
-            $request_uri = preg_replace("/^(\/{1})(.*)/","$2",$request_uri);
+            $request_uri = preg_replace('/^(\/{1})(.*)/','$2',$request_uri);
 
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$request_uri,$matche)) {
@@ -176,7 +176,7 @@ namespace Core {
             }
 
             if (empty($url_route)) {
-                Util::exceptionToJson(new Exception("request uri not found"));
+                Util::exceptionToJson(new Exception('request uri not found'));
             }
         }
     }

@@ -9,8 +9,8 @@ namespace Core\DAO {
         private $resource;
         private $database;
         private $last_insert_id;
-        private $db_default = "default";
-        private $database_path = ROOT_PATH."/database.json";
+        private $db_default = 'default';
+        private $database_path = ROOT_PATH.'/database.json';
 
         public function __construct($database = null) {
             if (empty($database)) {
@@ -20,7 +20,7 @@ namespace Core\DAO {
             $this->database_path = Util::loadJsonFile($this->database_path,true);
 
             if (!array_key_exists($database,$this->database_path)) {
-                throw new Exception("database not found in database.json");
+                throw new Exception('database not found in database.json');
             }
 
             $this->setDatabase($database);
@@ -64,26 +64,26 @@ namespace Core\DAO {
             $database_info = $this->getDatabaseInfo();
 
             try {
-                if (in_array($database_info["driver"],["mysql","pgsql"])) {
-                    $pdo = new PDO(vsprintf("%s:host=%s;port=%s;dbname=%s",[$database_info["driver"],$database_info["host"],$database_info["port"],$database_info["name"]]),$database_info["user"],$database_info["password"]);
+                if (in_array($database_info['driver'],['mysql','pgsql'])) {
+                    $pdo = new PDO(vsprintf('%s:host=%s;port=%s;dbname=%s',[$database_info['driver'],$database_info['host'],$database_info['port'],$database_info['name']]),$database_info['user'],$database_info['password']);
 
-                } else if ($database_info["driver"] == "sqlite") {
-                    $pdo = new PDO(vsprintf("%s:%s",[$database_info["driver"],$database_info["host"]]));
+                } else if ($database_info['driver'] == 'sqlite') {
+                    $pdo = new PDO(vsprintf('%s:%s',[$database_info['driver'],$database_info['host']]));
                 }
 
-                if ($database_info["driver"] == "mysql") {
-                    if ($database_info["autocommit"] == 0) {
+                if ($database_info['driver'] == 'mysql') {
+                    if ($database_info['autocommit'] == 0) {
                         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,0);
 
-                    } else if ($database_info["autocommit"] == 1) {
+                    } else if ($database_info['autocommit'] == 1) {
                         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT,1);
                     }
                 }
 
-                if ($database_info["debug"] == 0) {
+                if ($database_info['debug'] == 0) {
                     $pdo->setAttribute(PDO::ATTR_ERRMODE,0);
 
-                } else if ($database_info["debug"] == 1) {
+                } else if ($database_info['debug'] == 1) {
                     $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
                 }
 

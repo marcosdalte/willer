@@ -27,7 +27,7 @@ namespace Core {
 
 		public static function csrf() {
 			$mt_rand = mt_rand();
-			$csrf = Util::str("%s/%s",[$_SERVER["REMOTE_ADDR"],$mt_rand]);
+			$csrf = Util::str('%s/%s',[$_SERVER['REMOTE_ADDR'],$mt_rand]);
 			$csrf = hash("whirlpool",$csrf);
 			$_SESSION["csrf"] = $csrf;
 
@@ -35,27 +35,27 @@ namespace Core {
 		}
 
 		public static function httpRedirect($url) {
-			header("Location: ".$url);
+			header('Location: '.$url);
 		}
 
 		public static function exceptionToJson($exception = null) {
-			header("Content-Type: application/json");
+			header('Content-Type: application/json');
 
 			if (empty($exception)) {
 				exit();
 			}
 
 			$exception = json_encode(array(
-				"message" => $exception->getMessage(),
-				"file" => $exception->getFile(),
-				"line" => $exception->getLine(),
+				'message' => $exception->getMessage(),
+				'file' => $exception->getFile(),
+				'line' => $exception->getLine(),
 			));
 
 			exit($exception);
 		}
 
 		public static function renderToJson($data = []) {
-			header("Content-Type: application/json");
+			header('Content-Type: application/json');
 
 			$data = json_encode($data,JSON_UNESCAPED_UNICODE);
 
@@ -64,7 +64,7 @@ namespace Core {
 
 		public static function urlRequest($url,$params_get = null,$params_post = null,$params_header = null) {
 			if (!empty($params_get)) {
-				$url = Util::str("%s/?%s",[$url,http_build_query($params_get)]);
+				$url = Util::str('%s/?%s',[$url,http_build_query($params_get)]);
 			}
 
 			if (!empty($params_post)) {

@@ -10,13 +10,13 @@ namespace Application\Test\Model\Person {
 
         protected function schema() {
             return [
-                "id" => Model::primaryKey(),
-                "first_name" => Model::char(["length" => 40]),
-                "last_name" => Model::char(["length" => 40])];
+                'id' => Model::primaryKey(),
+                'first_name' => Model::char(['length' => 40]),
+                'last_name' => Model::char(['length' => 40])];
         }
 
         protected function name() {
-            return "person";
+            return 'person';
         }
     }
 }

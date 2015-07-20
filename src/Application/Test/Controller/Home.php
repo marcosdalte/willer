@@ -24,41 +24,41 @@ namespace Application\Test\Controller {
                 $this->transaction_default->beginTransaction();
 
                 $product->save([
-                    "name" => "beer",
-                    "price" => 1.99,
+                    'name' => 'beer',
+                    'price' => 1.99,
                     ]);
 
                 $person->save([
-                    "first_name" => "wilian",
-                    "last_name" => "borba",
+                    'first_name' => 'wilian',
+                    'last_name' => 'borba',
                     ]);
 
                 // update
-                $person->first_name = "william";
+                $person->first_name = 'william';
                 $person->save();
 
                 $purchase->save([
-                    "person_id" => $person,
-                    "product_id" => $product,
-                    "quantity" => 3]);
+                    'person_id' => $person,
+                    'product_id' => $product,
+                    'quantity' => 3]);
 
                 $purchase_filter = $purchase
                     ->where([
-                        "person.id" => $person->id,
-                        "product.name" => [$product->name]
+                        'person.id' => $person->id,
+                        'product.name' => [$product->name]
                         ])
                     ->orderBy([
-                        "person.first_name" => "desc"
+                        'person.first_name' => 'desc'
                         ])
                     ->limit(1,5)
                     ->execute([
-                        "join" => "left"]);
+                        'join' => 'left']);
 
                 foreach ($purchase_filter as $i => $purchase_obj) {
-                    $purchase_obj->product_id->name = "whiskey";
+                    $purchase_obj->product_id->name = 'whiskey';
                     $purchase_obj->product_id->save();
 
-                    $purchase_obj->person_id->last_name = "rosa borba";
+                    $purchase_obj->person_id->last_name = 'rosa borba';
                     $purchase_obj->person_id->save();
 
                     $purchase_obj->quantity = 4;
@@ -78,7 +78,7 @@ namespace Application\Test\Controller {
         }
 
         public function test() {
-            print "ok, test success!";
+            print 'ok, test success!';
         }
 
         public function tpl($var,$var2) {
@@ -93,12 +93,12 @@ namespace Application\Test\Controller {
             // print $var2."<br/><br/>";
 
             $loader = new \Twig_Loader_Array(array(
-                "index" => "Hello {{name}} {{last_name}}!",
+                'index' => 'Hello {{name}} {{last_name}}!',
             ));
 
             $twig = new \Twig_Environment($loader);
 
-            echo $twig->render("index",array("name" => $var,"last_name" => $var2));
+            echo $twig->render('index',array('name' => $var,'last_name' => $var2));
         }
     }
 }

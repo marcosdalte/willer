@@ -1,12 +1,12 @@
 <?php
 
-include_once("Core/Log.php");
-include_once("Core/Util.php");
-include_once("Core/System.php");
-include_once("url.php");
+require('Core/Log.php');
+require('Core/Util.php');
+require('Core/System.php');
+require('url.php');
 
-define("REQUEST_URI",$_SERVER["REQUEST_URI"]);
-define("DEBUG",true);
-define("ROOT_PATH",__DIR__);
+define('REQUEST_URI',$_SERVER['REQUEST_URI']);
+define('DEBUG',true);
+define('ROOT_PATH',__DIR__);
 
 Core\System::appReady($url);

@@ -16,13 +16,13 @@ namespace Core {
         private function requestMethodAccess($request_method = null) {
             if (!empty($request_method)) {
                 if (is_array($request_method)) {
-                    if (!in_array($_SERVER["REQUEST_METHOD"],$request_method)) {
-                        throw new Exception("request method invalid");
+                    if (!in_array($_SERVER['REQUEST_METHOD'],$request_method)) {
+                        throw new Exception('request method invalid');
                     }
 
                 } else {
-                    if ($_SERVER["REQUEST_METHOD"] != $request_method) {
-                        throw new Exception("request method invalid");
+                    if ($_SERVER['REQUEST_METHOD'] != $request_method) {
+                        throw new Exception('request method invalid');
                     }
                 }
             }
