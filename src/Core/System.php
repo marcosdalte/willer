@@ -109,7 +109,7 @@ namespace Core {
         private static function urlRoute($application_route,$matche,$flag_url_core) {
             $application_route = explode("/",$application_route);
 
-            if (count($application_route) != 3) {
+            if (count($application_route) <= 0) {
                 if (!empty($flag_url_core)) {
                     return false;
                 }
@@ -143,8 +143,16 @@ namespace Core {
             }
 
             if (!empty($matche)) {
-                unset($matche[0]);
+                array_shift($matche);
 
+            } else {
+                if (!empty($flag_url_core)) {
+                    for ($i = 3;$i > 0;--$i) {
+                        array_shift($application_route);
+                    }
+
+                    $matche = $application_route;
+                }
             }
 
             try {
