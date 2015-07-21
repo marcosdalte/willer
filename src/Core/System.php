@@ -11,7 +11,7 @@ namespace Core {
                 ini_set('error_reporting',E_ALL);
                 ini_set('display_errors',1);
 
-                Log::write(json_encode(array_merge(['post' => $_POST],['get' => $_GET],['server' => $_SERVER]))."\n",dirname(ROOT_PATH).'/access_log.txt');
+                Log::write(json_encode(['post' => $_POST,'get' => $_GET,'server' => $_SERVER])."\n",dirname(ROOT_PATH).'/server/log/access_log.txt');
             }
 
             System::errorHandler();
@@ -35,7 +35,7 @@ namespace Core {
         }
 
         private static function autoloadPSR0($path,$file) {
-            $path = dirname(ROOT_PATH).$path;
+            $path = dirname(ROOT_PATH)."/".$path;
             $file_path = vsprintf('%s/%s',[$path,$file]);
             $file_path = ltrim($file_path,'\\');
             $directory_separator = '/';
@@ -47,7 +47,7 @@ namespace Core {
         }
 
         private static function autoloadPSR4($path,$file) {
-            $path = dirname(ROOT_PATH).$path;
+            $path = dirname(ROOT_PATH)."/".$path;
             $prefix = strstr($file,'/',true);
             $prefix_len = strlen($prefix);
             $relative_class = substr($file,$prefix_len);

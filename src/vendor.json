@@ -1,3 +1,4 @@
 {
-    "twig": "/vendor/twig/twig/lib"
+    "twig": "vendor/twig/twig/lib",
+    "bootstrap": "vendor/twbs/bootstrap/dist"
 }

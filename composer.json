@@ -6,7 +6,8 @@
     "type": "library",
     "require": {
         "php": ">=5.6",
-        "twig/twig": "^1.18"
+        "twig/twig": "^1.18",
+        "twbs/bootstrap": "^3.3@dev"
     },
     "minimum-stability": "dev",
     "license": "MIT",

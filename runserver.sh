@@ -1,7 +1,7 @@
 #! /bin/bash
 
-ROOT_PATH="$(pwd)/src"
-ROUTER=${ROOT_PATH}"/bootstrap.php"
+ROOT_PATH="$(pwd)"
+ROUTER=${ROOT_PATH}"/server/router.php"
 HOST="0.0.0.0"
 PORT="8000"
 

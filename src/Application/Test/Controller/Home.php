@@ -92,13 +92,15 @@ namespace Application\Test\Controller {
             // print $var."<br/><br/>";
             // print $var2."<br/><br/>";
 
+            $vendor_path = Util::loadJsonFile(ROOT_PATH.'/vendor.json');
+
             $loader = new \Twig_Loader_Array(array(
-                'index' => 'Hello {{name}} {{last_name}}!',
+                'index' => 'Hello {{name}} {{last_name}}! - bootstrap path: {{boostrap_path}}',
             ));
 
             $twig = new \Twig_Environment($loader);
 
-            echo $twig->render('index',array('name' => $var,'last_name' => $var2));
+            echo $twig->render('index',array('name' => $var,'last_name' => $var2,'boostrap_path' => $vendor_path->bootstrap));
         }
     }
 }
