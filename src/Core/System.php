@@ -11,7 +11,7 @@ namespace Core {
                 ini_set('error_reporting',E_ALL);
                 ini_set('display_errors',1);
 
-                Log::write(json_encode(array_merge(['post' => $_POST],['get' => $_GET],['server' => $_SERVER]))."\n\r",dirname(ROOT_PATH).'/log.txt');
+                Log::write(json_encode(array_merge(['post' => $_POST],['get' => $_GET],['server' => $_SERVER]))."\n",dirname(ROOT_PATH).'/access_log.txt');
             }
 
             System::errorHandler();
