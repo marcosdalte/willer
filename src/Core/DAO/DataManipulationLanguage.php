@@ -23,7 +23,7 @@ namespace Core\DAO {
 
         public function __construct(Transaction $transaction = null) {
             if (empty($transaction)) {
-                throw new Exception('transaction object doesn't loaded');
+                throw new Exception('transaction object do not loaded');
             }
 
             $this->setTransaction($transaction);
@@ -321,7 +321,7 @@ namespace Core\DAO {
             }
 
             if (empty($where)) {
-                throw new Exception('error in get, where don't set');
+                throw new Exception('error in get, where do not set');
             }
 
             $join = 'inner';
@@ -391,11 +391,11 @@ namespace Core\DAO {
                     }
 
                     if ($pdo_query_total->total <= 0) {
-                        throw new Exception('error in get, don't register');
+                        throw new Exception('error in get, do not register');
                     }
 
                     if ($pdo_query_total->total > 1) {
-                        throw new Exception('error in get, don't unique register');
+                        throw new Exception('error in get, do not unique register');
                     }
                 }
 
@@ -448,7 +448,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource dont initiated');
+                throw new Exception('conection resource do not initiated');
             }
 
             $flag_getdiscard = false;
@@ -590,7 +590,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource dont initiated');
+                throw new Exception('conection resource do not initiated');
             }
 
             if (!is_array($set)) {
@@ -612,7 +612,7 @@ namespace Core\DAO {
                     throw new Exception('field missing, check our schema');
                 }
 
-                $set_list[] = vsprintf('%s='%s'',[$i,$value]);
+                $set_list[] = vsprintf('%s=\'%s\'',[$i,$value]);
             }
 
             $set_list = implode(',',$set_list);
@@ -673,7 +673,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource dont initiated');
+                throw new Exception('conection resource do not initiated');
             }
 
             $table_name = $this->getTableName();
@@ -760,7 +760,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource dont initiated');
+                throw new Exception('conection resource do not initiated');
             }
 
             $join = 'inner';
