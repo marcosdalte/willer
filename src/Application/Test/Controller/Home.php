@@ -88,7 +88,7 @@ namespace Application\Test\Controller {
             $loader = new \Twig_Loader_Filesystem(ROOT_PATH.'/Application/Test/view');
 
             $twig = new \Twig_Environment($loader,[
-                "cache" => ROOT_PATH.'/Application/Test/view',
+                // "cache" => ROOT_PATH.'/Application/Test/view',
             ]);
             
             print $twig->render("home.html",[
