@@ -1,4 +1,5 @@
 {
     "twig": "vendor/twig/twig/lib",
-    "bootstrap": "vendor/twbs/bootstrap/dist"
+    "bootstrap": "vendor/twbs/bootstrap/dist",
+    "jquery": "vendor/components/jquery"
 }

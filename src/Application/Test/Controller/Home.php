@@ -7,6 +7,7 @@ namespace Application\Test\Controller {
     use \Core\DAO\Transaction;
     use \Application\Test\Model\Test;
     use \Application\Test\Model\Person;
+    use \Application\Test\load;
 
     class Home extends Controller {
         public function __construct($request_method = null) {
@@ -82,25 +83,18 @@ namespace Application\Test\Controller {
         }
 
         public function tpl($var,$var2) {
-            // $loader = new Twig_Loader_Filesystem("/path/to/templates");
-            // $twig = new Twig_Environment($loader,array(
-            //     "cache" => "/path/to/compilation_cache",
-            // ));
-            //
-            // echo $twig->render("index.html",array("name" => "Fabien"));
+            $load = load::load();
 
-            // print $var."<br/><br/>";
-            // print $var2."<br/><br/>";
+            $loader = new \Twig_Loader_Filesystem(ROOT_PATH.'/Application/Test/view');
 
-            $vendor_path = Util::loadJsonFile(ROOT_PATH.'/vendor.json');
-
-            $loader = new \Twig_Loader_Array(array(
-                'index' => 'Hello {{name}} {{last_name}}! - bootstrap path: {{boostrap_path}}',
-            ));
-
-            $twig = new \Twig_Environment($loader);
-
-            echo $twig->render('index',array('name' => $var,'last_name' => $var2,'boostrap_path' => $vendor_path->bootstrap));
+            $twig = new \Twig_Environment($loader,[
+                "cache" => ROOT_PATH.'/Application/Test/view',
+            ]);
+            
+            print $twig->render("home.html",[
+                "load" => $load,
+                "var1" => $var,
+                "var2" => $var2]);
         }
     }
 }

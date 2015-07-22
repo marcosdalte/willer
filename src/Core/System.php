@@ -11,15 +11,18 @@ namespace Core {
                 ini_set('error_reporting',E_ALL);
                 ini_set('display_errors',1);
 
-                Log::write(json_encode(['post' => $_POST,'get' => $_GET,'server' => $_SERVER])."\n",dirname(ROOT_PATH).'/server/log/access_log.txt');
+                Log::write(json_encode([
+                    'post' => $_POST,
+                    'get' => $_GET,
+                    'server' => $_SERVER])."\n",dirname(ROOT_PATH).'/server/log/access_log.txt');
             }
 
-            System::errorHandler();
+            System::errorHandlerReady();
             System::autoLoadReady();
             System::urlRouteReady($url,REQUEST_URI);
         }
 
-        private static function errorHandler() {
+        private static function errorHandlerReady() {
             set_error_handler(function($errno,$errstr,$errfile,$errline,$errcontext) {
                 header('Content-Type: application/json');
 
