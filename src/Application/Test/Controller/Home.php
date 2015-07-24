@@ -90,7 +90,7 @@ namespace Application\Test\Controller {
             $twig = new \Twig_Environment($loader,[
                 // "cache" => ROOT_PATH.'/Application/Test/view',
             ]);
-            
+
             print $twig->render("home.html",[
                 "load" => $load,
                 "var1" => $var,
