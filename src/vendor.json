@@ -1,5 +1,3 @@
 {
-    "twig": "vendor/twig/twig/lib",
-    "bootstrap": "vendor/components/bootstrap",
-    "jquery": "vendor/components/jquery"
+    "twig": "vendor/twig/twig/lib"
 }

@@ -4,10 +4,6 @@ namespace Core {
 	use \Exception as Exception;
 
 	trait Util {
-		public static function str($output,$value) {
-			return vsprintf($output,$value);
-		}
-
 		public static function get($input,$key,$default = null) {
 			if (!is_array($input) && !(is_object($input))) {
 				return $default;
@@ -21,13 +17,9 @@ namespace Core {
 			}
 		}
 
-		public static function loadJsonFile($file_path,$assoc = false) {
-        	return json_decode(file_get_contents($file_path),$assoc);
-        }
-
 		public static function csrf() {
 			$mt_rand = mt_rand();
-			$csrf = Util::str('%s/%s',[$_SERVER['REMOTE_ADDR'],$mt_rand]);
+			$csrf = vsprintf('%s/%s',[$_SERVER['REMOTE_ADDR'],$mt_rand]);
 			$csrf = hash("whirlpool",$csrf);
 			$_SESSION["csrf"] = $csrf;
 
@@ -64,7 +56,7 @@ namespace Core {
 
 		public static function urlRequest($url,$params_get = null,$params_post = null,$params_header = null) {
 			if (!empty($params_get)) {
-				$url = Util::str('%s/?%s',[$url,http_build_query($params_get)]);
+				$url = vsprintf('%s/?%s',[$url,http_build_query($params_get)]);
 			}
 
 			if (!empty($params_post)) {

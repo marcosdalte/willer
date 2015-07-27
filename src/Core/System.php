@@ -11,10 +11,7 @@ namespace Core {
                 ini_set('error_reporting',E_ALL);
                 ini_set('display_errors',1);
 
-                Log::write(json_encode([
-                    'post' => $_POST,
-                    'get' => $_GET,
-                    'server' => $_SERVER])."\n",dirname(ROOT_PATH).'/server/log/access_log.txt');
+                file_put_contents(dirname(ROOT_PATH).'/server/log/access_log.txt',json_encode(['post' => $_POST,'get' => $_GET,'server' => $_SERVER])."\n",FILE_APPEND);
             }
 
             System::errorHandlerReady();
@@ -81,7 +78,13 @@ namespace Core {
                         $file = vsprintf('%s.php',[$file,]);
 
                     } else {
-                        $vendor_path = Util::loadJsonFile(ROOT_PATH.'/vendor.json',true);
+                        $vendor_path = ROOT_PATH.'/vendor.json';
+
+                        if (!file_exists($vendor_path)) {
+                            throw new Exception('vendor.json dont find in src folder');
+                        }
+
+                        $vendor_path = json_decode(file_get_contents($vendor_path),true);
 
                         if (empty($vendor_path)) {
                             $file = null;

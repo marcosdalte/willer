@@ -17,7 +17,11 @@ namespace Core\DAO {
                 $database = $this->db_default;
             }
 
-            $this->database_path = Util::loadJsonFile($this->database_path,true);
+            if (!file_exists($this->database_path)) {
+                throw new Exception('database.json dont find in src folder');
+            }
+
+            $this->database_path = json_decode(file_get_contents($this->database_path),true);
 
             if (!array_key_exists($database,$this->database_path)) {
                 throw new Exception('database not found in database.json');

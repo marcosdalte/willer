@@ -1,6 +1,5 @@
 <?php
 
-require('Core/Log.php');
 require('Core/Util.php');
 require('Core/System.php');
 require('url.php');
