@@ -12,4 +12,8 @@ if [ $? != 0 ]; then
 	exit 1
 fi
 
+mkdir $ROOT_PATH"/server/log"
+echo "" > $ROOT_PATH"/server/log/access_log.txt"
+chmod -R 0777 ./server/log
+
 $PHP -S $HOST:$PORT -t $ROOT_PATH $ROUTER
