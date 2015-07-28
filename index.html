@@ -123,7 +123,9 @@
     
         <li class="main active"><a href="#willer-framework">Willer Framework</a></li>
         
-            <li><a href="#prerequisites-dependencies">Prerequisites  Dependencies</a></li>
+            <li><a href="#requisites-dependencies">Requisites  Dependencies</a></li>
+        
+            <li><a href="#features">Features</a></li>
         
             <li><a href="#download-install">Download  Install</a></li>
         
@@ -138,13 +140,22 @@
 
 <h1 id="willer-framework">Willer Framework</h1>
 <p>Willer is a PHP framework, it was created based on ideas coming from other frameworks like Codeigniter(php) and Django(python).</p>
-<h2 id="prerequisites-dependencies">Prerequisites &amp; Dependencies</h2>
+<h2 id="requisites-dependencies">Requisites &amp; Dependencies</h2>
 <ul>
 <li>PHP &gt;= 5.6</li>
-<li>Nginx &gt;= 1.2</li>
+<li>Twig for templating(optional)</li>
+</ul>
+<h2 id="features">Features</h2>
+<ul>
+<li>ORM(like Django)</li>
+<li>MVC(merge Codeigniter and Django)</li>
+<li>Run immediately, php server built-in integrated, like <code>./runserver.sh</code></li>
 </ul>
 <h2 id="download-install">Download &amp; Install</h2>
-<p>Make direct <code>git clone</code> the <a href="https://github.com/williamborba/willer/">GitHub project page</a> on your folder localhost</p>
+<ul>
+<li>GIT: Make direct <code>git clone</code> the <a href="https://github.com/williamborba/willer/">GitHub project page</a></li>
+<li>Composer: <code>composer create-project wborba/willer --dev</code></li>
+</ul>
 <h2 id="usage">Usage</h2>
 <p>Example with transactions, controller Application\Example\Controller\Home</p>
 <pre><code>&lt;?php
@@ -283,5 +294,5 @@ namespace Application\Example\Controller {
 
 <!--
 MkDocs version : 0.13.2
-Build Date UTC : 2015-07-12 23:01:47.093851
+Build Date UTC : 2015-07-28 03:09:31.103462
 -->

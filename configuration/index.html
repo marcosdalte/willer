@@ -123,6 +123,10 @@
     
         <li class="main active"><a href="#configuration">Configuration</a></li>
         
+            <li><a href="#requisite">Requisite</a></li>
+        
+            <li><a href="#php-server-built-in">PHP server built-in</a></li>
+        
             <li><a href="#nginx">Nginx</a></li>
         
             <li><a href="#php5-fpm">php5-fpm</a></li>
@@ -133,19 +137,26 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="configuration">Configuration</h1>
-<p>It is recommended a linux server with nginx and php5-fpm setup.</p>
-<p>Tests were conducted with <a href="http://nginx.org/">Nginx</a> version &gt;= 1.2</p>
-<p>You must use the <a href="http://php.net/">PHP</a> version &gt;= 5.6</p>
+<p>For running, open the console and runner file with command <code>./runserver.sh</code> in the directory where the project.
+<code>Willer</code> not need a web server to run, taking advantage of the built-in php service.</p>
+<h2 id="requisite">Requisite</h2>
+<ul>
+<li>You must use the <a href="http://php.net/">PHP</a> version &gt;= 5.6</li>
+<li>Linux(obvious)</li>
+</ul>
+<h2 id="php-server-built-in">PHP server built-in</h2>
+<p>Execute command <code>./runserver.sh</code></p>
 <h2 id="nginx">Nginx</h2>
-<p>enable URL rewrite(is required), on file <code>default</code> and also in other in your sites-avaliable path</p>
+<p>Enable URL rewrite(is required), on file <code>default</code> and also in other in your sites-avaliable path.</p>
 <pre><code>location /willer {
-    rewrite ^/willer/(.*) /willer/bootstrap.php?http_path=$1 last;
+    rewrite ^/willer/(.*) /willer/bootstrap.php last;
 }
 </code></pre>
 
-<p>replace <code>willer</code> by the path where its application will run.</p>
+<p>replace <code>willer</code> by the path where its application will run.
+The <code>bootstrap.php</code> file is ha index for willer.</p>
 <h2 id="php5-fpm">php5-fpm</h2>
-<p>configure the php for php-fpm</p>
+<p>configure the php for php-fpm.</p>
 <pre><code>location ~ \.php$ {
     include snippets/fastcgi-php.conf;
     fastcgi_pass unix:/var/run/php5-fpm.sock;
