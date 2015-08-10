@@ -38,7 +38,7 @@ namespace Core\DAO {
                 $this->db_escape = '\'';
 
             } else if ($db_driver == 'pgsql') {
-                $this->db_escape = '\'';
+                $this->db_escape = '"';
             }
         }
 
