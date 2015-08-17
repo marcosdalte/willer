@@ -31,7 +31,7 @@ namespace Core {
 
                 print $exception;
 
-    			exit();
+                exit();
 
             });
         }
