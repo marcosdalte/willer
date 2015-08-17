@@ -24,12 +24,14 @@ namespace Core {
                 header('Content-Type: application/json');
 
                 $exception = json_encode(array(
-    				'message' => $errstr,
-    				'file' => $errfile,
+                    'message' => $errstr,
+                    'file' => $errfile,
                     'line' => $errline
-    			));
+                ));
 
-    			exit($exception);
+                print $exception;
+
+    			exit();
 
             });
         }
