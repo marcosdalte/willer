@@ -168,6 +168,10 @@ namespace Core {
         private static function urlRouteReady($url,$request_uri) {
             $request_uri = preg_replace('/^(\/{1})(.*)/','$2',$request_uri);
 
+            if ($request_uri_ = strstr($request_uri,'?',true)) {
+                $request_uri = $request_uri_;
+            }
+
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$request_uri,$matche)) {
                     try {
