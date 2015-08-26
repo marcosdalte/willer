@@ -2,7 +2,6 @@
 
 namespace Core {
     use \Exception as Exception;
-    use \Core\Log;
     use \Core\Util;
 
     trait System {
@@ -24,12 +23,14 @@ namespace Core {
                 header('Content-Type: application/json');
 
                 $exception = json_encode(array(
-    				'message' => $errstr,
-    				'file' => $errfile,
+                    'message' => $errstr,
+                    'file' => $errfile,
                     'line' => $errline
-    			));
+                ));
 
-    			exit($exception);
+                print $exception;
+
+                exit();
 
             });
         }
@@ -167,6 +168,10 @@ namespace Core {
 
         private static function urlRouteReady($url,$request_uri) {
             $request_uri = preg_replace('/^(\/{1})(.*)/','$2',$request_uri);
+
+            if ($request_uri_ = strstr($request_uri,'?',true)) {
+                $request_uri = $request_uri_;
+            }
 
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$request_uri,$matche)) {
