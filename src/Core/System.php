@@ -2,6 +2,7 @@
 
 namespace Core {
     use \Exception as Exception;
+    use \Core\Log;
     use \Core\Util;
 
     trait System {
@@ -23,15 +24,14 @@ namespace Core {
                 header('Content-Type: application/json');
 
                 $exception = json_encode(array(
-                    'message' => $errstr,
-                    'file' => $errfile,
+    				'message' => $errstr,
+    				'file' => $errfile,
                     'line' => $errline
-                ));
+    			));
 
-                print $exception;
+                print_r($exception);
 
-                exit();
-
+    			exit();
             });
         }
 
@@ -157,32 +157,30 @@ namespace Core {
             }
 
             try {
-                $new_application->$controller_action(...$matche);
+                return $new_application->$controller_action(...$matche);
 
             } catch (Exception $error) {
                 Util::exceptionToJson($error);
             }
-
-            return true;
         }
 
         private static function urlRouteReady($url,$request_uri) {
             $request_uri = preg_replace('/^(\/{1})(.*)/','$2',$request_uri);
 
-            if ($request_uri_ = strstr($request_uri,'?',true)) {
-                $request_uri = $request_uri_;
+            if ($request_uri_strstr = strstr($request_uri,'?',true)) {
+                $request_uri = $request_uri_strstr;
             }
+
+            $url_route = null;
 
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$request_uri,$matche)) {
                     try {
-                        $url_route = System::urlRoute($application_route,$matche);
+                        return System::urlRoute($application_route,$matche);
 
                     } catch (Exception $error) {
                         Util::exceptionToJson($error);
                     }
-
-                    break;
                 }
             }
 

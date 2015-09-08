@@ -18,9 +18,7 @@ namespace Core {
 		}
 
 		public static function csrf() {
-			$mt_rand = mt_rand();
-			$csrf = vsprintf('%s/%s',[$_SERVER['REMOTE_ADDR'],$mt_rand]);
-			$csrf = hash("whirlpool",$csrf);
+			$csrf = md5(uniqid(mt_rand(),true));
 			$_SESSION["csrf"] = $csrf;
 
 			return $csrf;
@@ -34,16 +32,19 @@ namespace Core {
 			header('Content-Type: application/json');
 
 			if (empty($exception)) {
-				exit();
+				throw new Exception('Value is null to exception');
 			}
 
 			$exception = json_encode(array(
 				'message' => $exception->getMessage(),
 				'file' => $exception->getFile(),
 				'line' => $exception->getLine(),
+				'success' => false,
 			));
 
-			exit($exception);
+			print_r($exception);
+
+			exit();
 		}
 
 		public static function renderToJson($data = []) {
@@ -51,7 +52,9 @@ namespace Core {
 
 			$data = json_encode($data,JSON_UNESCAPED_UNICODE);
 
-			exit($data);
+			print_r($data);
+
+			exit();
 		}
 
 		public static function urlRequest($url,$params_get = null,$params_post = null,$params_header = null) {

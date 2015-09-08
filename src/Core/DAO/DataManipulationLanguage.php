@@ -9,6 +9,7 @@ namespace Core\DAO {
         private $db_escape;
         private $related;
         private $limit;
+        private $limit_value;
         private $order_by;
         private $primary_key;
         private $last_insert_id;
@@ -17,7 +18,6 @@ namespace Core\DAO {
         private $where;
         private $where_value;
         private $query;
-        private $query_value;
 
         private $flag_getnotest;
 
@@ -40,6 +40,8 @@ namespace Core\DAO {
             } else if ($db_driver == 'pgsql') {
                 $this->db_escape = '"';
             }
+
+            $this->query = [];
         }
 
         private function getClassName() {
@@ -80,6 +82,17 @@ namespace Core\DAO {
 
         private function setLimit($limit) {
             $this->limit = $limit;
+        }
+
+        private function getLimitValue() {
+            return $this->limit_value;
+        }
+
+        private function setLimitValue($page,$limit) {
+            $this->limit_value = [
+                'page' => $page,
+                'limit' => $limit,
+            ];
         }
 
         private function getOrderBy() {
@@ -142,16 +155,11 @@ namespace Core\DAO {
             return $this->query;
         }
 
-        private function setQuery($query) {
-            $this->query = $query;
-        }
-
-        private function getQueryValue() {
-            return $this->query_value;
-        }
-
-        private function setQueryValue($query_value) {
-            $this->query_value = $query_value;
+        private function setQuery($sql,$value) {
+            $this->query[] = [
+                'sql' => $sql,
+                'value' => $value
+            ];
         }
 
         protected function definePrimaryKey($column = null) {
@@ -202,15 +210,21 @@ namespace Core\DAO {
         public function limit($page = 1,$limit = 1000) {
             $limit_value = null;
 
+            $page = intval($page);
+            $limit = intval($limit);
+
             if ($page <= 1) {
+                $page = 1;
+
                 $limit_value = vsprintf('limit %s offset 0',[$limit,]);
 
             } else {
-                $page -= 1;
-                $page_x_limit = $page * $limit;
+                $page_ = $page - 1;
+                $page_x_limit = $page_ * $limit;
                 $limit_value = vsprintf('limit %s offset %s',[$limit,$page_x_limit]);
             }
 
+            $this->setLimitValue($page,$limit);
             $this->setLimit($limit_value);
 
             return $this;
@@ -251,8 +265,6 @@ namespace Core\DAO {
                     $query_list = $this->related($table_related,$query_list);
                 }
             }
-
-
 
             return $query_list;
         }
@@ -348,7 +360,6 @@ namespace Core\DAO {
                 foreach ($related['column'] as $i => $column) {
                     $related_column[] = implode(',',$column);
                 }
-
             }
 
             $where_escape_list = [];
@@ -438,8 +449,7 @@ namespace Core\DAO {
             $this->setWhereUnique($where_escape_list);
             $this->setWhereUniqueValue($query_value_list);
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
+            $this->setQuery($query,$query_value_list);
 
             return $related_fetch;
         }
@@ -576,8 +586,7 @@ namespace Core\DAO {
                 }
             }
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value_list);
+            $this->setQuery($query,$query_value_list);
 
             return $this;
         }
@@ -587,14 +596,14 @@ namespace Core\DAO {
                 throw new Exception('set update is null');
             }
 
+            if (!is_array($set)) {
+                throw new Exception('set is not a list');
+            }
+
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
                 throw new Exception('conection resource do not initiated');
-            }
-
-            if (!is_array($set)) {
-                throw new Exception('set is not a list');
             }
 
             $table_name = $this->getTableName();
@@ -663,8 +672,7 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value);
+            $this->setQuery($query,$query_value);
 
             return $this;
         }
@@ -750,8 +758,7 @@ namespace Core\DAO {
                 throw new Exception($error);
             }
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value);
+            $this->setQuery($query,$query_value);
 
             return $this;
         }
@@ -820,10 +827,29 @@ namespace Core\DAO {
                 $order_by = vsprintf('order by %s',[implode(',',$order_by),]);
             }
 
+            $query_total = vsprintf('select count(1) total from %s %s %s',[$table_name_with_escape,$related_join,$where]);
+
+            $this->setQuery($query_total,$query_value);
+
             $query = vsprintf('select %s from %s %s %s %s %s',[$column_list,$table_name_with_escape,$related_join,$where,$order_by,$limit]);
 
-            $this->setQuery($query);
-            $this->setQueryValue($query_value);
+            $this->setQuery($query,$query_value);
+
+            try {
+                $pdo_query_total = $transaction_resource->prepare($query_total);
+
+                $transaction_resource_error_info = $transaction_resource->errorInfo();
+
+                if ($transaction_resource_error_info[0] != '00000') {
+                    throw new Exception($transaction_resource_error_info[2]);
+                }
+
+                $pdo_query_total->execute($query_value);
+                $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
+
+            } catch (Exception $error) {
+                throw new Exception($error);
+            }
 
             try {
                 $pdo_query = $transaction_resource->prepare($query);
@@ -867,7 +893,25 @@ namespace Core\DAO {
                 }
             }
 
-            return $query_fetch_all_list;
+            $limit_value = $this->getLimitValue();
+            $register_total = $pdo_query_total->total;
+            $register_perpage = $limit_value['limit'];
+            $page_total = ceil($register_total / $register_perpage);
+            $page_current = $limit_value['page'] >= $page_total ? $page_total : $limit_value['page'];
+            $page_next = $page_current + 1 >= $page_total ? $page_total : $page_current + 1;
+            $page_previous = $page_current - 1 <= 0 ? 1 : $page_current - 1;
+
+            $result = [
+                'register_total' => $pdo_query_total->total,
+                'register_perpage' => $register_perpage,
+                'page_total' => $page_total,
+                'page_current' => $page_current,
+                'page_next' => $page_next,
+                'page_previous' => $page_previous,
+                'data' => $query_fetch_all_list,
+            ];
+
+            return $result;
         }
 
         private function relatedFetch($obj_column_list,$obj_schema_dict,$fetch,$transaction,$obj) {
@@ -897,14 +941,10 @@ namespace Core\DAO {
             return $obj;
         }
 
-        public function lastQuery() {
+        public function dumpQuery() {
             $query = $this->getQuery();
-            $query_value = $this->getQueryValue();
 
-            return (object) [
-                'query' => $query,
-                'query_value' => $query_value,
-            ];
+            return $query;
         }
 
         public function __destruct() {

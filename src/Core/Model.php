@@ -28,7 +28,7 @@ namespace Core {
 
         private static function filterRule($rule_list,$value,$function_name,$function_filter) {
             if (empty($rule_list)) {
-                if (empty($value)) {
+                if ($function_name != 'boolean' && empty($value)) {
                     throw new Exception('field value is missing');
                 }
 
@@ -281,9 +281,11 @@ namespace Core {
                         $filter_var_option = [
                             'options' => [
                                 'default' => null],
-                            'flags' => []];
+                            'flags' => FILTER_NULL_ON_FAILURE];
 
-                        if (!filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option)) {
+                        $filter_var = filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option);
+
+                        if ($filter_var === null) {
                             throw new Exception('booleanfield value incorrect');
                         }
 
