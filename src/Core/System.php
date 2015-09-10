@@ -29,9 +29,9 @@ namespace Core {
                     'line' => $errline
     			));
 
-                print_r($exception);
+                print $exception;
 
-    			exit();
+                exit();
             });
         }
 

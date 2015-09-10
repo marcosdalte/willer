@@ -42,7 +42,7 @@ namespace Core {
 				'success' => false,
 			));
 
-			print_r($exception);
+			print $exception;
 
 			exit();
 		}
@@ -52,7 +52,7 @@ namespace Core {
 
 			$data = json_encode($data,JSON_UNESCAPED_UNICODE);
 
-			print_r($data);
+			print $data;
 
 			exit();
 		}
