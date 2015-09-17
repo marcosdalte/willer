@@ -13,6 +13,8 @@ matrix:
     - php: hhvm
   fast_finish: true
 
+script: ./runserver.sh
+
 notifications:
     on_success: never
     on_failure: always
