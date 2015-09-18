@@ -13,7 +13,7 @@ matrix:
     - php: hhvm
   fast_finish: true
 
-script: phpunit
+script: phpunit --colors=always --bootstrap tests/bootstrap.php tests
 
 notifications:
     on_success: never
