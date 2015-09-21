@@ -2,6 +2,7 @@
 
 require(ROOT_PATH.'/src/Core/Util.php');
 
+use \Exception as Exception;
 use \Core\Util;
 
 class UtilTest extends PHPUnit_Framework_TestCase {
