@@ -36,13 +36,13 @@ namespace Core {
         }
 
         private static function autoloadPSR0($path,$file) {
-            $path = dirname(ROOT_PATH).'/'.$path;
+            $root_path = dirname(ROOT_PATH);
             $file_path = vsprintf('%s/%s',[$path,$file]);
             $file_path = ltrim($file_path,'\\');
             $directory_separator = '/';
             $file = str_replace('_',$directory_separator,$file_path);
 
-            $file = vsprintf('%s.php',[$file,'.php']);
+            $file = vsprintf('%s/%s.php',[$root_path,$file,'.php']);
 
             return $file;
         }
