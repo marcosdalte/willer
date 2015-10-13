@@ -28,7 +28,7 @@ namespace Core {
 
         private static function filterRule($rule_list,$value,$function_name,$function_filter) {
             if (empty($rule_list)) {
-                if ($function_name != 'boolean' && empty($value)) {
+                if ($function_name != 'boolean' && $function_name != 'integer' && empty($value)) {
                     throw new Exception('field value is missing');
                 }
 
@@ -53,7 +53,7 @@ namespace Core {
                 }
 
                 if (empty($rule_null)) {
-                    if (empty($value)) {
+                    if ($value !== 0 && empty($value)) {
                         throw new Exception('value can not be null');
                     }
                 }
@@ -136,10 +136,10 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null],
+                                'default' => false],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_INT,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_INT,$filter_var_option) === false) {
                             throw new Exception('primarykey value incorrect');
                         }
 
@@ -191,11 +191,11 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,
+                                'default' => false,
                                 'regexp' => '/^[\w\W\d\D]+$/'],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
                             throw new Exception('charfield value incorrect');
                         }
 
@@ -221,11 +221,11 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,
+                                'default' => false,
                                 'regexp' => '/^[\w\W\d\D]+$/'],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
                             throw new Exception('textfield value incorrect');
                         }
 
@@ -251,10 +251,10 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null],
+                                'default' => false],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_INT,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_INT,$filter_var_option) === false) {
                             throw new Exception('integerfield value incorrect');
                         }
 
@@ -280,12 +280,10 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null],
+                                'default' => false],
                             'flags' => FILTER_NULL_ON_FAILURE];
 
-                        $filter_var = filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option);
-
-                        if ($filter_var === null) {
+                        if (filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option) === false) {
                             throw new Exception('booleanfield value incorrect');
                         }
 
@@ -311,11 +309,11 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,
+                                'default' => false,
                                 'regexp' => '/^([0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]))[ ]([01][0-9]|2[0123]):([012345][0-9]):([012345][0-9])$|^((0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4})[ ]([01][0-9]|2[0123]):([012345][0-9]):([012345][0-9])$/'],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
                             throw new Exception('datetimefield value incorrect');
                         }
 
@@ -341,15 +339,15 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,
+                                'default' => false,
                                 'regexp' => '/^([0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]))$|^((0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4})$/'],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
                             throw new Exception('datefield value incorrect');
                         }
 
-                        $value;
+                        return $value;
                     });
 
                 } catch (Exception $error) {
@@ -371,11 +369,11 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,
+                                'default' => false,
                                 'regexp' => '/^([01][0-9]|2[0123]):([012345][0-9]):([012345][0-9])$/'],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
                             throw new Exception('timefield value incorrect');
                         }
 
@@ -401,11 +399,11 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,
+                                'default' => false,
                                 'decimal' => '.'],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_FLOAT,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_FLOAT,$filter_var_option) === false) {
                             throw new Exception('floatfield value incorrect');
                         }
 
@@ -431,10 +429,10 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,],
+                                'default' => false,],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_EMAIL,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_EMAIL,$filter_var_option) === false) {
                             throw new Exception('emailfield value incorrect');
                         }
 
@@ -460,10 +458,10 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,],
+                                'default' => false,],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_IP,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_IP,$filter_var_option) === false) {
                             throw new Exception('ipfield value incorrect');
                         }
 
@@ -489,10 +487,10 @@ namespace Core {
                     $filter_rule = self::filterRule($rule,$value,__function__,function($value) {
                         $filter_var_option = [
                             'options' => [
-                                'default' => null,],
+                                'default' => false,],
                             'flags' => []];
 
-                        if (!filter_var($value,FILTER_VALIDATE_URL,$filter_var_option)) {
+                        if (filter_var($value,FILTER_VALIDATE_URL,$filter_var_option) === false) {
                             throw new Exception('urlfield value incorrect');
                         }
 

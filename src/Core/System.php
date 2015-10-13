@@ -15,7 +15,6 @@ namespace Core {
             }
 
             System::errorHandlerReady();
-            System::autoLoadReady();
             System::urlRouteReady($url,REQUEST_URI);
         }
 
@@ -32,87 +31,6 @@ namespace Core {
                 print $exception;
 
                 exit();
-            });
-        }
-
-        private static function autoloadPSR0($path,$file) {
-            $root_path = dirname(ROOT_PATH);
-            $file_path = vsprintf('%s/%s',[$path,$file]);
-            $file_path = ltrim($file_path,'\\');
-            $directory_separator = '/';
-            $file = str_replace('_',$directory_separator,$file_path);
-
-            $file = vsprintf('%s/%s.php',[$root_path,$file,'.php']);
-
-            return $file;
-        }
-
-        private static function autoloadPSR4($path,$file) {
-            $path = dirname(ROOT_PATH).'/'.$path;
-            $prefix = strstr($file,'/',true);
-            $prefix_len = strlen($prefix);
-            $relative_class = substr($file,$prefix_len);
-            $relative_class = str_replace('\\','/',$relative_class);
-
-            $file = vsprintf('%s%s.php',[$path,$relative_class,'.php']);
-
-            return $file;
-        }
-
-        private static function autoLoadReady() {
-            spl_autoload_register(function ($file) {
-                spl_autoload_unregister(__FUNCTION__);
-
-                $file = str_replace('\\','/',$file);
-                $root_path_file = vsprintf('%s/%s.php',[ROOT_PATH,$file]);
-
-                if (file_exists($root_path_file)) {
-                    $file = $root_path_file;
-
-                } else  {
-                    if (!empty(strpos($root_path_file,'/Model/'))) {
-                        $file_explode = explode('/',$root_path_file);
-
-                        array_pop($file_explode);
-
-                        $file = implode('/',$file_explode);
-                        $file = vsprintf('%s.php',[$file,]);
-
-                    } else {
-                        $vendor_path = ROOT_PATH.'/vendor.json';
-
-                        if (!file_exists($vendor_path)) {
-                            throw new Exception('vendor.json dont find in src folder');
-                        }
-
-                        $vendor_path = json_decode(file_get_contents($vendor_path),true);
-
-                        if (empty($vendor_path)) {
-                            $file = null;
-
-                        } else {
-                            foreach ($vendor_path as $path) {
-                                $file_path = System::autoloadPSR0($path,$file);
-
-                                if (file_exists($file_path)) {
-                                    $file = $file_path;
-
-                                    break;
-                                }
-
-                                $file_path = System::autoloadPSR4($path,$file);
-
-                                if (file_exists($file_path)) {
-                                    $file = $file_path;
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                require_once($file);
             });
         }
 
@@ -153,7 +71,6 @@ namespace Core {
 
             if (!empty($matche)) {
                 array_shift($matche);
-
             }
 
             try {
