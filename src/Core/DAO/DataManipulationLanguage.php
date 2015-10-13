@@ -278,16 +278,16 @@ namespace Core\DAO {
             } else {
                 $where_query = [];
 
-                foreach ($where as $i => $value) {
+                foreach ($where as $key => $value) {
                     $where_value = null;
 
                     if (empty($value)) {
-                        $where_value = vsprintf('%s is null',[$i,]);
+                        $where_value = vsprintf('%s is null',[$key,]);
 
                     } else if (!is_array($value)) {
                         $where_value_list[] = $value;
 
-                        $where_value = vsprintf('%s=?',[$i,]);
+                        $where_value = vsprintf('%s=?',[$key,]);
 
                     } else if (is_array($value)) {
                         $where_value_list = array_merge($where_value_list,$value);
@@ -295,7 +295,7 @@ namespace Core\DAO {
                             return '?';
                         },$value));
 
-                        $where_value = vsprintf('%s in(%s)',[$i,$value]);
+                        $where_value = vsprintf('%s in(%s)',[$key,$value]);
 
                     } else {
                         throw new Exception('filter query error');
@@ -304,22 +304,11 @@ namespace Core\DAO {
                     $where_query[] = $where_value;
                 }
 
-                $get_where = $this->getWhere();
-                $get_where_value = $this->getWhereValue();
-
-                if (empty($get_where)) {
-                    $get_where = [];
-                }
-
-                if (empty($get_where_value)) {
-                    $get_where_value = [];
-                }
-
                 $this->setWhereUnique(null);
                 $this->setWhereUniqueValue(null);
 
-                $this->setWhere(array_merge($get_where,$where_query));
-                $this->setWhereValue(array_merge($get_where_value,$where_value_list));
+                $this->setWhere($where_query);
+                $this->setWhereValue($where_value_list);
             }
 
             return $this;
@@ -610,7 +599,8 @@ namespace Core\DAO {
             $table_column = $this->getTableColumn();
             $table_schema = $this->getTableSchema();
 
-            $set_list = [];
+            $set_escape = [];
+            $query_value_update_list = [];
 
             foreach ($set as $i => $value) {
                 if (!array_key_exists($i,$table_column)) {
@@ -621,15 +611,26 @@ namespace Core\DAO {
                     throw new Exception('field missing, check our schema');
                 }
 
-                $set_list[] = vsprintf('%s=\'%s\'',[$i,$value]);
+                $method = $table_schema[$i]->method;
+                $rule = $table_schema[$i]->rule;
+
+                try {
+                    $value = $this->$method($rule,$value,true);
+
+                } catch (Exception $error) {
+                    throw new Exception($error);
+                }
+
+                $set_escape[] = vsprintf('%s=?',[$i,]);
+                $query_value_update_list[] = $value;
             }
 
-            $set_list = implode(',',$set_list);
+            $set_escape = implode(',',$set_escape);
 
             $table_name_with_escape = vsprintf('%s%s%s',[$this->db_escape,$table_name,$this->db_escape]);
 
             $where = '';
-            $query_value = [];
+            $query_value = array_merge([],$query_value_update_list);
 
             $get_where_unique = $this->getWhereUnique();
 
@@ -655,7 +656,7 @@ namespace Core\DAO {
                 }
             }
 
-            $query = vsprintf('update %s set %s %s',[$table_name_with_escape,$set_list,$where]);
+            $query = vsprintf('update %s set %s %s',[$table_name_with_escape,$set_escape,$where]);
 
             try {
                 $query = $transaction_resource->prepare($query);

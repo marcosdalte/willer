@@ -9,6 +9,11 @@
         "twig/twig": "1.x",
         "phpunit/phpunit":"5.x"
     },
+    "autoload": {
+        "psr-4": {
+            "": "src"
+        }
+    },
     "minimum-stability": "dev",
     "license": "MIT",
     "authors": [

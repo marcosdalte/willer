@@ -2,6 +2,7 @@
 
 namespace Core {
 	use \Exception as Exception;
+	use \SplFileInfo as SplFileInfo;
 
 	trait Util {
 		public static function get($input,$key,$default = null) {
@@ -26,6 +27,42 @@ namespace Core {
 
 		public static function httpRedirect($url) {
 			header('Location: '.$url);
+		}
+
+		public static function load($application_path = null) {
+			$scandir_root = array_diff(scandir(ROOT_PATH),array('..','.'));
+
+			$scandir_application = null;
+
+			if (!empty($application_path)) {
+				$scandir_application = array_diff(scandir(vsprintf('%s/Application/%s',[ROOT_PATH,$application_path])),array('..','.'));
+			}
+
+			$load_var = [];
+
+			foreach ($scandir_root as $file) {
+				$spl_file_info = new SplFileInfo($file);
+
+				if ($spl_file_info->getExtension() == 'json') {
+					$key = $spl_file_info->getBasename('.json');
+
+					$load_var[$key] = json_decode(file_get_contents(vsprintf('%s/%s',[ROOT_PATH,$file])),true);
+				}
+			}
+
+			if (!empty($scandir_application)) {
+				foreach ($scandir_application as $file) {
+					$spl_file_info = new SplFileInfo($file);
+
+					if ($spl_file_info->getExtension() == 'json') {
+						$key = vsprintf('%s_%s',[$application_path,$spl_file_info->getBasename('.json')]);
+
+						$load_var[$key] = json_decode(file_get_contents(vsprintf('%s/Application/%s',[ROOT_PATH,$file])),true);
+					}
+				}
+			}
+
+			return $load_var;
 		}
 
 		public static function exceptionToJson($exception = null) {
@@ -55,29 +92,6 @@ namespace Core {
 			print $data;
 
 			exit();
-		}
-
-		public static function urlRequest($url,$params_get = null,$params_post = null,$params_header = null) {
-			if (!empty($params_get)) {
-				$url = vsprintf('%s/?%s',[$url,http_build_query($params_get)]);
-			}
-
-			if (!empty($params_post)) {
-	            $params_post = http_build_query($params_post);
-	        }
-
-			$http = curl_init();
-			curl_setopt($http,CURLOPT_URL,$url);
-			curl_setopt($http,CURLOPT_POST,1);
-			curl_setopt($http,CURLOPT_POSTFIELDS,$params_post);
-			curl_setopt($http,CURLOPT_HEADER,0);
-			curl_setopt($http,CURLOPT_HTTPHEADER,$params_header);
-			curl_setopt($http,CURLOPT_RETURNTRANSFER,true);
-			curl_setopt($http,CURLOPT_TIMEOUT,10);
-			$output = curl_exec($http);
-			curl_close($http);
-
-			return json_decode($output,true);
 		}
 	}
 }
