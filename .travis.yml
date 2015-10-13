@@ -15,7 +15,6 @@ matrix:
 
 script:
   - phpunit --bootstrap tests/bootstrap.php tests
-  - ./runserver.sh
 
 notifications:
     on_success: never
