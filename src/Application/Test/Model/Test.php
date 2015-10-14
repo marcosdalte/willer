@@ -2,7 +2,6 @@
 
 namespace Application\Test\Model\Test {
     use \Core\Model;
-    use \Application\Test\Model\SubTest;
 
     class Test extends Model {
         public $id;

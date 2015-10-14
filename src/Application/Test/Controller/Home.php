@@ -1,7 +1,6 @@
 <?php
 
 namespace Application\Test\Controller {
-    use \Exception as Exception;
     use \Core\Controller;
 
     class Home extends Controller {
