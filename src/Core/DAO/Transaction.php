@@ -3,7 +3,6 @@
 namespace Core\DAO {
     use \PDO as PDO;
     use \Exception as Exception;
-    use \Core\Util;
 
     class Transaction {
         private $resource;
