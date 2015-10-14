@@ -2,7 +2,6 @@
 
 namespace Core {
     use \Exception as Exception;
-    use \Core\Log;
     use \Core\Util;
 
     trait System {
