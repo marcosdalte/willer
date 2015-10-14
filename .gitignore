@@ -2,7 +2,7 @@
 .project
 dummy.php
 *.rtpl.php
-.idea
 *.txt
+.travis.yml
 composer.lock
 /vendor/
