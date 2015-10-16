@@ -57,7 +57,7 @@ namespace Core {
 					if ($spl_file_info->getExtension() == 'json') {
 						$key = vsprintf('%s_%s',[$application_path,$spl_file_info->getBasename('.json')]);
 
-						$load_var[$key] = json_decode(file_get_contents(vsprintf('%s/Application/%s',[ROOT_PATH,$file])),true);
+						$load_var[$key] = json_decode(file_get_contents(vsprintf('%s/Application/%s/%s',[ROOT_PATH,$application_path,$file])),true);
 					}
 				}
 			}
