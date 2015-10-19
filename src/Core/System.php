@@ -81,7 +81,7 @@ namespace Core {
         }
 
         private static function urlRouteReady($url,$request_uri) {
-            $request_uri = preg_replace('/^(\/{1})(.*)/','$2',$request_uri);
+            $request_uri = str_replace(URL_PREFIX,'',$request_uri);
 
             if ($request_uri_strstr = strstr($request_uri,'?',true)) {
                 $request_uri = $request_uri_strstr;
