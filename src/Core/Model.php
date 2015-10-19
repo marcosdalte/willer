@@ -101,28 +101,14 @@ namespace Core {
                 }
             }
 
-            if (empty($rule_null)) {
-                try {
-                    $value = $function_filter($value);
+            try {
+                $value = $function_filter($value);
 
-                } catch (Exception $error) {
-                    throw new Exception($error);
-                }
-
-                return $value;
-
-            } else if (!empty($rule_null) && !empty($value)) {
-                try {
-                    $value = $function_filter($value);
-
-                } catch (Exception $error) {
-                    throw new Exception($error);
-                }
-
-                return $value;
+            } catch (Exception $error) {
+                throw new Exception($error);
             }
 
-            return null;
+            return $value;
         }
 
         protected static function primaryKey($rule = [],$value = null,$flag = false) {
@@ -283,7 +269,7 @@ namespace Core {
                                 'default' => false],
                             'flags' => FILTER_NULL_ON_FAILURE];
 
-                        if (filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option) === false) {
+                        if (filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option) === null) {
                             throw new Exception('booleanfield value incorrect');
                         }
 
