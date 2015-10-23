@@ -29,13 +29,15 @@ namespace Core {
 			header('Location: '.$url);
 		}
 
-		public static function load($application_path = null) {
-			$scandir_root = array_diff(scandir(ROOT_PATH),array('..','.'));
+		public static function load($application_path = null,$exclude_list = []) {
+			$exclude_list = array_merge($exclude_list,['..','.']);
+
+			$scandir_root = array_diff(scandir(ROOT_PATH),$exclude_list);
 
 			$scandir_application = null;
 
 			if (!empty($application_path)) {
-				$scandir_application = array_diff(scandir(vsprintf('%s/Application/%s',[ROOT_PATH,$application_path])),array('..','.'));
+				$scandir_application = array_diff(scandir(vsprintf('%s/Application/%s',[ROOT_PATH,$application_path])),$exclude_list);
 			}
 
 			$load_var = [];
@@ -63,25 +65,6 @@ namespace Core {
 			}
 
 			return $load_var;
-		}
-
-		public static function exceptionToJson($exception = null) {
-			header('Content-Type: application/json');
-
-			if (empty($exception)) {
-				throw new Exception('Value is null to exception');
-			}
-
-			$exception = json_encode(array(
-				'message' => $exception->getMessage(),
-				'file' => $exception->getFile(),
-				'line' => $exception->getLine(),
-				'success' => false,
-			));
-
-			print $exception;
-
-			exit();
 		}
 
 		public static function renderToJson($data = []) {

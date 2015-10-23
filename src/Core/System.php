@@ -2,40 +2,51 @@
 
 namespace Core {
     use \Exception as Exception;
-    use \Core\Util;
+    use \Core\Exception\ExceptionHandler;
 
-    trait System {
-        public static function appReady($url) {
-            if (!empty(DEBUG)) {
-                ini_set('error_reporting',E_ALL);
-                ini_set('display_errors',1);
-
-                file_put_contents(dirname(ROOT_PATH).'/server/log/access_log.txt',json_encode(['post' => $_POST,'get' => $_GET,'server' => $_SERVER])."\n",FILE_APPEND);
-            }
-
-            System::errorHandlerReady();
-            System::urlRouteReady($url,REQUEST_URI);
+    class System {
+        public function __construct($url) {
+            $this->readyApp($url);
         }
 
-        private static function errorHandlerReady() {
-            set_error_handler(function($errno,$errstr,$errfile,$errline,$errcontext) {
-                header('Content-Type: application/json');
+        private function readyApp($url) {
+            $this->readyErrorHandler();
+            $this->readyUrlRoute($url,REQUEST_URI);
+        }
 
-                $exception = json_encode(array(
-    				'message' => $errstr,
-    				'file' => $errfile,
-                    'line' => $errline
-    			));
+        private function readyErrorHandler() {
+            $whoops_run = new \Whoops\Run();
+            $whoops_pretty_page_handler = new \Whoops\Handler\PrettyPageHandler();
+            $whoops_json_response_handler = new \Whoops\Handler\JsonResponseHandler();
 
-                print $exception;
+            $whoops_run->pushHandler($whoops_pretty_page_handler);
+            $whoops_run->pushHandler(function ($exception,$inspector,$whoops_run) {
+                new ExceptionHandler($inspector->getException()->getMessage());
 
-                exit();
+                $inspector->getFrames()->map(function ($frame) {
+                    $frame_function = $frame->getFunction();
+
+                    if (!empty($frame_function)) {
+                        $frame->addComment($frame_function,'Function');
+                    }
+
+                    return $frame;
+                });
             });
+
+            $whoops_run->register();
+
+            $whoops_pretty_page_handler->addDataTable('Willer Contants',array(
+                'URL_PREFIX' => URL_PREFIX,
+                'REQUEST_URI' => REQUEST_URI,
+                'DEBUG' => DEBUG,
+                'ROOT_PATH' => ROOT_PATH
+            ));
         }
 
-        private static function urlRoute($application_route,$matche) {
+        private function urlRoute($application_route,$matche) {
             if (count($application_route) != 2) {
-                Util::exceptionToJson(new Exception('application format error'));
+                throw new Exception('applicationFormatError');
             }
 
             $request_method = $application_route[1];
@@ -44,7 +55,7 @@ namespace Core {
             $application_route = explode('/',$application_route);
 
             if (count($application_route) < 3) {
-                Util::exceptionToJson(new Exception('application format error'));
+                throw new Exception('applicationFormatError');
             }
 
             $application = $application_route[0];
@@ -54,18 +65,18 @@ namespace Core {
             $application = vsprintf('Application\\%s\\Controller\\%s',[$application,$controller]);
 
             if (!file_exists(ROOT_PATH.'/'.str_replace('\\','/',$application).'.php')) {
-                Util::exceptionToJson(new Exception('file not found'));
+                throw new Exception('applicationFileNotFound');
             }
 
             try {
                 $new_application = new $application($request_method);
 
             } catch (Exception $error) {
-                Util::exceptionToJson($error);
+                throw new Exception($error);
             }
 
             if (empty(method_exists($new_application,$controller_action))) {
-                Util::exceptionToJson(new Exception('method does not exist in object'));
+                throw new Exception('applicationMethodNotFound');
             }
 
             if (!empty($matche)) {
@@ -76,11 +87,11 @@ namespace Core {
                 return $new_application->$controller_action(...$matche);
 
             } catch (Exception $error) {
-                Util::exceptionToJson($error);
+                throw new Exception($error);
             }
         }
 
-        private static function urlRouteReady($url,$request_uri) {
+        private function readyUrlRoute($url,$request_uri) {
             $request_uri = str_replace(URL_PREFIX,'',$request_uri);
 
             if ($request_uri_strstr = strstr($request_uri,'?',true)) {
@@ -92,16 +103,16 @@ namespace Core {
             foreach ($url as $url_er => $application_route) {
                 if (preg_match($url_er,$request_uri,$matche)) {
                     try {
-                        return System::urlRoute($application_route,$matche);
+                        return $this->urlRoute($application_route,$matche);
 
                     } catch (Exception $error) {
-                        Util::exceptionToJson($error);
+                        throw new Exception($error);
                     }
                 }
             }
 
             if (empty($url_route)) {
-                Util::exceptionToJson(new Exception('request uri not found'));
+                throw new Exception('requestUriNotFound');
             }
         }
     }
