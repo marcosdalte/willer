@@ -21,8 +21,6 @@ namespace Core {
 
             $whoops_run->pushHandler($whoops_pretty_page_handler);
             $whoops_run->pushHandler(function ($exception,$inspector,$whoops_run) {
-                new ExceptionHandler($inspector->getException()->getMessage());
-
                 $inspector->getFrames()->map(function ($frame) {
                     $frame_function = $frame->getFunction();
 
@@ -46,7 +44,7 @@ namespace Core {
 
         private function urlRoute($application_route,$matche) {
             if (count($application_route) != 2) {
-                throw new Exception('applicationFormatError');
+                throw new Exception('WF_applicationFormatError');
             }
 
             $request_method = $application_route[1];
@@ -55,7 +53,7 @@ namespace Core {
             $application_route = explode('/',$application_route);
 
             if (count($application_route) < 3) {
-                throw new Exception('applicationFormatError');
+                throw new Exception('WF_applicationFormatError');
             }
 
             $application = $application_route[0];
@@ -65,7 +63,7 @@ namespace Core {
             $application = vsprintf('Application\\%s\\Controller\\%s',[$application,$controller]);
 
             if (!file_exists(ROOT_PATH.'/'.str_replace('\\','/',$application).'.php')) {
-                throw new Exception('applicationFileNotFound');
+                throw new Exception('WF_applicationFileNotFound');
             }
 
             try {
@@ -76,7 +74,7 @@ namespace Core {
             }
 
             if (empty(method_exists($new_application,$controller_action))) {
-                throw new Exception('applicationMethodNotFound');
+                throw new Exception('WF_applicationMethodNotFound');
             }
 
             if (!empty($matche)) {
@@ -112,7 +110,7 @@ namespace Core {
             }
 
             if (empty($url_route)) {
-                throw new Exception('requestUriNotFound');
+                throw new Exception('WF_requestUriNotFound');
             }
         }
     }

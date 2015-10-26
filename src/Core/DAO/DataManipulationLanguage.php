@@ -23,7 +23,7 @@ namespace Core\DAO {
 
         public function __construct(Transaction $transaction = null) {
             if (empty($transaction)) {
-                throw new Exception('transaction object do not loaded');
+                throw new Exception('WF_transactionObjectDoNotLoaded');
             }
 
             $this->setTransaction($transaction);
@@ -169,7 +169,7 @@ namespace Core\DAO {
             foreach ($table_schema as $i => $value) {
                 if ($value->method == 'primaryKey') {
                     if (!empty($primarykey_flag)) {
-                        throw new Exception('primary key need be unique');
+                        throw new Exception('WF_primaryKeyNeedBeUnique');
                     }
 
                     $column = $i;
@@ -179,7 +179,7 @@ namespace Core\DAO {
             }
 
             if (empty($column)) {
-                throw new Exception('primary key missing in schema');
+                throw new Exception('WF_primaryKeyMissingInSchema');
             }
 
             $this->setPrimaryKey($column);
@@ -298,7 +298,7 @@ namespace Core\DAO {
                         $where_value = vsprintf('%s in(%s)',[$key,$value]);
 
                     } else {
-                        throw new Exception('filter query error');
+                        throw new Exception('WF_filterQueryError');
                     }
 
                     $where_query[] = $where_value;
@@ -318,11 +318,11 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource dont initiated');
+                throw new Exception('WF_conectionResourceDontInitiated');
             }
 
             if (empty($where)) {
-                throw new Exception('error in get, where do not set');
+                throw new Exception('WF_errorInGetWhereDoNotSet');
             }
 
             $join = 'inner';
@@ -380,22 +380,22 @@ namespace Core\DAO {
                     $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                     if ($transaction_resource_error_info[0] != '00000') {
-                        throw new Exception($transaction_resource_error_info[2]);
+                        throw new Exception($transaction_resource_error_info[0]);
                     }
 
                     $pdo_query_total->execute($query_value_list);
                     $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
 
                     if (empty($pdo_query_total)) {
-                        throw new Exception('Trying to get property of non-object');
+                        throw new Exception('WF_tryingToGetPropertyOfNonObject');
                     }
 
                     if ($pdo_query_total->total <= 0) {
-                        throw new Exception('error in get, do not register');
+                        throw new Exception('WF_errorInGetDoNotRegister');
                     }
 
                     if ($pdo_query_total->total > 1) {
-                        throw new Exception('error in get, do not unique register');
+                        throw new Exception('WF_errorInGetDoNotUniqueRegister');
                     }
                 }
 
@@ -406,7 +406,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    throw new Exception($transaction_resource_error_info[0]);
                 }
 
                 $pdo_query->execute($query_value_list);
@@ -447,7 +447,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource do not initiated');
+                throw new Exception('WF_conectionResourceDoNotInitiated');
             }
 
             $flag_getdiscard = false;
@@ -468,7 +468,7 @@ namespace Core\DAO {
 
             if (!empty($field)) {
                 if (!is_array($field)) {
-                    throw new Exception('wrong type of filter');
+                    throw new Exception('WF_wrongTypeOfFilter');
                 }
 
                 $last_insert_id = $this->setLastInsertId(null);
@@ -479,11 +479,11 @@ namespace Core\DAO {
             foreach ($table_column as $i => $value) {
                 if ($primary_key != $i) {
                     if (!array_key_exists($i,$table_column)) {
-                        throw new Exception('field missing, check our model');
+                        throw new Exception('WF_fieldMissingCheckOurModel');
                     }
 
                     if (!array_key_exists($i,$table_schema)) {
-                        throw new Exception('field missing, check our schema');
+                        throw new Exception('WF_fieldMissingCheckOurSchema');
                     }
 
                     $method = $table_schema[$i]->method;
@@ -536,7 +536,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    throw new Exception($transaction_resource_error_info[0]);
                 }
 
                 $pdo_query->execute($query_value_list);
@@ -548,7 +548,7 @@ namespace Core\DAO {
             $pdo_query_error_info = $pdo_query->errorInfo();
 
             if ($pdo_query_error_info[0] != '00000') {
-                throw new Exception($pdo_query_error_info[2]);
+                throw new Exception($pdo_query_error_info[0]);
             }
 
             if (empty($flag_getdiscard)) {
@@ -582,17 +582,17 @@ namespace Core\DAO {
 
         public function update($set = null) {
             if (empty($set)) {
-                throw new Exception('set update is null');
+                throw new Exception('WF_setUpdateIsNull');
             }
 
             if (!is_array($set)) {
-                throw new Exception('set is not a list');
+                throw new Exception('WF_setIsNotList');
             }
 
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource do not initiated');
+                throw new Exception('WF_conectionResourceDoNotInitiated');
             }
 
             $table_name = $this->getTableName();
@@ -604,11 +604,11 @@ namespace Core\DAO {
 
             foreach ($set as $i => $value) {
                 if (!array_key_exists($i,$table_column)) {
-                    throw new Exception('field missing, check our model');
+                    throw new Exception('WF_fieldMissingCheckOurModel');
                 }
 
                 if (!array_key_exists($i,$table_schema)) {
-                    throw new Exception('field missing, check our schema');
+                    throw new Exception('WF_fieldMissingCheckOurSchema');
                 }
 
                 $method = $table_schema[$i]->method;
@@ -664,7 +664,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    throw new Exception($transaction_resource_error_info[0]);
                 }
 
                 $query->execute($query_value);
@@ -682,7 +682,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource do not initiated');
+                throw new Exception('WF_conectionResourceDoNotInitiated');
             }
 
             $table_name = $this->getTableName();
@@ -696,16 +696,16 @@ namespace Core\DAO {
                 $where_list = [];
 
                 if (!is_array($where)) {
-                    throw new Exception('where is not a list');
+                    throw new Exception('WF_whereIsNotList');
                 }
 
                 foreach ($where as $i => $value) {
                     if (!array_key_exists($i,$table_column)) {
-                        throw new Exception('field missing, check our model');
+                        throw new Exception('WF_fieldMissingCheckOurModel');
                     }
 
                     if (!array_key_exists($i,$table_schema)) {
-                        throw new Exception('field missing, check our schema');
+                        throw new Exception('WF_fieldMissingCheckOurSchema');
                     }
 
                     $where_list[] = vsprintf('%s=?',[$i,]);
@@ -750,7 +750,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    throw new Exception($transaction_resource_error_info[0]);
                 }
 
                 $query->execute($query_value);
@@ -768,7 +768,7 @@ namespace Core\DAO {
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new Exception('conection resource do not initiated');
+                throw new Exception('WF_conectionResourceDoNotInitiated');
             }
 
             $join = 'inner';
@@ -842,7 +842,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    throw new Exception($transaction_resource_error_info[0]);
                 }
 
                 $pdo_query_total->execute($query_value);
@@ -858,7 +858,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new Exception($transaction_resource_error_info[2]);
+                    throw new Exception($transaction_resource_error_info[0]);
                 }
 
                 $pdo_query->execute($query_value);

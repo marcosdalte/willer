@@ -17,13 +17,13 @@ namespace Core\DAO {
             }
 
             if (!file_exists($this->database_path)) {
-                throw new Exception('database.json dont find in src folder');
+                throw new Exception('WF_databaseJsonDontFindInSrcFolder');
             }
 
             $this->database_path = json_decode(file_get_contents($this->database_path),true);
 
             if (!array_key_exists($database,$this->database_path)) {
-                throw new Exception('database not found in database.json');
+                throw new Exception('WF_databaseNotFoundInDatabaseJson');
             }
 
             $this->setDatabase($database);
@@ -89,6 +89,9 @@ namespace Core\DAO {
                 } else if ($database_info['debug'] == 1) {
                     $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
                 }
+
+            } catch (PDOException $error) {
+                throw new Exception($error->getCode());
 
             } catch (Exception $error) {
                 throw new Exception($error);

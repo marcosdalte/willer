@@ -29,7 +29,7 @@ namespace Core {
         private static function filterRule($rule_list,$value,$function_name,$function_filter) {
             if (empty($rule_list)) {
                 if ($function_name != 'boolean' && $function_name != 'integer' && empty($value)) {
-                    throw new Exception('field value is missing');
+                    throw new Exception('WF_fieldValueIsMissing');
                 }
 
             } else {
@@ -39,7 +39,7 @@ namespace Core {
 
                 foreach ($rule_list as $rule_name => $rule_value) {
                     if (!in_array($rule_name,['null','length','table'])) {
-                        throw new Exception('rule incorrect');
+                        throw new Exception('WF_incorrectRule');
 
                     } else if ($rule_name == 'null') {
                         $rule_null = $rule_value;
@@ -54,14 +54,14 @@ namespace Core {
 
                 if (empty($rule_null)) {
                     if ($value !== 0 && empty($value)) {
-                        throw new Exception('value can not be null');
+                        throw new Exception('WF_valueCanNotBeNull');
                     }
                 }
 
                 switch ($function_name) {
                     case 'foreignKey':
                         if (empty($rule_table)) {
-                            throw new Exception('foreignkey require one instance');
+                            throw new Exception('WF_foreignkeyRequireOneInstance');
                         }
 
                         break;
@@ -70,32 +70,32 @@ namespace Core {
                 if (!empty($rule_table)) {
                     if (empty($value)) {
                         if (empty($rule_null)) {
-                            throw new Exception('foreign key object is missing');
+                            throw new Exception('WF_foreignKeyObjectIsMissing');
                         }
 
                     } else {
                         if (!is_object($rule_table)) {
-                            throw new Exception('foreign key not an object');
+                            throw new Exception('WF_foreignKeyNotAnObject');
                         }
 
                         if (!$value instanceof $rule_table) {
-                            throw new Exception('foreign key is not a valid instance');
+                            throw new Exception('WF_foreignKeyIsNotValidInstance');
                         }
                     }
 
                 } else if (!empty($rule_length)) {
                     if (empty($value)) {
                         if (empty($rule_null)) {
-                            throw new Exception('field value is missing');
+                            throw new Exception('WF_fieldValueIsMissing');
                         }
 
                     } else {
                         if (!is_numeric($rule_length)) {
-                            throw new Exception('field value dont numeric');
+                            throw new Exception('WF_fieldValueDontNumeric');
                         }
 
                         if (strlen($value) > $rule_length) {
-                            throw new Exception('field value length is incorrect');
+                            throw new Exception('WF_fieldValueLengthIsIncorrect');
                         }
                     }
                 }
@@ -126,7 +126,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_INT,$filter_var_option) === false) {
-                            throw new Exception('primarykey value incorrect');
+                            throw new Exception('WF_primaryKeyValueIncorrect');
                         }
 
                         return $value;
@@ -152,7 +152,7 @@ namespace Core {
                         $get_primary_key = $value->getPrimaryKey();
 
                         if (empty($get_primary_key)) {
-                            throw new Exception('foreignkey not defined');
+                            throw new Exception('WF_foreignKeyNotDefined');
                         }
 
                         return $value->$get_primary_key;
@@ -182,7 +182,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
-                            throw new Exception('charfield value incorrect');
+                            throw new Exception('WF_charFieldValueIncorrect');
                         }
 
                         return $value;
@@ -212,7 +212,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
-                            throw new Exception('textfield value incorrect');
+                            throw new Exception('WF_textFieldValueIncorrect');
                         }
 
                         return $value;
@@ -241,7 +241,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_INT,$filter_var_option) === false) {
-                            throw new Exception('integerfield value incorrect');
+                            throw new Exception('WF_integerFieldValueIncorrect');
                         }
 
                         return $value;
@@ -270,7 +270,7 @@ namespace Core {
                             'flags' => FILTER_NULL_ON_FAILURE];
 
                         if (filter_var($value,FILTER_VALIDATE_BOOLEAN,$filter_var_option) === null) {
-                            throw new Exception('booleanfield value incorrect');
+                            throw new Exception('WF_booleanFieldValueIncorrect');
                         }
 
                         return $value;
@@ -300,7 +300,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
-                            throw new Exception('datetimefield value incorrect');
+                            throw new Exception('WF_datetimeFieldValueIncorrect');
                         }
 
                         return $value;
@@ -330,7 +330,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
-                            throw new Exception('datefield value incorrect');
+                            throw new Exception('WF_dateFieldValueIncorrect');
                         }
 
                         return $value;
@@ -360,7 +360,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_REGEXP,$filter_var_option) === false) {
-                            throw new Exception('timefield value incorrect');
+                            throw new Exception('WF_timeFieldValueIncorrect');
                         }
 
                         return $value;
@@ -390,7 +390,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_FLOAT,$filter_var_option) === false) {
-                            throw new Exception('floatfield value incorrect');
+                            throw new Exception('WF_floatFieldValueIncorrect');
                         }
 
                         return $value;
@@ -419,7 +419,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_EMAIL,$filter_var_option) === false) {
-                            throw new Exception('emailfield value incorrect');
+                            throw new Exception('WF_emailFieldValueIncorrect');
                         }
 
                         return $value;
@@ -448,7 +448,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_IP,$filter_var_option) === false) {
-                            throw new Exception('ipfield value incorrect');
+                            throw new Exception('WF_ipFieldValueIncorrect');
                         }
 
                         return $value;
@@ -477,7 +477,7 @@ namespace Core {
                             'flags' => []];
 
                         if (filter_var($value,FILTER_VALIDATE_URL,$filter_var_option) === false) {
-                            throw new Exception('urlfield value incorrect');
+                            throw new Exception('WF_urlFieldValueIncorrect');
                         }
 
                         return $value;
