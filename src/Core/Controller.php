@@ -15,7 +15,7 @@ namespace Core {
         }
 
         private function requestMethodAccess($request_method = null) {
-            if (empty(Util::($_SERVER,'REQUEST_METHOD',null))) {
+            if (empty(Util::get($_SERVER,'REQUEST_METHOD',null))) {
                 throw new Exception('WF_serverRequestMethodEmpty');
             }
 
