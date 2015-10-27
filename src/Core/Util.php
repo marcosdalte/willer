@@ -1,7 +1,6 @@
 <?php
 
 namespace Core {
-	use \Exception as Exception;
 	use \SplFileInfo as SplFileInfo;
 
 	trait Util {

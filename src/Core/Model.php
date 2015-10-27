@@ -1,9 +1,17 @@
 <?php
 
 namespace Core {
-    use \Exception as Exception;
     use \Core\DAO\Transaction;
     use \Core\DAO\DataManipulationLanguage;
+    use \Core\Exception\WF_fieldValueIsMissing;
+    use \Core\Exception\WF_incorrectRule;
+    use \Core\Exception\WF_valueCanNotBeNull;
+    use \Core\Exception\WF_foreignkeyRequireOneInstance;
+    use \Core\Exception\WF_foreignKeyObjectIsMissing;
+    use \Core\Exception\WF_foreignKeyNotAnObject;
+    use \Core\Exception\WF_foreignKeyIsNotValidInstance;
+    use \Core\Exception\WF_fieldValueDontNumeric;
+    use \Core\Exception\WF_fieldValueLengthIsIncorrect;
 
     abstract class Model extends DataManipulationLanguage {
         public function __construct(Transaction $transaction = null) {
@@ -29,7 +37,7 @@ namespace Core {
         private static function filterRule($rule_list,$value,$function_name,$function_filter) {
             if (empty($rule_list)) {
                 if ($function_name != 'boolean' && $function_name != 'integer' && empty($value)) {
-                    throw new Exception('WF_fieldValueIsMissing');
+                    throw new WF_fieldValueIsMissing('WF_fieldValueIsMissing');
                 }
 
             } else {
@@ -39,7 +47,7 @@ namespace Core {
 
                 foreach ($rule_list as $rule_name => $rule_value) {
                     if (!in_array($rule_name,['null','length','table'])) {
-                        throw new Exception('WF_incorrectRule');
+                        throw new WF_incorrectRule('WF_incorrectRule');
 
                     } else if ($rule_name == 'null') {
                         $rule_null = $rule_value;
@@ -54,14 +62,14 @@ namespace Core {
 
                 if (empty($rule_null)) {
                     if ($value !== 0 && empty($value)) {
-                        throw new Exception('WF_valueCanNotBeNull');
+                        throw new WF_valueCanNotBeNull('WF_valueCanNotBeNull');
                     }
                 }
 
                 switch ($function_name) {
                     case 'foreignKey':
                         if (empty($rule_table)) {
-                            throw new Exception('WF_foreignkeyRequireOneInstance');
+                            throw new WF_foreignkeyRequireOneInstance('WF_foreignkeyRequireOneInstance');
                         }
 
                         break;
@@ -70,43 +78,38 @@ namespace Core {
                 if (!empty($rule_table)) {
                     if (empty($value)) {
                         if (empty($rule_null)) {
-                            throw new Exception('WF_foreignKeyObjectIsMissing');
+                            throw new WF_foreignKeyObjectIsMissing('WF_foreignKeyObjectIsMissing');
                         }
 
                     } else {
                         if (!is_object($rule_table)) {
-                            throw new Exception('WF_foreignKeyNotAnObject');
+                            throw new WF_foreignKeyNotAnObject('WF_foreignKeyNotAnObject');
                         }
 
                         if (!$value instanceof $rule_table) {
-                            throw new Exception('WF_foreignKeyIsNotValidInstance');
+                            throw new WF_foreignKeyIsNotValidInstance('WF_foreignKeyIsNotValidInstance');
                         }
                     }
 
                 } else if (!empty($rule_length)) {
                     if (empty($value)) {
                         if (empty($rule_null)) {
-                            throw new Exception('WF_fieldValueIsMissing');
+                            throw new WF_fieldValueIsMissing('WF_fieldValueIsMissing');
                         }
 
                     } else {
                         if (!is_numeric($rule_length)) {
-                            throw new Exception('WF_fieldValueDontNumeric');
+                            throw new WF_fieldValueDontNumeric('WF_fieldValueDontNumeric');
                         }
 
                         if (strlen($value) > $rule_length) {
-                            throw new Exception('WF_fieldValueLengthIsIncorrect');
+                            throw new WF_fieldValueLengthIsIncorrect('WF_fieldValueLengthIsIncorrect');
                         }
                     }
                 }
             }
 
-            try {
-                $value = $function_filter($value);
-
-            } catch (Exception $error) {
-                throw new Exception($error);
-            }
+            $value = $function_filter($value);
 
             return $value;
         }

@@ -1,5 +1,5 @@
 <?php
 
 $url = [
-    '/^testeee\/?$/' => ['Restaurant/Home/index',['GET']],
+    '/^\/restaurant\/test\/?$/' => ['Restaurant/Home/index','POST','123'],
 ];
