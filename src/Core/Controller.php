@@ -12,18 +12,18 @@ namespace Core {
 
         private function requestMethodAccess($request_method = null) {
             if (empty(Util::get($_SERVER,'REQUEST_METHOD',null))) {
-                throw new WF_serverRequestMethodEmpty('REQUEST_METHOD is empty');
+                throw new WF_serverRequestMethodEmpty('php $_SERVER["REQUEST_METHOD"] is empty');
             }
 
             if (!empty($request_method)) {
                 if (is_array($request_method)) {
                     if (!in_array($_SERVER['REQUEST_METHOD'],$request_method)) {
-                        throw new WF_requestMethodInvalid(vsprintf('REQUEST_METHOD(%s) is different %s',[$_SERVER['REQUEST_METHOD'],implode(',',$request_method)]));
+                        throw new WF_requestMethodInvalid(vsprintf('request method "%s" is different "%s"',[$_SERVER['REQUEST_METHOD'],implode(',',$request_method)]));
                     }
 
                 } else {
                     if ($_SERVER['REQUEST_METHOD'] != $request_method) {
-                        throw new WF_requestMethodInvalid(vsprintf('REQUEST_METHOD(%s) is different %s',[$_SERVER['REQUEST_METHOD'],$request_method]));
+                        throw new WF_requestMethodInvalid(vsprintf('request method "%s" is different "%s"',[$_SERVER['REQUEST_METHOD'],$request_method]));
                     }
                 }
             }

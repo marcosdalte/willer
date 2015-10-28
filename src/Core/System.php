@@ -86,15 +86,16 @@ namespace Core {
             $controller_action = $application_route_list[2];
 
             $application = vsprintf('Application\\%s\\Controller\\%s',[$application,$controller]);
+            $application_file = vsprintf('%s/%s.php',[ROOT_PATH,str_replace('\\','/',$application)]);
 
-            if (!file_exists(ROOT_PATH.'/'.str_replace('\\','/',$application).'.php')) {
-                throw new WF_applicationFileNotFound('WF_applicationFileNotFound');
+            if (!file_exists($application_file)) {
+                throw new WF_applicationFileNotFound(vsprintf('application file not found in "%s"',[$application_file,]));
             }
 
             $new_application = new $application($request_method);
 
             if (empty(method_exists($new_application,$controller_action))) {
-                throw new WF_applicationMethodNotFound('WF_applicationMethodNotFound');
+                throw new WF_applicationMethodNotFound(vsprintf('method "%s" not found in class "%s"',[$controller_action,$application]));
             }
 
             if (!empty($matche)) {
@@ -119,7 +120,7 @@ namespace Core {
                 }
             }
 
-            throw new WF_requestUriNotFound('WF_requestUriNotFound');
+            throw new WF_requestUriNotFound(vsprintf('request "%s" not found in url.php',[$request_uri,]));
         }
     }
 }
