@@ -53,25 +53,37 @@ namespace Core {
 
         private function urlRoute($application_route,$matche) {
             if (count($application_route) != 2) {
-                throw new WF_applicationFormatError(vsprintf('error in list [%s], max of two indices. Ex: [\'Application/Controller/method\',\'(GET|POST|PUT|DELETE)\']',[implode(',',$application_route)]));
+                throw new WF_applicationFormatError(vsprintf('error in list [%s], max of two indices. Ex: ["Application/Controller/method","(GET|POST|PUT|DELETE)"]',[implode(',',$application_route)]));
             }
 
             $request_method = $application_route[1];
 
             if (empty($request_method)) {
-                throw new WF_applicationFormatError('WF_applicationFormatError');
+                throw new WF_applicationFormatError(vsprintf('error in url "%s", index two is empty. Ex: "(GET|POST|PUT|DELETE)"',[$application_route[0],]));
             }
 
             $application_route = $application_route[0];
-            $application_route = explode('/',$application_route);
+            $application_route_list = explode('/',$application_route);
 
-            if (count($application_route) < 3) {
-                throw new WF_applicationFormatError('WF_applicationFormatError');
+            if (count($application_route_list) < 3) {
+                throw new WF_applicationFormatError(vsprintf('error in application route "%s". Ex: "Application/Controller/method"',[$application_route,]));
             }
 
-            $application = $application_route[0];
-            $controller = $application_route[1];
-            $controller_action = $application_route[2];
+            if (empty($application_route_list[0])) {
+                throw new WF_applicationFormatError(vsprintf('application indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+            }
+
+            if (empty($application_route_list[1])) {
+                throw new WF_applicationFormatError(vsprintf('application controller indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+            }
+
+            if (empty($application_route_list[2])) {
+                throw new WF_applicationFormatError(vsprintf('controller method indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+            }
+
+            $application = $application_route_list[0];
+            $controller = $application_route_list[1];
+            $controller_action = $application_route_list[2];
 
             $application = vsprintf('Application\\%s\\Controller\\%s',[$application,$controller]);
 
