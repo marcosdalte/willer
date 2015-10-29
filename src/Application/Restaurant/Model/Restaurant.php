@@ -9,10 +9,10 @@ namespace Application\Restaurant\Model {
 
         protected function schema() {
             return [
-                'id' => Model::primaryKey(),
+                'id' => Model::integer(),
                 'place' => Model::char(['length' => 80]),
                 'serves_hot_dogs' => Model::boolean(['null' => false]),
-                'serves_pizza' => Model::boolean(['null' => false]),];
+                'serves_pizza' => Model::boolean(),];
         }
 
         protected function name() {

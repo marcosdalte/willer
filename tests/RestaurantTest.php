@@ -9,7 +9,7 @@ use \Application\Restaurant\Controller\Home;
 
 class RestaurantTest extends PHPUnit_Framework_TestCase {
     public function testExceptionRequestMethodInvalid() {
-        $this->setExpectedException('Core\Exception\WF_requestMethodInvalid','WF_requestMethodInvalid');
+        $this->setExpectedException('Core\Exception\WF_Exception');
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
 

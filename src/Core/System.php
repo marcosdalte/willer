@@ -1,10 +1,7 @@
 <?php
 
 namespace Core {
-    use \Core\Exception\WF_applicationFormatError;
-    use \Core\Exception\WF_applicationFileNotFound;
-    use \Core\Exception\WF_applicationMethodNotFound;
-    use \Core\Exception\WF_requestUriNotFound;
+    use \Core\Exception\WF_Exception;
 
     class System {
         public function __construct($url) {
@@ -31,9 +28,19 @@ namespace Core {
             $whoops_run->pushHandler(function ($exception,$inspector,$whoops_run) {
                 $inspector->getFrames()->map(function ($frame) {
                     $frame_function = $frame->getFunction();
+                    $frame_class = $frame->getClass();
+                    $frame_args = $frame->getArgs();
 
                     if (!empty($frame_function)) {
                         $frame->addComment($frame_function,'Function');
+                    }
+
+                    if (!empty($frame_class)) {
+                        $frame->addComment($frame_class,'Class');
+                    }
+
+                    if (!empty($frame_args)) {
+                        $frame->addComment(print_r($frame_args,true),'Args');
                     }
 
                     return $frame;
@@ -47,38 +54,39 @@ namespace Core {
             $whoops_pretty_page_handler->addDataTable('Willer Contants',array(
                 'URL_PREFIX' => URL_PREFIX,
                 'REQUEST_URI' => REQUEST_URI,
-                'ROOT_PATH' => ROOT_PATH
-            ));
+                'ROOT_PATH' => ROOT_PATH,
+                'DATABASE_PATH' => DATABASE_PATH,
+                'DATABASE' => DATABASE,));
         }
 
         private function urlRoute($application_route,$matche) {
             if (count($application_route) != 2) {
-                throw new WF_applicationFormatError(vsprintf('error in list [%s], max of two indices. Ex: ["Application/Controller/method","(GET|POST|PUT|DELETE)"]',[implode(',',$application_route)]));
+                throw new WF_Exception(vsprintf('error in list [%s], max of two indices. Ex: ["Application/Controller/method","(GET|POST|PUT|DELETE)"]',[print_r($application_route,true)]));
             }
 
             $request_method = $application_route[1];
 
             if (empty($request_method)) {
-                throw new WF_applicationFormatError(vsprintf('error in url "%s", index two is empty. Ex: "(GET|POST|PUT|DELETE)"',[$application_route[0],]));
+                throw new WF_Exception(vsprintf('error in url "%s", index two is empty. Ex: "(GET|POST|PUT|DELETE)"',[$application_route[0],]));
             }
 
             $application_route = $application_route[0];
             $application_route_list = explode('/',$application_route);
 
             if (count($application_route_list) < 3) {
-                throw new WF_applicationFormatError(vsprintf('error in application route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+                throw new WF_Exception(vsprintf('error in application route "%s". Ex: "Application/Controller/method"',[$application_route,]));
             }
 
             if (empty($application_route_list[0])) {
-                throw new WF_applicationFormatError(vsprintf('application indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+                throw new WF_Exception(vsprintf('application indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
             }
 
             if (empty($application_route_list[1])) {
-                throw new WF_applicationFormatError(vsprintf('application controller indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+                throw new WF_Exception(vsprintf('application controller indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
             }
 
             if (empty($application_route_list[2])) {
-                throw new WF_applicationFormatError(vsprintf('controller method indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
+                throw new WF_Exception(vsprintf('controller method indefined in route "%s". Ex: "Application/Controller/method"',[$application_route,]));
             }
 
             $application = $application_route_list[0];
@@ -89,13 +97,13 @@ namespace Core {
             $application_file = vsprintf('%s/%s.php',[ROOT_PATH,str_replace('\\','/',$application)]);
 
             if (!file_exists($application_file)) {
-                throw new WF_applicationFileNotFound(vsprintf('application file not found in "%s"',[$application_file,]));
+                throw new WF_Exception(vsprintf('application file not found in "%s"',[$application_file,]));
             }
 
             $new_application = new $application($request_method);
 
             if (empty(method_exists($new_application,$controller_action))) {
-                throw new WF_applicationMethodNotFound(vsprintf('method "%s" not found in class "%s"',[$controller_action,$application]));
+                throw new WF_Exception(vsprintf('method "%s" not found in class "%s"',[$controller_action,$application]));
             }
 
             if (!empty($matche)) {
@@ -120,7 +128,7 @@ namespace Core {
                 }
             }
 
-            throw new WF_requestUriNotFound(vsprintf('request "%s" not found in url.php',[$request_uri,]));
+            throw new WF_Exception(vsprintf('request "%s" not found in url.php',[$request_uri,]));
         }
     }
 }

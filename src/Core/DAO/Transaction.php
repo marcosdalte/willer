@@ -3,13 +3,15 @@
 namespace Core\DAO {
     use \PDO as PDO;
     use \Exception as Exception;
+    use \PDOException as PDOException;
+    use \Core\Exception\WF_Exception;
 
     class Transaction {
         private $resource;
         private $database;
         private $last_insert_id;
-        private $db_default = 'default';
-        private $database_path = ROOT_PATH.'/database.json';
+        private $db_default = DATABASE;
+        private $database_path = DATABASE_PATH;
 
         public function __construct($database = null) {
             if (empty($database)) {
@@ -17,13 +19,17 @@ namespace Core\DAO {
             }
 
             if (!file_exists($this->database_path)) {
-                throw new Exception('WF_databaseJsonDontFindInSrcFolder');
+                throw new WF_Exception(vsprintf('database path dont find in "%s"',[$this->database_path,]));
             }
 
             $this->database_path = json_decode(file_get_contents($this->database_path),true);
 
             if (!array_key_exists($database,$this->database_path)) {
-                throw new Exception('WF_databaseNotFoundInDatabaseJson');
+                throw new WF_Exception(vsprintf('database "%s" dont find in object "%s"',[$database,print_r($this->database_path,true),]));
+            }
+
+            if (!array_key_exists('driver',$this->database_path[$database])) {
+                throw new WF_Exception(vsprintf('database driver key not registered in database object "%s"',[print_r($this->database_path,true)]));
             }
 
             $this->setDatabase($database);
@@ -66,6 +72,10 @@ namespace Core\DAO {
         public function connect() {
             $database_info = $this->getDatabaseInfo();
 
+            if (!in_array($database_info['driver'],['mysql','pgsql','sqlite'])) {
+                throw new WF_Exception(vsprintf('database driver "%s" not registered',[$database_info['driver'],]));
+            }
+
             try {
                 if (in_array($database_info['driver'],['mysql','pgsql'])) {
                     $pdo = new PDO(vsprintf('%s:host=%s;port=%s;dbname=%s',[$database_info['driver'],$database_info['host'],$database_info['port'],$database_info['name']]),$database_info['user'],$database_info['password']);
@@ -83,21 +93,23 @@ namespace Core\DAO {
                     }
                 }
 
-                if ($database_info['debug'] == 0) {
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE,0);
+                if (array_key_exists('debug',$database_info)) {
+                    if ($database_info['debug'] == 0) {
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE,0);
 
-                } else if ($database_info['debug'] == 1) {
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
+                    } else if ($database_info['debug'] == 1) {
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE,1);
+                    }
                 }
 
             } catch (PDOException $error) {
-                throw new Exception($error->getCode());
+                throw new $error->getMessage();
 
             } catch (Exception $error) {
-                throw new Exception($error);
+                throw new $error->getMessage();
             }
 
-            $this->resource = $pdo;
+            $this->setResource($pdo);
 
             return $this;
         }
@@ -107,14 +119,14 @@ namespace Core\DAO {
                 $this->connect();
 
             } catch (Exception $error) {
-                throw new Exception($error);
+                throw new $error->getMessage();
             }
 
             try {
                 $this->resource->beginTransaction();
 
             } catch (Exception $error) {
-                throw new Exception($error);
+                throw new $error->getMessage();
             }
 
             return $this;
@@ -126,7 +138,7 @@ namespace Core\DAO {
                     $this->resource->commit();
 
                 } catch (Exception $error) {
-                    throw new Exception($error);
+                    throw new $error->getMessage();
                 }
             }
 
@@ -139,7 +151,7 @@ namespace Core\DAO {
                     $this->resource->rollBack();
 
                 } catch (Exception $error) {
-                    throw new Exception($error);
+                    throw new $error->getMessage();
                 }
             }
 
@@ -151,7 +163,7 @@ namespace Core\DAO {
                 $this->setLastInsertId($this->resource->lastInsertId($sequence_name));
 
             } catch (Exception $error) {
-                throw new Exception($error);
+                throw new $error->getMessage();
             }
 
             return $this->getLastInsertId();
