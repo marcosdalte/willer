@@ -22,7 +22,13 @@ namespace Core\DAO {
                 throw new WF_Exception(vsprintf('database path dont find in "%s"',[$this->database_path,]));
             }
 
+            $database_path = $this->database_path;
+
             $this->database_path = json_decode(file_get_contents($this->database_path),true);
+
+            if (empty($this->database_path)) {
+                throw new WF_Exception(vsprintf('json encode error in database path "%s"',[$database_path,]));
+            }
 
             if (!array_key_exists($database,$this->database_path)) {
                 throw new WF_Exception(vsprintf('database "%s" dont find in object "%s"',[$database,print_r($this->database_path,true),]));

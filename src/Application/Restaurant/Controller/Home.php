@@ -20,29 +20,38 @@ namespace Application\Restaurant\Controller {
 
             $this->db_transaction->connect();
 
-            $restaurant->get([
-                'id' => '29']);
+            // $restaurant->delete();
 
-            // $restaurant->save([
-            //     'place' => 'addasd',
-            //     'serves_hot_dogs' => 1,
-            //     'serves_pizza' => 1,]);
-            //
+            // $restaurant->get([
+            //     'id' => '25']);
+
+            // $restaurant->delete(['id' => 123]);
+
+            // $restaurant->place = 'bla e bla';
+            // $restaurant->save();
+
+            // $restaurant->update([
+            //     'place' => 132113]);
+
+            $restaurant->save([
+                'place' => 'ad',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
             // $restaurant_list = $restaurant
-            //     // ->where([
-            //     //     'restaurant.place' => null,
-            //     //     'restaurant.serves_hot_dogs' => [null]
-            //     //     ])
+            //     ->where([
+            //         'restaurant.id' => [15,16],])
             //     ->orderBy([
-            //         'restaurant.serves_pizza' => 'desc'
-            //         ])
+            //         'restaurant.serves_pizza' => 'desc'])
             //     ->limit(1,5)
+            //     ->update([
+            //         'place' => 'testandiooo123654'])
             //     ->execute([
             //         'join' => 'left']);
 
             // Util::renderToJson($restaurant->dumpQuery());
             Util::renderToJson($restaurant);
-            Util::renderToJson($restaurant_list);
+            // Util::renderToJson($restaurant_list);
         }
     }
 }

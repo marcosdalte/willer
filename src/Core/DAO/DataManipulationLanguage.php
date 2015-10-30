@@ -324,21 +324,21 @@ namespace Core\DAO {
             $transaction = $this->getTransaction();
 
             if (empty($transaction)) {
-                throw new WF_Exception(vsprintf('transaction object not loaded in model instance "%s"',[$this->name(),]));
+                throw new WF_Exception(vsprintf('[get]transaction object not loaded in model instance "%s"',[$this->name(),]));
             }
 
             if (!$transaction instanceof Transaction) {
-                throw new WF_Exception(vsprintf('incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
+                throw new WF_Exception(vsprintf('[get]incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
             }
 
-            $transaction_resource = $this->transaction->getResource();
+            $transaction_resource = $transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new WF_Exception(vsprintf('transaction instance not loaded, in model instance "%s"',[$this->name(),]));
+                throw new WF_Exception(vsprintf('[get]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
             if (empty($where)) {
-                throw new WF_Exception(vsprintf('where condition not defined, in model instance "%s"',[$this->name(),]));
+                throw new WF_Exception(vsprintf('[get]where condition not defined, in model instance "%s"',[$this->name(),]));
             }
 
             $join = 'inner';
@@ -378,6 +378,10 @@ namespace Core\DAO {
             $column_list = [];
 
             foreach ($table_column as $i => $column) {
+                if (!array_key_exists($i,$table_schema)) {
+                    throw new WF_Exception(vsprintf('[get]field missing "%s", check your schema, in model instance "%s"',[$i,$this->name(),]));
+                }
+
                 $column_list[] = vsprintf('%s.%s %s__%s',[$table_name_with_escape,$i,$table_name,$i]);
             }
 
@@ -396,7 +400,7 @@ namespace Core\DAO {
                     $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                     if ($transaction_resource_error_info[0] != '00000') {
-                        throw new WF_Exception(vsprintf('PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
+                        throw new WF_Exception(vsprintf('[get]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                     }
 
                     $pdo_query_total->execute($query_value_list);
@@ -405,15 +409,15 @@ namespace Core\DAO {
                     $this->setQuery($query_total,$query_value_list);
 
                     if (empty($pdo_query_total)) {
-                        throw new WF_Exception(vsprintf('query error, in model instance "%s"',[$this->name(),]));
+                        throw new WF_Exception(vsprintf('[get]query error, in model instance "%s"',[$this->name(),]));
                     }
 
                     if ($pdo_query_total->total <= 0) {
-                        throw new WF_Exception(vsprintf('query result is empty, in model instance "%s"',[$this->name(),]));
+                        throw new WF_Exception(vsprintf('[get]query result is empty, in model instance "%s"',[$this->name(),]));
                     }
 
                     if ($pdo_query_total->total > 1) {
-                        throw new WF_Exception(vsprintf('query result not unique, in model instance "%s"',[$this->name(),]));
+                        throw new WF_Exception(vsprintf('[get]query result not unique, in model instance "%s"',[$this->name(),]));
                     }
                 }
 
@@ -424,7 +428,7 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception(vsprintf('PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
+                    throw new WF_Exception(vsprintf('[get]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $pdo_query->execute($query_value_list);
@@ -467,13 +471,17 @@ namespace Core\DAO {
             $transaction = $this->getTransaction();
 
             if (empty($transaction)) {
-                throw new WF_Exception(vsprintf('transaction object do not loaded in model instance "%s"',[$this->name(),]));
+                throw new WF_Exception(vsprintf('[save]transaction object do not loaded in model instance "%s"',[$this->name(),]));
             }
 
-            $transaction_resource = $this->transaction->getResource();
+            if (!$transaction instanceof Transaction) {
+                throw new WF_Exception(vsprintf('[save]incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
+            }
+
+            $transaction_resource = $transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new WF_Exception('WF_conectionResourceDoNotInitiated');
+                throw new WF_Exception(vsprintf('[save]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
             $flag_getdiscard = false;
@@ -494,7 +502,7 @@ namespace Core\DAO {
 
             if (!empty($field)) {
                 if (!is_array($field)) {
-                    throw new WF_Exception('WF_wrongTypeOfFilter');
+                    throw new WF_Exception(vsprintf('[save]incorrect type of parameter, in model instance "%s"',[$this->name(),]));
                 }
 
                 $last_insert_id = $this->setLastInsertId(null);
@@ -502,25 +510,21 @@ namespace Core\DAO {
                 $table_column = $field;
             }
 
-            foreach ($table_column as $i => $value) {
-                if ($primary_key != $i) {
-                    if (!array_key_exists($i,$table_column)) {
-                        throw new WF_Exception('WF_fieldMissingCheckOurModel');
-                    }
+            foreach ($table_column as $key => $value) {
+                if (!array_key_exists($key,$table_schema)) {
+                    throw new WF_Exception(vsprintf('[save]field missing "%s", check your schema, in model instance "%s"',[$key,$this->name(),]));
+                }
 
-                    if (!array_key_exists($i,$table_schema)) {
-                        throw new WF_Exception('WF_fieldMissingCheckOurSchema');
-                    }
-
-                    $method = $table_schema[$i]->method;
-                    $rule = $table_schema[$i]->rule;
+                if ($primary_key != $key) {
+                    $method = $table_schema[$key]->method;
+                    $rule = $table_schema[$key]->rule;
 
                     $value = $this->$method($rule,$value,true);
 
-                    $set_escape[] = vsprintf('%s=?',[$i,]);
+                    $set_escape[] = vsprintf('%s=?',[$key,]);
                     $query_value_update_list[] = $value;
 
-                    $column_list[] = $i;
+                    $column_list[] = $key;
                     $query_value_add_list[] = $value;
                     $query_escape_list[] = '?';
                 }
@@ -557,23 +561,23 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception(vsprintf('PDO error info "%s"',[$transaction_resource_error_info[2],]));
+                    throw new WF_Exception(vsprintf('[save]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $pdo_query->execute($query_value_list);
 
             } catch (PDOException $error) {
-                throw new WF_Exception(vsprintf('PDOException message "%s"',[$error->getMessage(),]));
+                throw $error;
 
             } catch (Exception $error) {
-                throw new WF_Exception(vsprintf('PDO transaction error "%s"',[$error->getMessage(),]));
+                throw $error;
             }
 
 
             $pdo_query_error_info = $pdo_query->errorInfo();
 
             if ($pdo_query_error_info[0] != '00000') {
-                throw new WF_Exception($pdo_query_error_info[2]);
+                throw new WF_Exception(vsprintf('[save]PDO error message "%s", in model instance "%s"',[$pdo_query_error_info[2],$this->name(),]));
             }
 
             if (empty($flag_getdiscard)) {
@@ -584,7 +588,7 @@ namespace Core\DAO {
                         vsprintf('%s.id',[$table_name_with_escape,]) => $table_column[$primary_key]]);
 
                 } else {
-                    $get_database_info = $this->transaction->getDatabaseInfo();
+                    $get_database_info = $transaction->getDatabaseInfo();
 
                     $sequence_name = null;
 
@@ -592,7 +596,7 @@ namespace Core\DAO {
                         $sequence_name = vsprintf('%s_id_seq',[$table_name,]);
                     }
 
-                    $last_insert_id = $this->transaction->lastInsertId($sequence_name);
+                    $last_insert_id = $transaction->lastInsertId($sequence_name);
 
                     $this->setLastInsertId($last_insert_id);
                     $this->get([
@@ -606,18 +610,28 @@ namespace Core\DAO {
         }
 
         public function update($set = null) {
+            $transaction = $this->getTransaction();
+
+            if (empty($transaction)) {
+                throw new WF_Exception(vsprintf('[update]transaction object do not loaded in model instance "%s"',[$this->name(),]));
+            }
+
+            if (!$transaction instanceof Transaction) {
+                throw new WF_Exception(vsprintf('[update]incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
+            }
+
             if (empty($set)) {
-                throw new WF_Exception('WF_setUpdateIsNull');
+                throw new WF_Exception(vsprintf('[update]set parameter missing, in model instance "%s"',[$this->name(),]));
             }
 
             if (!is_array($set)) {
-                throw new WF_Exception('WF_setIsNotList');
+                throw new WF_Exception(vsprintf('[update]set parameter not array, in model instance "%s"',[$this->name(),]));
             }
 
-            $transaction_resource = $this->transaction->getResource();
+            $transaction_resource = $transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new WF_Exception('WF_conectionResourceDoNotInitiated');
+                throw new WF_Exception(vsprintf('[update]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
             $table_name = $this->getTableName();
@@ -627,26 +641,21 @@ namespace Core\DAO {
             $set_escape = [];
             $query_value_update_list = [];
 
-            foreach ($set as $i => $value) {
-                if (!array_key_exists($i,$table_column)) {
-                    throw new WF_Exception('WF_fieldMissingCheckOurModel');
+            foreach ($set as $key => $value) {
+                if (!array_key_exists($key,$table_column)) {
+                    throw new WF_Exception(vsprintf('[update]field missing "%s"(not use table.column notation), check your model, in model instance "%s"',[$key,$this->name(),]));
                 }
 
-                if (!array_key_exists($i,$table_schema)) {
-                    throw new WF_Exception('WF_fieldMissingCheckOurSchema');
+                if (!array_key_exists($key,$table_schema)) {
+                    throw new WF_Exception(vsprintf('[update]field missing "%s"(not use table.column notation), check your schema, in model instance "%s"',[$key,$this->name(),]));
                 }
 
-                $method = $table_schema[$i]->method;
-                $rule = $table_schema[$i]->rule;
+                $method = $table_schema[$key]->method;
+                $rule = $table_schema[$key]->rule;
 
-                try {
-                    $value = $this->$method($rule,$value,true);
+                $value = $this->$method($rule,$value,true);
 
-                } catch (Exception $error) {
-                    throw new WF_Exception($error);
-                }
-
-                $set_escape[] = vsprintf('%s=?',[$i,]);
+                $set_escape[] = vsprintf('%s=?',[$key,]);
                 $query_value_update_list[] = $value;
             }
 
@@ -689,13 +698,20 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception($transaction_resource_error_info[2]);
+                    throw new WF_Exception(vsprintf('[update]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $query->execute($query_value);
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new WF_Exception($error);
+                throw $error;
+            }
+
+            foreach ($set as $key => $value) {
+                $this->$key = $value;
             }
 
             $this->setQuery($query,$query_value);
@@ -704,10 +720,20 @@ namespace Core\DAO {
         }
 
         public function delete($where = null) {
-            $transaction_resource = $this->transaction->getResource();
+            $transaction = $this->getTransaction();
+
+            if (empty($transaction)) {
+                throw new WF_Exception(vsprintf('[delete]transaction object do not loaded in model instance "%s"',[$this->name(),]));
+            }
+
+            if (!$transaction instanceof Transaction) {
+                throw new WF_Exception(vsprintf('[delete]incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
+            }
+
+            $transaction_resource = $transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new WF_Exception('WF_conectionResourceDoNotInitiated');
+                throw new WF_Exception(vsprintf('[delete]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
             $table_name = $this->getTableName();
@@ -721,20 +747,45 @@ namespace Core\DAO {
                 $where_list = [];
 
                 if (!is_array($where)) {
-                    throw new WF_Exception('WF_whereIsNotList');
+                    throw new WF_Exception(vsprintf('[delete]where parameter not array, in model instance "%s"',[$this->name(),]));
                 }
 
-                foreach ($where as $i => $value) {
-                    if (!array_key_exists($i,$table_column)) {
-                        throw new WF_Exception('WF_fieldMissingCheckOurModel');
+                foreach ($where as $key => $value) {
+                    $where_value = null;
+
+                    if (!array_key_exists($key,$table_column)) {
+                        throw new WF_Exception(vsprintf('[delete]field missing "%s"(not use table.column notation), check your model, in model instance "%s"',[$key,$this->name(),]));
                     }
 
-                    if (!array_key_exists($i,$table_schema)) {
-                        throw new WF_Exception('WF_fieldMissingCheckOurSchema');
+                    if (!array_key_exists($key,$table_schema)) {
+                        throw new WF_Exception(vsprintf('[delete]field missing "%s"(not use table.column notation), check your schema, in model instance "%s"',[$key,$this->name(),]));
                     }
 
-                    $where_list[] = vsprintf('%s=?',[$i,]);
-                    $query_value[] = $value;
+                    if (empty($value)) {
+                        throw new WF_Exception(vsprintf('[delete]field "%s" value is empty, in model instance "%s"',[$key,$this->name(),]));
+                    }
+
+                    if (!is_array($value) && (is_string($value) || is_numeric($value) || is_bool($value))) {
+                        $query_value[] = $value;
+
+                        $where_list[] = vsprintf('%s=?',[$key,]);
+
+                    } else if (is_array($value)) {
+                        $query_value = array_merge($query_value,$value);
+
+                        $value = implode(',',array_map(function ($value) {
+                            if (empty($value)) {
+                                throw new WF_Exception(vsprintf('[delete]field value is empty, in model instance "%s"',[$this->name(),]));
+                            }
+
+                            return '?';
+                        },$value));
+
+                        $where_list[] = vsprintf('%s in(%s)',[$key,$value]);
+
+                    } else {
+                        throw new WF_Exception(vsprintf('value is incorrect with type "%s", in instance of model "%s"',[gettype($value),$this->name()]));
+                    }
                 }
 
                 $where_str = vsprintf('where %s',[implode(' and ',$where_list),]);
@@ -775,13 +826,16 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception($transaction_resource_error_info[2]);
+                    throw new WF_Exception(vsprintf('[delete]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $query->execute($query_value);
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new WF_Exception($error);
+                throw $error;
             }
 
             $this->setQuery($query,$query_value);
@@ -790,10 +844,20 @@ namespace Core\DAO {
         }
 
         public function execute($setting = []) {
-            $transaction_resource = $this->transaction->getResource();
+            $transaction = $this->getTransaction();
+
+            if (empty($transaction)) {
+                throw new WF_Exception(vsprintf('[execute]transaction object do not loaded in model instance "%s"',[$this->name(),]));
+            }
+
+            if (!$transaction instanceof Transaction) {
+                throw new WF_Exception(vsprintf('[execute]incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
+            }
+
+            $transaction_resource = $transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new WF_Exception('WF_conectionResourceDoNotInitiated');
+                throw new WF_Exception(vsprintf('[execute]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
             $join = 'inner';
@@ -867,14 +931,17 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception($transaction_resource_error_info[2]);
+                    throw new WF_Exception(vsprintf('[execute]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $pdo_query_total->execute($query_value);
                 $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new WF_Exception($error);
+                throw $error;
             }
 
             try {
@@ -883,14 +950,17 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception($transaction_resource_error_info[2]);
+                    throw new WF_Exception(vsprintf('[execute]PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $pdo_query->execute($query_value);
                 $query_fetch_all = $pdo_query->fetchAll(PDO::FETCH_OBJ);
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new WF_Exception($error);
+                throw $error;
             }
 
             $query_fetch_all_list = [];
