@@ -324,17 +324,21 @@ namespace Core\DAO {
             $transaction = $this->getTransaction();
 
             if (empty($transaction)) {
-                throw new WF_Exception(vsprintf('transaction object do not loaded in model instance "%s"',[$this->name(),]));
+                throw new WF_Exception(vsprintf('transaction object not loaded in model instance "%s"',[$this->name(),]));
+            }
+
+            if (!$transaction instanceof Transaction) {
+                throw new WF_Exception(vsprintf('incorrect loaded instance of Transaction, in model instance "%s"',[$this->name(),]));
             }
 
             $transaction_resource = $this->transaction->getResource();
 
             if (empty($transaction_resource)) {
-                throw new WF_Exception('WF_conectionResourceDontInitiated');
+                throw new WF_Exception(vsprintf('transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
             if (empty($where)) {
-                throw new WF_Exception('WF_errorInGetWhereDoNotSet');
+                throw new WF_Exception(vsprintf('where condition not defined, in model instance "%s"',[$this->name(),]));
             }
 
             $join = 'inner';
@@ -392,22 +396,24 @@ namespace Core\DAO {
                     $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                     if ($transaction_resource_error_info[0] != '00000') {
-                        throw new WF_Exception($transaction_resource_error_info[2]);
+                        throw new WF_Exception(vsprintf('PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                     }
 
                     $pdo_query_total->execute($query_value_list);
                     $pdo_query_total = $pdo_query_total->fetch(PDO::FETCH_OBJ);
 
+                    $this->setQuery($query_total,$query_value_list);
+
                     if (empty($pdo_query_total)) {
-                        throw new WF_Exception('WF_tryingToGetPropertyOfNonObject');
+                        throw new WF_Exception(vsprintf('query error, in model instance "%s"',[$this->name(),]));
                     }
 
                     if ($pdo_query_total->total <= 0) {
-                        throw new WF_Exception('WF_errorInGetDoNotRegister');
+                        throw new WF_Exception(vsprintf('query result is empty, in model instance "%s"',[$this->name(),]));
                     }
 
                     if ($pdo_query_total->total > 1) {
-                        throw new WF_Exception('WF_errorInGetDoNotUniqueRegister');
+                        throw new WF_Exception(vsprintf('query result not unique, in model instance "%s"',[$this->name(),]));
                     }
                 }
 
@@ -418,14 +424,17 @@ namespace Core\DAO {
                 $transaction_resource_error_info = $transaction_resource->errorInfo();
 
                 if ($transaction_resource_error_info[0] != '00000') {
-                    throw new WF_Exception($transaction_resource_error_info[2]);
+                    throw new WF_Exception(vsprintf('PDO error message "%s", in model instance "%s"',[$transaction_resource_error_info[2],$this->name(),]));
                 }
 
                 $pdo_query->execute($query_value_list);
                 $pdo_query_fetch = $pdo_query->fetch(PDO::FETCH_OBJ);
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new WF_Exception($error);
+                throw $error;
             }
 
             foreach ($table_column as $column => $value) {

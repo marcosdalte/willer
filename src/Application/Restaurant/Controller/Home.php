@@ -3,6 +3,7 @@
 namespace Application\Restaurant\Controller {
     use \Core\Controller;
     use \Core\DAO\Transaction;
+    use \Core\Util;
     use \Application\Restaurant\Model\Restaurant;
 
     class Home extends Controller {
@@ -19,12 +20,29 @@ namespace Application\Restaurant\Controller {
 
             $this->db_transaction->connect();
 
-            $restaurant->save([
-                'place' => 'lalala',
-                'serves_hot_dogs' => 1,
-                'serves_pizza' => 1,]);
+            $restaurant->get([
+                'id' => '29']);
 
-            print 'ok';
+            // $restaurant->save([
+            //     'place' => 'addasd',
+            //     'serves_hot_dogs' => 1,
+            //     'serves_pizza' => 1,]);
+            //
+            // $restaurant_list = $restaurant
+            //     // ->where([
+            //     //     'restaurant.place' => null,
+            //     //     'restaurant.serves_hot_dogs' => [null]
+            //     //     ])
+            //     ->orderBy([
+            //         'restaurant.serves_pizza' => 'desc'
+            //         ])
+            //     ->limit(1,5)
+            //     ->execute([
+            //         'join' => 'left']);
+
+            // Util::renderToJson($restaurant->dumpQuery());
+            Util::renderToJson($restaurant);
+            Util::renderToJson($restaurant_list);
         }
     }
 }

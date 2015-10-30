@@ -65,6 +65,13 @@ namespace Core {
                         }
 
                         break;
+
+                    default:
+                        if (empty($rule_null) && !empty($value)) {
+                            if (is_object($value)) {
+                                throw new WF_Exception(vsprintf('"%s" field value can not be object',[$function_name,]));
+                            }
+                        }
                 }
 
                 if (!empty($rule_table)) {
@@ -393,7 +400,7 @@ namespace Core {
                         'flags' => []];
 
                     if (filter_var($value,FILTER_VALIDATE_URL,$filter_var_option) === false) {
-                        throw new WF_urlFieldValueIncorrect(vsprintf('url field value "%s" incorrect',[$value,]));
+                        throw new WF_Exception(vsprintf('url field value "%s" incorrect',[$value,]));
                     }
 
                     return $value;

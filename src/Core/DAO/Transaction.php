@@ -103,10 +103,10 @@ namespace Core\DAO {
                 }
 
             } catch (PDOException $error) {
-                throw new $error->getMessage();
+                throw $error;
 
             } catch (Exception $error) {
-                throw new $error->getMessage();
+                throw $error;
             }
 
             $this->setResource($pdo);
@@ -115,18 +115,16 @@ namespace Core\DAO {
         }
 
         public function beginTransaction() {
-            try {
-                $this->connect();
-
-            } catch (Exception $error) {
-                throw new $error->getMessage();
-            }
+            $this->connect();
 
             try {
                 $this->resource->beginTransaction();
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new $error->getMessage();
+                throw $error;
             }
 
             return $this;
@@ -137,8 +135,11 @@ namespace Core\DAO {
                 try {
                     $this->resource->commit();
 
+                } catch (PDOException $error) {
+                    throw $error;
+
                 } catch (Exception $error) {
-                    throw new $error->getMessage();
+                    throw $error;
                 }
             }
 
@@ -150,8 +151,11 @@ namespace Core\DAO {
                 try {
                     $this->resource->rollBack();
 
+                } catch (PDOException $error) {
+                    throw $error;
+
                 } catch (Exception $error) {
-                    throw new $error->getMessage();
+                    throw $error;
                 }
             }
 
@@ -162,8 +166,11 @@ namespace Core\DAO {
             try {
                 $this->setLastInsertId($this->resource->lastInsertId($sequence_name));
 
+            } catch (PDOException $error) {
+                throw $error;
+
             } catch (Exception $error) {
-                throw new $error->getMessage();
+                throw $error;
             }
 
             return $this->getLastInsertId();
