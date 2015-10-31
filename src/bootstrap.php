@@ -5,9 +5,6 @@ require('Core/Util.php');
 require('Core/System.php');
 require('url.php');
 
-// error_reporting(E_ALL|E_STRICT);
-// ini_set('display_errors',1);
-
 define('DEBUG',true);
 define('URL_PREFIX','/willer/willer');
 define('REQUEST_URI',$_SERVER['REQUEST_URI']);
