@@ -15,29 +15,38 @@ namespace Application\Restaurant\Controller {
             $this->db_transaction = new Transaction();
         }
 
-        public function index() {
+        public function crud() {
+            // load model with Transaction instance
             $restaurant = new Restaurant($this->db_transaction);
 
+            // open connection
             $this->db_transaction->connect();
 
-            // $restaurant->delete();
-
-            // $restaurant->get([
-            //     'id' => '25']);
-
-            // $restaurant->delete(['id' => 123]);
-
-            // $restaurant->place = 'bla e bla';
-            // $restaurant->save();
-
-            // $restaurant->update([
-            //     'place' => 132113]);
-
+            // save
             $restaurant->save([
-                'place' => 'ad',
+                'place' => 'place of test',
                 'serves_hot_dogs' => 1,
                 'serves_pizza' => 1,]);
 
+            // update
+            // $restaurant->place = 'bla e bla';
+            // $restaurant->save();
+
+            // delete
+            // $restaurant->delete();
+
+            // get(unique)
+            // $restaurant->get([
+            //     'id' => '25']);
+
+            // delete with filter
+            // $restaurant->delete(['id' => 123]);
+
+            // update
+            // $restaurant->update([
+            //     'place' => 'place update']);
+
+            // select with where, order by, limit(pagination) and join left
             // $restaurant_list = $restaurant
             //     ->where([
             //         'restaurant.id' => [15,16],])
@@ -49,9 +58,28 @@ namespace Application\Restaurant\Controller {
             //     ->execute([
             //         'join' => 'left']);
 
+            // select with update and return changes
+            $restaurant_list = $restaurant
+                ->where([
+                    'restaurant.id' => [1,2],]) // id in(1,2)
+                ->orderBy([
+                    'restaurant.serves_pizza' => 'desc'])
+                ->limit(1,5) // page 1 limit 5
+                ->update([
+                    'place' => 'place update yea!']) // update in current select
+                ->execute([
+                    'join' => 'left']); // join left|right optional
+
+            // list of query's
             // Util::renderToJson($restaurant->dumpQuery());
-            Util::renderToJson($restaurant);
-            // Util::renderToJson($restaurant_list);
+
+            // render to json result
+            // Util::renderToJson($restaurant);
+            Util::renderToJson($restaurant_list);
+        }
+
+        public function otherView() {
+            print 'test other view';
         }
     }
 }

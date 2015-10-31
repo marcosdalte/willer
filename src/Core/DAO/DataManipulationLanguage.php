@@ -990,7 +990,7 @@ namespace Core\DAO {
             }
 
             $limit_value = $this->getLimitValue();
-            $register_total = $pdo_query_total->total;
+            $register_total = intval($pdo_query_total->total);
             $register_perpage = $limit_value['limit'];
             $page_total = ceil($register_total / $register_perpage);
             $page_current = $limit_value['page'] >= $page_total ? $page_total : $limit_value['page'];
@@ -998,7 +998,7 @@ namespace Core\DAO {
             $page_previous = $page_current - 1 <= 0 ? 1 : $page_current - 1;
 
             $result = [
-                'register_total' => $pdo_query_total->total,
+                'register_total' => $register_total,
                 'register_perpage' => $register_perpage,
                 'page_total' => $page_total,
                 'page_current' => $page_current,
