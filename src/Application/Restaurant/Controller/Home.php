@@ -15,6 +15,10 @@ namespace Application\Restaurant\Controller {
             $this->db_transaction = new Transaction();
         }
 
+        public function requestMethodTest() {
+            print 'ok';
+        }
+
         public function index() {
             $restaurant = new Restaurant($this->db_transaction);
 

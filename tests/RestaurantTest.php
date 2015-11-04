@@ -1,8 +1,9 @@
 <?php
 
-require(ROOT_PATH.'/Core/Exception/WF_requestMethodInvalid.php');
+require(ROOT_PATH.'/Core/Exception/WF_Exception.php');
 require(ROOT_PATH.'/Core/Util.php');
 require(ROOT_PATH.'/Core/Controller.php');
+require(ROOT_PATH.'/Core/DAO/Transaction.php');
 require(ROOT_PATH.'/Application/Restaurant/Controller/Home.php');
 
 use \Application\Restaurant\Controller\Home;
@@ -13,9 +14,19 @@ class RestaurantTest extends PHPUnit_Framework_TestCase {
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $restaurant_home = new Home('POST');
+        $restaurant_controller = new Home('POST');
 
-        $restaurant_home->index();
+        $restaurant_controller->requestMethodTest();
+    }
+
+    public function testRequestMethodValid() {
+        $this->expectOutputString('ok');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $restaurant_controller = new Home('POST');
+
+        $restaurant_controller->requestMethodTest();
     }
 }
 
