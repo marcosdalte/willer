@@ -1,5 +1,6 @@
 <?php
 
 $url = [
-    '/^\/restaurant\/test\/?$/' => ['Restaurant/Home/index',['GET']],
+    '/^\/restaurant\/crud\/?$/'       => ['Restaurant/Home/crud',['GET']],
+    '/^\/restaurant\/other-page\/?$/' => ['Restaurant/Home/otherView',['GET']],
 ];
