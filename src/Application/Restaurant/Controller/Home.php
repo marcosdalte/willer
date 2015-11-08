@@ -15,11 +15,27 @@ namespace Application\Restaurant\Controller {
             $this->db_transaction = new Transaction();
         }
 
-        public function requestMethodTest() {
+        public function requestMethodGetTest() {
             print 'ok';
         }
 
-        public function crud() {
+        public function restaurantAdd() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->db_transaction);
+
+            // open connection
+            $this->db_transaction->connect();
+
+            // save
+            $restaurant->save([
+                'place' => 'place of test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            Util::renderToJson($restaurant);
+        }
+
+        public function restaurantUpdate() {
             // load model with Transaction instance
             $restaurant = new Restaurant($this->db_transaction);
 
@@ -33,22 +49,63 @@ namespace Application\Restaurant\Controller {
                 'serves_pizza' => 1,]);
 
             // update
-            // $restaurant->place = 'bla e bla';
-            // $restaurant->save();
+            $restaurant->place = 'bla e bla';
+            $restaurant->serves_hot_dogs = 0;
+            $restaurant->save();
 
-            // delete
+            Util::renderToJson($restaurant);
+        }
+
+        public function restaurantDelete() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->db_transaction);
+
+            // open connection
+            $this->db_transaction->connect();
+
+            // delete all register without filter
             // $restaurant->delete();
 
-            // get(unique)
-            // $restaurant->get([
-            //     'id' => '25']);
+            // save
+            $restaurant->save([
+                'place' => 'place of test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
 
-            // delete with filter
-            // $restaurant->delete(['id' => 123]);
+            // delete current instance
+            $restaurant->delete();
+
+            Util::renderToJson($restaurant);
+        }
+
+        public function restaurantGet() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->db_transaction);
+
+            // open connection
+            $this->db_transaction->connect();
+
+            // get(unique)
+            $restaurant->get([
+                'place' => 'place of test']);
+
+            // delete current instance
+            // $restaurant->delete();
 
             // update
-            // $restaurant->update([
-            //     'place' => 'place update']);
+            // $restaurant->place = 'bla e bla';
+            // $restaurant->serves_hot_dogs = 0;
+            // $restaurant->save();
+
+            Util::renderToJson($restaurant);
+        }
+
+        public function restaurantSelect() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->db_transaction);
+
+            // open connection
+            $this->db_transaction->connect();
 
             // select with where, order by, limit(pagination) and join left
             // $restaurant_list = $restaurant
@@ -65,7 +122,7 @@ namespace Application\Restaurant\Controller {
             // select with update and return changes
             $restaurant_list = $restaurant
                 ->where([
-                    'restaurant.id' => [1,2],]) // id in(1,2)
+                    'restaurant.serves_hot_dogs' => [1,0],]) // id in(1,2)
                 ->orderBy([
                     'restaurant.serves_pizza' => 'desc'])
                 ->limit(1,5) // page 1 limit 5
@@ -78,7 +135,6 @@ namespace Application\Restaurant\Controller {
             // Util::renderToJson($restaurant->dumpQuery());
 
             // render to json result
-            // Util::renderToJson($restaurant);
             Util::renderToJson($restaurant_list);
         }
 
