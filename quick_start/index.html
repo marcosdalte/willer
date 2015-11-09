@@ -69,14 +69,35 @@
                 
                 
                 
-                    <li >
-                        <a href="../configuration/">Configuration</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Setup <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../setup/configuration/">Configuration</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../setup/constants/">Constants</a>
+</li>
+
+                        
+                        </ul>
                     </li>
                 
                 
                 
                     <li class="active">
                         <a href="./">Quick Start</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../crud/">CRUD</a>
                     </li>
                 
                 
@@ -91,12 +112,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../configuration/">
+                        <a rel="next" href="../setup/constants/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
-                    <li class="disabled">
-                        <a rel="prev" >
+                    <li >
+                        <a rel="prev" href="../crud/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -125,7 +146,9 @@
         
             <li><a href="#url-route">URL route</a></li>
         
-            <li><a href="#the-model-layer">The model layer</a></li>
+            <li><a href="#model">Model</a></li>
+        
+            <li><a href="#controller">Controller</a></li>
         
     
     </ul>
@@ -135,7 +158,7 @@
 <h1 id="quick-start">Quick start</h1>
 <p>In this section are some definitions to be respected for the correct functioning of the willer, we present the three main layers - <code>Model, Controllers and View</code> - in addition to working with routes in<code>url.php</code></p>
 <h2 id="url-route">URL route</h2>
-<p>Na raiz do willer temos o arquivo <code>url.php</code>, neste serão definidos os padrões de URL, ligando cada padrão há uma <code>aplicação/controller/view</code></p>
+<p>In root or <code>src</code> path, we have file <code>url.php</code>, this URL's will be defined, the structure is as follows <code>application/controller/view</code></p>
 <p>Example:</p>
 <pre><code>// url's frontend
 $URL = [
@@ -159,6 +182,14 @@ $URL += [
     &quot;/^admin\/?$/&quot; =&gt; [&quot;MyBackend/Dashboard/index&quot;,null],
 ];
 
+// api route
+$URL += [
+    &quot;/^product\/id\/([0-9]+)\/?$/&quot; =&gt; [&quot;MyApi/Product/getById&quot;,['GET']],
+    &quot;/^product\/add\/?$/&quot;          =&gt; [&quot;MyApi/Product/add&quot;,['POST']],
+    &quot;/^product\/update\/?$/&quot;       =&gt; [&quot;MyApi/Product/update&quot;,['POST','PUT']],
+    &quot;/^product\/delete\/?$/&quot;       =&gt; [&quot;MyApi/Product/delete&quot;,['POST']],
+];
+
 // blog
 $URL += [
     &quot;/^blog\/?$/&quot;            =&gt; [&quot;MyBlog/Blog/index&quot;,null],
@@ -167,7 +198,7 @@ $URL += [
 
 </code></pre>
 
-<h2 id="the-model-layer">The model layer</h2>
+<h2 id="model">Model</h2>
 <p>Exemplo das tabela Pessoa e Produto que se relacionam com a tabela Compras</p>
 <pre><code>CREATE TABLE `person` (
     `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -258,6 +289,7 @@ namespace Application\Test\Model\Purchase {
 }
 </code></pre>
 
+<h2 id="controller">Controller</h2>
 <p>In controller temos algumas simples querys</p>
 <pre><code>$db_transaction = new Transaction(DB_POSTGRES);
 

@@ -4,17 +4,17 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="framework in php - based in django and codeigniter">
+        
         <meta name="author" content="william borba">
         
-        <link rel="shortcut icon" href="./img/favicon.ico">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
 
-	<title>willer framework</title>
+	<title>Constants - willer framework</title>
 
-        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
-        <link href="./css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/highlight.css">
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -35,7 +35,7 @@
         
     </head>
 
-    <body class="homepage">
+    <body>
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -53,7 +53,7 @@
             
 
             <!-- Main title -->
-            <a class="navbar-brand" href=".">willer framework</a>
+            <a class="navbar-brand" href="../..">willer framework</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -63,25 +63,25 @@
                 <ul class="nav navbar-nav">
                 
                 
-                    <li class="active">
-                        <a href=".">Index</a>
+                    <li >
+                        <a href="../..">Index</a>
                     </li>
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Setup <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="setup/configuration/">Configuration</a>
+    <a href="../configuration/">Configuration</a>
 </li>
 
                         
                             
-<li >
-    <a href="setup/constants/">Constants</a>
+<li class="active">
+    <a href="./">Constants</a>
 </li>
 
                         
@@ -91,13 +91,13 @@
                 
                 
                     <li >
-                        <a href="quick_start/">Quick Start</a>
+                        <a href="../../quick_start/">Quick Start</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="crud/">CRUD</a>
+                        <a href="../../crud/">CRUD</a>
                     </li>
                 
                 
@@ -111,13 +111,13 @@
                     </a>
                 </li>
                 
-                    <li class="disabled">
-                        <a rel="next" >
+                    <li >
+                        <a rel="next" href="../configuration/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="setup/configuration/">
+                        <a rel="prev" href="../../quick_start/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -142,42 +142,96 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#willer-framework">Willer Framework</a></li>
+        <li class="main active"><a href="#constants">Constants</a></li>
         
-            <li><a href="#requisites-dependencies">Requisites &amp; Dependencies</a></li>
+            <li><a href="#debug">DEBUG</a></li>
         
-            <li><a href="#features">Features</a></li>
+            <li><a href="#url_prefix">URL_PREFIX</a></li>
         
-            <li><a href="#download-install">Download &amp; Install</a></li>
+            <li><a href="#request_uri">REQUEST_URI</a></li>
         
-            <li><a href="#license">License</a></li>
+            <li><a href="#root_path">ROOT_PATH</a></li>
+        
+            <li><a href="#database_path">DATABASE_PATH</a></li>
+        
+            <li><a href="#database">DATABASE</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="willer-framework">Willer Framework</h1>
-<p>Willer is a PHP framework, it was created based on ideas coming from other frameworks like Codeigniter(php) and Django(python).</p>
-<h2 id="requisites-dependencies">Requisites &amp; Dependencies</h2>
-<ul>
-<li>PHP &gt;= 5.6</li>
-<li>Whoops - php errors for cool kids</li>
-<li>Twig - templating(optional)</li>
-</ul>
-<h2 id="features">Features</h2>
-<ul>
-<li>ORM(like Django)</li>
-<li>MVC(merge Codeigniter and Django)</li>
-<li>Run immediately, php server built-in integrated, like <code>./runserver.sh</code></li>
-</ul>
-<h2 id="download-install">Download &amp; Install</h2>
-<ul>
-<li>GIT: <code>git clone</code> the <a href="https://github.com/williamborba/willer/">GitHub project page</a></li>
-<li>Composer: <code>composer create-project wborba/willer --dev</code></li>
-</ul>
-<h2 id="license">License</h2>
-<p>The MIT License (MIT). Please see <a href="https://github.com/williamborba/willer/blob/master/LICENSE">License File</a> for more information.</p></div>
+<h1 id="constants">Constants</h1>
+<p>As constants são todas definidas no arquivo <code>src/bootstrap.php</code> podendo ser manipuladas conforme o ambiente e necessidades de seu projeto.</p>
+<pre><code>define('DEBUG',true);
+define('URL_PREFIX','');
+define('REQUEST_URI',$_SERVER['REQUEST_URI']);
+define('ROOT_PATH',__DIR__);
+define('DATABASE_PATH',ROOT_PATH.'/database.json');
+define('DATABASE','default');
+</code></pre>
+
+<h2 id="debug">DEBUG</h2>
+<pre><code>define('DEBUG',true);
+</code></pre>
+
+<p>Enable or disable display errors.
+Default: true
+Possible values: true or false</p>
+<h2 id="url_prefix">URL_PREFIX</h2>
+<pre><code>define('URL_PREFIX','blog/');
+</code></pre>
+
+<p>É um prefixo usado para ser escapado nos acessos as URL do projeto.
+Ex: //PREFIX is defined 'blog/'
+GET: blog/home</p>
+<p>//in url.php file the math ^home is valid.
+'/^\/blog\/?$/' =&gt; ['Blog/Home/index',['GET']],</p>
+<p>Default: ''
+Possible values: String;</p>
+<h2 id="request_uri">REQUEST_URI</h2>
+<pre><code>define('REQUEST_URI',$_SERVER['REQUEST_URI']);
+</code></pre>
+
+<p>É a rota recebida, podendo ser obtida pela global <code>$_SERVER['REQUEST_URI']</code> do php.</p>
+<p>Default: <code>$_SERVER['REQUEST_URI']</code>
+Possible values: String</p>
+<h2 id="root_path">ROOT_PATH</h2>
+<pre><code>define('ROOT_PATH',__DIR__);
+</code></pre>
+
+<p>Diretório no qual a aplicação está rodando, podendo ser adquirida pela função <code>__DIR__</code> do php.</p>
+<p>Default: <code>__DIR__</code>
+Possible values: String</p>
+<h2 id="database_path">DATABASE_PATH</h2>
+<pre><code>define('DATABASE_PATH',ROOT_PATH.'/database.json');
+</code></pre>
+
+<p>Diretório em que está definido o arquivo json para conexão as bases de dados, geralmente definido como <code>database.json</code> na pasta <code>src/</code>.</p>
+<p>Default: <code>ROOT_PATH.'/database.json'</code>
+Possible values: String[.json]</p>
+<h2 id="database">DATABASE</h2>
+<pre><code>define('DATABASE','default');
+</code></pre>
+
+<p>Nome da base de dados default do projeto, definido no arquivo <code>database.json</code>.
+Example:</p>
+<pre><code>{
+    &quot;default&quot;: {
+        &quot;driver&quot;: &quot;sqlite&quot;,
+        &quot;host&quot;: &quot;/home/user/project/database/db_restaurant&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;user&quot;: &quot;&quot;,
+        &quot;password&quot;: &quot;&quot;,
+        &quot;port&quot;: &quot;&quot;,
+        &quot;autocommit&quot;: 0,
+        &quot;debug&quot;: 0
+    }
+}
+</code></pre>
+
+<p>Default: default
+Possible values: String</p></div>
             
         </div>
 
@@ -187,12 +241,12 @@
             <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
 
-        <script src="./js/jquery-1.10.2.min.js"></script>
-        <script src="./js/bootstrap-3.0.3.min.js"></script>
-        <script src="./js/highlight.pack.js"></script>
-        <script>var base_url = '.';</script>
-        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-        <script src="./js/base.js"></script>
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script>
+        <script>var base_url = '../..';</script>
+        <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+        <script src="../../js/base.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
             <div class="modal-dialog">
@@ -221,8 +275,3 @@
 
     </body>
 </html>
-
-<!--
-MkDocs version : 0.14.0
-Build Date UTC : 2015-11-09 03:03:02.328884
--->
