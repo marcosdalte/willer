@@ -12,6 +12,7 @@ namespace Application\Restaurant\Controller {
         public function __construct($request_method = null) {
             parent::__construct($request_method);
 
+            // load transaction object
             $this->db_transaction = new Transaction();
         }
 

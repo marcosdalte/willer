@@ -10,15 +10,9 @@ willer
 
 http://williamborba.github.io/willer
 
-## Quick start
+### highlights
 
-In this section are some definitions to be respected for the correct functioning of the willer, we present the three main layers - `Model, Controllers and View` - in addition to working with routes in` url.php`
-
-### URL route
-
-Na raiz do willer temos o arquivo `url.php`, neste serão definidos os padrões de URL, ligando cada padrão há uma `aplicação/controller/view`
-
-Example:
+Routes by single file `url.php`. Example.
 
 ```php
 // url's frontend
@@ -50,10 +44,9 @@ $URL += [
 ];
 
 ```
+### Model's Django like style.
 
-### The model layer
-
-Exemplo das tabela Pessoa e Produto que se relacionam com a tabela Compras
+Example sql.
 ```sql
 CREATE TABLE `person` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,14 +60,14 @@ CREATE TABLE `product` (
 	`price`	REAL NOT NULL
 );
 
-CREATE TABLE `purchase` (
+CREATE TABLE `order` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`person_id`	INTEGER NOT NULL,
 	`product_id`	NUMERIC NOT NULL,
 	`quantity`	INTEGER NOT NULL
 );
 ```
-Agora o exemplo da estrutura dos model, conforme a entidade relacional das tabelas
+Example model class Person, Product and Order.
 
 ```php
 namespace Application\Test\Model\Person {
@@ -119,12 +112,12 @@ namespace Application\Test\Model\Product {
     }
 }
 
-namespace Application\Test\Model\Purchase {
+namespace Application\Test\Model\Order {
     use \Core\Model;
     use \Application\Test\Model\Person;
     use \Application\Test\Model\Product;
 
-    class Purchase extends Model {
+    class Order extends Model {
         public $id;
         public $person_id;
         public $product_id;
@@ -139,21 +132,20 @@ namespace Application\Test\Model\Purchase {
         }
 
         protected function name() {
-            return "purchase";
+            return "order";
         }
     }
 }
 ```
-### The controller layer
 
-In controller temos algumas simples querys
+### ORM engine, mix style Django and Codeigniter.
 
 ```php
 $db_transaction = new Transaction(DB_POSTGRES);
 
 $person = new Person\Person($db_transaction);
 $product = new Product\Product($db_transaction);
-$purchase = new Purchase\Purchase($db_transaction);
+$order = new Order\Order($db_transaction);
 
 try {
     $db_transaction->beginTransaction();
@@ -172,12 +164,12 @@ try {
     $person->first_name = "william";
     $person->save();
 
-    $purchase->save([
+    $order->save([
         "person_id" => $person,
         "product_id" => $product,
         "quantity" => 3]);
 
-    $purchase_filter = $purchase
+    $purchase_filter = $order
         ->where([
             "person.id" => $person->id,
             "product.name" => [$product->name] // values arrays result in 'IN' sql operator
@@ -186,6 +178,8 @@ try {
             "person.first_name" => "desc"
             ])
         ->limit(1,5)
+        ->update([
+            'quantity' => '10') // update in current select
         ->execute([
             "join" => "left"]);
 
@@ -218,7 +212,7 @@ try {
 
 */
 ```
-Cada index da lista é um registro mapeado, representado por um objeto da mesma entidade, contendo todas as funções CRUD.
+Persistence objects data.
 
 ```php
 foreach ($purchase_filter as $i => $purchase_obj) {
@@ -235,9 +229,8 @@ foreach ($purchase_filter as $i => $purchase_obj) {
 
 }
 ```
-
-Para cada query efetuada podemos a qualquer momento fazer um debug da consulta realizada.
+Retrieve query's history in real time.
 
 ```php
-$purchase->lastQuery();
+$order->dumpQuery();
 ```

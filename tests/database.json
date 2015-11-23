@@ -7,6 +7,6 @@
 		"password": "",
 		"port": "",
 		"autocommit": 0,
-		"debug": 0
+		"debug": 1
 	}
 }
