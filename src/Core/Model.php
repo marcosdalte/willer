@@ -1,7 +1,6 @@
 <?php
 
 namespace Core {
-    use \Core\DAO\Transaction;
     use \Core\DAO\DataManipulationLanguage;
     use \Core\Exception\WF_Exception;
 
