@@ -838,6 +838,10 @@ namespace Core\DAO {
                 throw $error;
             }
 
+            foreach ($table_column as $column => $value) {
+                $this->$column = null;
+            }
+
             $this->setQuery($query,$query_value);
 
             return $this;
