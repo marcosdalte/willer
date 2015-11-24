@@ -10,7 +10,7 @@ willer
 
 http://williamborba.github.io/willer
 
-### highlights
+### Highlights
 
 Routes by single file `url.php`. Example.
 
