@@ -16,7 +16,7 @@ namespace Application\Restaurant\Model {
         }
 
         protected function name() {
-            return "restaurant";
+            return 'restaurant';
         }
     }
 }

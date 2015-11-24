@@ -18,7 +18,7 @@ matrix:
   fast_finish: true
 
 script:
-  - phpunit --bootstrap tests/bootstrap.php tests
+  - phpunit --bootstrap=tests/bootstrap.php --colors=always -v --debug --testdox tests/
 
 notifications:
     on_success: never
