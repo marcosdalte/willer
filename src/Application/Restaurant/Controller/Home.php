@@ -115,8 +115,6 @@ namespace Application\Restaurant\Controller {
             //     ->orderBy([
             //         'restaurant.serves_pizza' => 'desc'])
             //     ->limit(1,5)
-            //     ->update([
-            //         'place' => 'testandiooo123654'])
             //     ->execute([
             //         'join' => 'left']);
 
