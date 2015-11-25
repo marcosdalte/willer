@@ -45,7 +45,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
         $restaurant_test->serves_hot_dogs = 1;
         $restaurant_test->serves_pizza = 1;
 
-        // compare objects
+        // test
         $this->assertEquals(print_r($restaurant_test,true),print_r($restaurant,true));
     }
 
@@ -80,7 +80,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
     //     $restaurant_test->serves_hot_dogs = 0;
     //     $restaurant_test->serves_pizza = 0;
 
-    //     // compare
+    //     // test
     //     $this->assertEquals(print_r($restaurant_test,true),print_r($restaurant,true));
     // }
 
@@ -103,7 +103,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
     //     // delete register
     //     $restaurant->delete();
 
-    //     // compare
+    //     // test
     //     $this->assertNull($restaurant->id);
     //     $this->assertNull($restaurant->place);
     //     $this->assertNull($restaurant->serves_hot_dogs);
@@ -134,7 +134,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
     //     $restaurant->get([
     //         'place' => 'place_of_test_unique']);
 
-    //     // compare
+    //     // test
     //     $this->assertEquals($restaurant->place,'place_of_test_unique');
     // }
 
@@ -167,7 +167,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
     //         ->limit(1,5)
     //         ->execute();
 
-    //     // compare
+    //     // test
     //     $this->assertNotEmpty($restaurant_list);
     // }
 }

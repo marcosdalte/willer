@@ -236,7 +236,7 @@ namespace Core\DAO {
             return $this;
         }
 
-        private function related($table_related,$query_list = []) {
+        private function related($table_related,$query_list = [],$join = false) {
             $table_name = $table_related->getTableName();
             $table_schema = $table_related->getTableSchema();
 
@@ -257,11 +257,16 @@ namespace Core\DAO {
                     $table_related_table_column = $table_related->getTableColumn();
                     $table_related_primary_key = $table_related->getPrimaryKey();
 
-                    $join = 'inner';
+                    if (!empty($join)) {
 
-                    if (array_key_exists('null',$table->rule)) {
-                        if (!empty($table->rule['null'])) {
-                            $join = 'left';
+
+                    } else {
+                        $join = 'inner';
+
+                        if (array_key_exists('null',$table->rule)) {
+                            if (!empty($table->rule['null'])) {
+                                $join = 'left';
+                            }
                         }
                     }
 
@@ -276,7 +281,7 @@ namespace Core\DAO {
                     $query_list['column'][] = $column_list;
                     $query_list['join'][] = vsprintf('%s join %s on %s.%s = %s.%s',[$join,$table_related_table_name_with_escape,$table_related_table_name_with_escape,$table_related_primary_key,$table_name_with_escape,$table_foreign_key]);
 
-                    $query_list = $this->related($table_related,$query_list);
+                    $query_list = $this->related($table_related,$query_list,$join);
                 }
             }
 
@@ -864,7 +869,7 @@ namespace Core\DAO {
                 throw new WF_Exception(vsprintf('[execute]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
-            $join = 'inner';
+            $join = null;
 
             if (!empty($setting)) {
                 if (array_key_exists('join',$setting)) {
@@ -878,7 +883,7 @@ namespace Core\DAO {
             $get_where_value = $this->getWhereValue();
             $order_by = $this->getOrderBy();
             $limit = $this->getLimit();
-            $related = $this->related($this);
+            $related = $this->related($this,[],$join);
 
             $table_name_with_escape = vsprintf('%s%s%s',[$this->db_escape,$table_name,$this->db_escape]);
 
@@ -886,7 +891,7 @@ namespace Core\DAO {
             $related_column = [];
 
             if (!empty($related) && !empty($related['join'])) {
-                $related_join = vsprintf('%s %s',[$join,implode(vsprintf(' %s ',[$join,]),$related['join'])]);
+                $related_join = implode(' ',$related['join']);
 
                 foreach ($related['column'] as $i => $column) {
                     $related_column[] = implode(',',$column);
