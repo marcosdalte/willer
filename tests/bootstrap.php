@@ -15,3 +15,5 @@ require(ROOT_PATH.'/Application/Restaurant/Controller/Home.php');
 require(ROOT_PATH.'/Core/DAO/DataManipulationLanguage.php');
 require(ROOT_PATH.'/Core/Model.php');
 require(ROOT_PATH.'/Application/Restaurant/Model/Restaurant.php');
+require(ROOT_PATH.'/Application/Restaurant/Model/Waiter.php');
+require(ROOT_PATH.'/Application/Restaurant/Model/Place.php');

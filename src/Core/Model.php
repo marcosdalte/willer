@@ -107,7 +107,9 @@ namespace Core {
                 }
             }
 
-            $value = $function_filter($value);
+            if (!empty($value)) {
+                $value = $function_filter($value);
+            }
 
             return $value;
         }

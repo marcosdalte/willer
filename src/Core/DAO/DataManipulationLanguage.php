@@ -257,6 +257,14 @@ namespace Core\DAO {
                     $table_related_table_column = $table_related->getTableColumn();
                     $table_related_primary_key = $table_related->getPrimaryKey();
 
+                    $join = 'inner';
+
+                    if (array_key_exists('null',$table->rule)) {
+                        if (!empty($table->rule['null'])) {
+                            $join = 'left';
+                        }
+                    }
+
                     $table_related_table_name_with_escape = vsprintf('%s%s%s',[$this->db_escape,$table_related_table_name,$this->db_escape]);
 
                     $column_list = [];
@@ -266,7 +274,7 @@ namespace Core\DAO {
                     }
 
                     $query_list['column'][] = $column_list;
-                    $query_list['join'][] = vsprintf('join %s on %s.%s = %s.%s',[$table_related_table_name_with_escape,$table_related_table_name_with_escape,$table_related_primary_key,$table_name_with_escape,$table_foreign_key]);
+                    $query_list['join'][] = vsprintf('%s join %s on %s.%s = %s.%s',[$join,$table_related_table_name_with_escape,$table_related_table_name_with_escape,$table_related_primary_key,$table_name_with_escape,$table_foreign_key]);
 
                     $query_list = $this->related($table_related,$query_list);
                 }
@@ -320,7 +328,7 @@ namespace Core\DAO {
             return $this;
         }
 
-        public function get($where = [],$setting = []) {
+        public function get($where = []) {
             $transaction = $this->getTransaction();
 
             if (empty($transaction)) {
@@ -341,14 +349,6 @@ namespace Core\DAO {
                 throw new WF_Exception(vsprintf('[get]where condition not defined, in model instance "%s"',[$this->name(),]));
             }
 
-            $join = 'inner';
-
-            if (!empty($setting)) {
-                if (array_key_exists('join',$setting)) {
-                    $join = $setting['join'];
-                }
-            }
-
             $table_column = $this->getTableColumn();
             $table_name = $this->getTableName();
             $table_schema = $this->getTableSchema();
@@ -360,7 +360,7 @@ namespace Core\DAO {
             $related_column = [];
 
             if (!empty($related) && !empty($related['join'])) {
-                $related_join = vsprintf('%s %s',[$join,implode(vsprintf(' %s ',[$join,]),$related['join'])]);
+                $related_join = implode(' ',$related['join']);
 
                 foreach ($related['column'] as $i => $column) {
                     $related_column[] = implode(',',$column);
