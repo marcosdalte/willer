@@ -175,7 +175,14 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
             ->execute();
 
         // compare
-        $this->assertNotEmpty($restaurant_list);
+        $this->assertNotEmpty($restaurant_list['data']);
+        $this->assertCount(1,$restaurant_list['data']);
+        $this->assertEquals(1,$restaurant_list['register_total']);
+        $this->assertEquals(5,$restaurant_list['register_perpage']);
+        $this->assertEquals(1,$restaurant_list['page_total']);
+        $this->assertEquals(1,$restaurant_list['page_current']);
+        $this->assertEquals(1,$restaurant_list['page_next']);
+        $this->assertEquals(1,$restaurant_list['page_previous']);
     }
 }
 
