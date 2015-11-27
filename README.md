@@ -101,6 +101,7 @@ namespace Application\Restaurant\Model {
 ```
 
 file `Application/Restaurant/Model/Restaurant.php`
+
 Namespace/class `Application\Restaurant\Model\Restaurant`
 
 ```php
@@ -134,6 +135,7 @@ namespace Application\Restaurant\Model {
 ```
 
 file `Application/Restaurant/Model/Waiter.php`
+
 Namespace/class `Application\Restaurant\Model\Waiter`
 
 ```php
@@ -167,6 +169,7 @@ namespace Application\Restaurant\Model {
 Controller `Home.php`
 
 file `Application/Restaurant/Controller/Home.php`
+
 Namespace/class `Application\Restaurant\Controller\Home`
 
 ```php
