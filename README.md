@@ -4,7 +4,7 @@ willer
 [![Build Status](https://travis-ci.org/williamborba/willer.svg?branch=master)](https://travis-ci.org/williamborba/willer)
 [![Latest Stable Version](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer) [![Total Downloads](https://poser.pugx.org/wborba/willer/downloads)](https://packagist.org/packages/wborba/willer) [![Latest Unstable Version](https://poser.pugx.org/wborba/willer/v/unstable)](https://packagist.org/packages/wborba/willer) [![License](https://poser.pugx.org/wborba/willer/license)](https://packagist.org/packages/wborba/willer)
 
-## php framework - for those who like [![django](https://www.djangoproject.com/)]
+## php framework - for those who like [![django](https://www.djangoproject.com/s/img/logos/django-logo-negative.png)](https://www.djangoproject.com/)
 
 ### Documentation
 
