@@ -183,7 +183,7 @@ namespace Application\Restaurant\Model {
 
 ORM engine, style Django and Active Records.
 
-Controller `Home.php`
+Controller `Home.php` with method/view `restaurantAdd` contains transaction example.
 
 | File  | Namespace/Class |
 | :------------: |:---------------:|
@@ -216,25 +216,34 @@ namespace Application\Restaurant\Controller {
             $place = new Place($this->transaction);
             $waiter = new Waiter($this->transaction);
 
-            // open connection
-            $this->transaction->connect();
+            try {
+                // open connection with begin transaction
+                $this->transaction->beginTransaction();
 
-            // save place
-            $place->save([
-                'name' => 'place name test',
-                'address' => 'place address test',]);
+                // save place
+                $place->save([
+                    'name' => 'place name test',
+                    'address' => 'place address test',]);
 
-            // save restaurant
-            $restaurant->save([
-                'place_id' => $place,
-                'name' => 'restaurant name test',
-                'serves_hot_dogs' => 1,
-                'serves_pizza' => 1,]);
+                // save restaurant
+                $restaurant->save([
+                    'place_id' => $place,
+                    'name' => 'restaurant name test',
+                    'serves_hot_dogs' => 1,
+                    'serves_pizza' => 1,]);
 
-            // save waiter
-            $waiter->save([
-                'restaurant_id' => $restaurant,
-                'name' => 'waiter name test']);
+                // save waiter
+                $waiter->save([
+                    'restaurant_id' => $restaurant,
+                    'name' => 'waiter name test']);
+
+                // commit
+                $this->transaction->commit();
+
+            } catch (Exception $error) {
+                // rollBack
+                $this->transaction->rollBack();
+            }
         }
     }
 }
