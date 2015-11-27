@@ -12,7 +12,7 @@ http://williamborba.github.io/willer
 
 ### Highlights
 
-Routes by single file `url.php`. Example.
+Routes in style Django by single file `url.php`. Example.
 
 ```php
 // url's frontend
@@ -48,189 +48,388 @@ $URL += [
 
 Example sql.
 ```sql
-CREATE TABLE `person` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`first_name`	TEXT,
-	`last_name`	TEXT
+CREATE TABLE `place` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `name`  TEXT NOT NULL,
+    `address`   TEXT NOT NULL
 );
 
-CREATE TABLE `product` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`name`	TEXT NOT NULL,
-	`price`	REAL NOT NULL
+CREATE TABLE `restaurant` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `place_id`  TEXT,
+    `name`  TEXT NOT NULL,
+    `serves_hot_dogs`   INTEGER NOT NULL,
+    `serves_pizza`  INTEGER NOT NULL,
+    FOREIGN KEY(`place_id`) REFERENCES place
 );
 
-CREATE TABLE `order` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`person_id`	INTEGER NOT NULL,
-	`product_id`	NUMERIC NOT NULL,
-	`quantity`	INTEGER NOT NULL
+CREATE TABLE `waiter` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `restaurant_id` INTEGER,
+    `name`  TEXT NOT NULL,
+    FOREIGN KEY(`restaurant_id`) REFERENCES restaurant
 );
 ```
-Example model class Person, Product and Order.
+Example model class Place, Restaurant and Waiter.
+
+file `Application/Restaurant/Model/Place.php`
+Namespace/class `Application\Restaurant\Model\Place`
 
 ```php
-namespace Application\Test\Model\Person {
+<?php
+
+namespace Application\Restaurant\Model {
     use \Core\Model;
 
-    class Person extends Model {
-        public $id;
-        public $first_name;
-        public $last_name;
-
-        protected function schema() {
-            return [
-                "id" => Model::primaryKey(),
-                "first_name" => Model::char(["length" => 40]),
-                "last_name" => Model::char(["length" => 40])];
-        }
-
-        protected function name() {
-            return "person";
-        }
-    }
-}
-
-namespace Application\Test\Model\Product {
-    use \Core\Model;
-
-    class Product extends Model {
+    class Place extends Model {
         public $id;
         public $name;
-        public $price;
+        public $address;
 
         protected function schema() {
             return [
-                "id" => Model::primaryKey(),
-                "name" => Model::char(["length" => 40]),
-                "price" => Model::float(["length" => 20])];
+                'id' => Model::primaryKey(),
+                'name' => Model::char(['length' => 40]),
+                'address' => Model::char(['length' => 40]),];
         }
 
         protected function name() {
-            return "product";
+            return 'place';
         }
     }
 }
+```
 
-namespace Application\Test\Model\Order {
+file `Application/Restaurant/Model/Restaurant.php`
+Namespace/class `Application\Restaurant\Model\Restaurant`
+
+```php
+<?php
+
+namespace Application\Restaurant\Model {
     use \Core\Model;
-    use \Application\Test\Model\Person;
-    use \Application\Test\Model\Product;
+    use \Application\Restaurant\Model\Place;
 
-    class Order extends Model {
+    class Restaurant extends Model {
         public $id;
-        public $person_id;
-        public $product_id;
-        public $quantity;
+        public $place_id;
+        public $name;
+        public $serves_hot_dogs;
+        public $serves_pizza;
 
         protected function schema() {
             return [
-                "id" => Model::primaryKey(),
-                "person_id" => Model::foreignKey(["table" => new Person\Person,"null" => 0]),
-                "product_id" => Model::foreignKey(["table" => new Product\Product,"null" => 0]),
-                "quantity" => Model::integer(["length" => 20])];
+                'id' => Model::primaryKey(),
+                'place_id' => Model::foreignKey(['table' => new Place,'null' => true]),
+                'name' => Model::char(['length' => 40]),
+                'serves_hot_dogs' => Model::boolean(['null' => false]),
+                'serves_pizza' => Model::boolean(['null' => false]),];
         }
 
         protected function name() {
-            return "order";
+            return 'restaurant';
         }
     }
 }
 ```
 
-### ORM engine, mix style Django and Codeigniter.
+file `Application/Restaurant/Model/Waiter.php`
+Namespace/class `Application\Restaurant\Model\Waiter`
 
 ```php
-$db_transaction = new Transaction(DB_POSTGRES);
+<?php
 
-$person = new Person\Person($db_transaction);
-$product = new Product\Product($db_transaction);
-$order = new Order\Order($db_transaction);
+namespace Application\Restaurant\Model {
+    use \Core\Model;
+    use \Application\Restaurant\Model\Restaurant;
 
-try {
-    $db_transaction->beginTransaction();
+    class Waiter extends Model {
+        public $id;
+        public $restaurant_id;
+        public $name;
 
-    $product->save([
-        "name" => "beer",
-        "price" => 1.99,
-        ]);
+        protected function schema() {
+            return [
+                'id' => Model::primaryKey(),
+                'restaurant_id' => Model::foreignKey(['table' => new Restaurant,'null' => true]),
+                'name' => Model::char(['length' => 40]),];
+        }
 
-    $person->save([
-        "first_name" => "wilian",
-        "last_name" => "borba",
-        ]);
-
-    // update
-    $person->first_name = "william";
-    $person->save();
-
-    $order->save([
-        "person_id" => $person,
-        "product_id" => $product,
-        "quantity" => 3]);
-
-    $purchase_filter = $order
-        ->where([
-            "person.id" => $person->id,
-            "product.name" => [$product->name] // values arrays result in 'IN' sql operator
-            ])
-        ->orderBy([
-            "person.first_name" => "desc"
-            ])
-        ->limit(1,5)
-        ->update([
-            'quantity' => '10') // update in current select
-        ->execute([
-            "join" => "left"]);
-
-    $db_transaction->commit();
-
-} catch (Exception $error) {
-    $db_transaction->rollBack();
-
-    throw new Exception($error);
-}
-
-/*return of purchase_filter
-
-[
-    {
-        "id": "18",
-        "person_id": {
-            "id": "18",
-            "first_name": "william",
-            "last_name": "rosa borba"
-        },
-        "product_id": {
-            "id": "18",
-            "name": "whiskey",
-            "price": "1.99"
-        },
-        "quantity": "4"
+        protected function name() {
+            return 'waiter';
+        }
     }
-]
-
-*/
+}
 ```
-Persistence objects data.
+
+### ORM engine, style Django and Active Records.
+
+Controller `Home.php`
+
+file `Application/Restaurant/Controller/Home.php`
+Namespace/class `Application\Restaurant\Controller\Home`
 
 ```php
-foreach ($purchase_filter as $i => $purchase_obj) {
-    $purchase_obj->product_id->name = "whiskey";
-    $purchase_obj->product_id->save();
+<?php
 
-    print_r($purchase_obj->person_id); // retorna o objeto Person referenciado por Purchase
+namespace Application\Restaurant\Controller {
+    use \Core\Controller;
+    use \Core\DAO\Transaction;
+    use \Core\Util;
+    use \Application\Restaurant\Model\Place;
+    use \Application\Restaurant\Model\Restaurant;
+    use \Application\Restaurant\Model\Waiter;
 
-    $purchase_obj->person_id->last_name = "rosa borba";
-    $purchase_obj->person_id->save();
+    class Home extends Controller {
+        private $db_transaction;
 
-    $purchase_obj->quantity = 4;
-    $purchase_obj->save();
+        public function __construct($request_method = null) {
+            parent::__construct($request_method);
 
+            // load transaction object
+            $this->transaction = new Transaction();
+        }
+
+        public function restaurantAdd() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->transaction);
+            $place = new Place($this->transaction);
+            $waiter = new Waiter($this->transaction);
+
+            // open connection
+            $this->transaction->connect();
+
+            // save place
+            $place->save([
+                'name' => 'place name test',
+                'address' => 'place address test',]);
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'restaurant name test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            // save waiter
+            $waiter->save([
+                'restaurant_id' => $restaurant,
+                'name' => 'waiter name test']);
+        }
+
+        public function restaurantUpdate() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->transaction);
+            $place = new Place($this->transaction);
+            $waiter = new Waiter($this->transaction);
+
+            // open connection
+            $this->transaction->connect();
+
+            // save place
+            $place->save([
+                'name' => 'place name test',
+                'address' => 'place address test',]);
+
+            // update place
+            $place->name = 'place name update test';
+            $place->address = 'place address update test';
+            $place->save();
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'restaurant name test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            // update restaurant
+            $restaurant->name = 'restaurant name update test';
+            $restaurant->serves_hot_dogs = 0;
+            $restaurant->serves_pizza = 0;
+            $restaurant->save();
+
+            // save waiter
+            $waiter->save([
+                'restaurant_id' => $restaurant,
+                'name' => 'waiter name test']);
+
+            // update waiter
+            $waiter->name = 'waiter name update test';
+            $waiter->save();
+        }
+
+        public function restaurantDelete() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->transaction);
+            $place = new Place($this->transaction);
+            $waiter = new Waiter($this->transaction);
+
+            // open connection
+            $this->transaction->connect();
+
+            // save place
+            $place->save([
+                'name' => 'place name test',
+                'address' => 'place address test',]);
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'restaurant name test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            // save waiter
+            $waiter->save([
+                'restaurant_id' => $restaurant,
+                'name' => 'waiter name test']);
+
+            // delete place register
+            $place->delete();
+
+            // delete place restaurant
+            $restaurant->delete();
+
+            // delete place waiter
+            $waiter->delete();
+        }
+
+        public function restaurantGet() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->transaction);
+            $place = new Place($this->transaction);
+            $waiter = new Waiter($this->transaction);
+
+            // open connection
+            $this->transaction->connect();
+
+            // delete if exists place
+            $place->delete([
+                'name' => 'place_name_unique',
+                'address' => 'place_address_unique']);
+
+            // delete if exists restaurant
+            $restaurant->delete([
+                'name' => 'restaurant_name_unique']);
+
+            // delete if exists waiter
+            $waiter->delete([
+                'name' => 'waiter_name_unique']);
+
+            // save place
+            $place->save([
+                'name' => 'place_name_unique',
+                'address' => 'place_address_unique',]);
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'restaurant_name_unique',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            // save waiter
+            $waiter->save([
+                'restaurant_id' => $restaurant,
+                'name' => 'waiter_name_unique']);
+
+            // get place unique register
+            $place->get([
+                'place.name' => 'place_name_unique',
+                'place.address' => 'place_address_unique']);
+
+            // get restaurant unique register
+            $restaurant->get([
+                'restaurant.name' => 'restaurant_name_unique']);
+
+            // get waiter unique register
+            $waiter->get([
+                'waiter.name' => 'waiter_name_unique']);
+        }
+
+        public function restaurantSelect() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this->transaction);
+            $place = new Place($this->transaction);
+            $waiter = new Waiter($this->transaction);
+
+            // open connection
+            $this->transaction->connect();
+
+            // delete if exists
+            $restaurant->delete();
+            $place->delete();
+            $waiter->delete();
+
+            // save place
+            $place->save([
+                'name' => 'place name test',
+                'address' => 'place address test',]);
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'restaurant name test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            // save waiter
+            $waiter->save([
+                'restaurant_id' => $restaurant,
+                'name' => 'waiter name test']);
+
+            // select with where, order by and limit(pagination)
+            $restaurant_list = $restaurant
+                ->where([
+                    'restaurant.name' => 'restaurant name test',
+                    'restaurant.serves_hot_dogs' => [0,1],
+                    'restaurant.serves_pizza' => [0,1],
+                    'place.name' => 'place name test',
+                    'place.address' => 'place address test',])
+                ->orderBy([
+                    'restaurant.name' => 'desc',
+                    'place.name' => 'desc',
+                    'place.address' => 'desc',])
+                ->limit(1,5)
+                ->execute();
+
+            // select with where, order by and limit(pagination)
+            $place_list = $place
+                ->where([
+                    'place.name' => 'place name test',
+                    'place.address' => 'place address test',])
+                ->orderBy([
+                    'place.name' => 'desc',
+                    'place.address' => 'desc',])
+                ->limit(1,5)
+                ->execute();
+
+            // select with where, order by and limit(pagination)
+            $waiter_list = $waiter
+                ->where([
+                    'waiter.name' => 'waiter name test',
+                    'restaurant.name' => 'restaurant name test',
+                    'restaurant.serves_hot_dogs' => [0,1],
+                    'restaurant.serves_pizza' => [0,1],])
+                ->orderBy([
+                    'restaurant.name' => 'desc',
+                    'waiter.name' => 'desc',])
+                ->limit(1,5)
+                ->execute();
+        }
+    }
 }
 ```
 Retrieve query's history in real time.
 
 ```php
-$order->dumpQuery();
+// return restaurant query's
+$restaurant->dumpQuery();
+
+// return place query's
+$place->dumpQuery();
+
+// return waiter query's
+$waiter->dumpQuery();
 ```
