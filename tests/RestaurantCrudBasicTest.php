@@ -184,6 +184,52 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1,$restaurant_list['page_next']);
         $this->assertEquals(1,$restaurant_list['page_previous']);
     }
+
+    // public function testRestaurantCrudSelectWithLike() {
+    //     // load transaction object
+    //     $transaction = new Transaction();
+
+    //     // load model with Transaction instance
+    //     $restaurant = new Restaurant($transaction);
+
+    //     // open connection
+    //     $transaction->connect();
+
+    //     // delete if exists
+    //     $restaurant->delete();
+
+    //     // save
+    //     $restaurant->save([
+    //         'place_id' => null,
+    //         'name' => 'restaurant name test',
+    //         'serves_hot_dogs' => 1,
+    //         'serves_pizza' => 1,]);
+
+    //     // select with where, order by and limit(pagination)
+    //     $restaurant_list = $restaurant
+    //         ->where([
+    //             'restaurant.serves_hot_dogs' => [0,1],
+    //             'restaurant.serves_pizza' => [0,1],])
+    //         ->like([
+    //             'restaurant.name' => 'name',
+    //             'restaurant.name' => '%restaurant',
+    //             'restaurant.name' => '%name%',
+    //             'restaurant.name' => 'test%',])
+    //         ->orderBy([
+    //             'restaurant.name' => 'desc'])
+    //         ->limit(1,5)
+    //         ->execute();
+
+    //     // compare
+    //     // $this->assertNotEmpty($restaurant_list['data']);
+    //     // $this->assertCount(1,$restaurant_list['data']);
+    //     // $this->assertEquals(1,$restaurant_list['register_total']);
+    //     // $this->assertEquals(5,$restaurant_list['register_perpage']);
+    //     // $this->assertEquals(1,$restaurant_list['page_total']);
+    //     // $this->assertEquals(1,$restaurant_list['page_current']);
+    //     // $this->assertEquals(1,$restaurant_list['page_next']);
+    //     // $this->assertEquals(1,$restaurant_list['page_previous']);
+    // }
 }
 
 ?>

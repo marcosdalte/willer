@@ -333,6 +333,33 @@ namespace Core\DAO {
             return $this;
         }
 
+        public function like($like = []) {
+            $like_value_list = [];
+
+            if (empty($like)) {
+                $like_query = null;
+
+            } else {
+                $like_query = [];
+
+                foreach ($like as $key => $value) {
+                    $like_value = null;
+
+                    if (empty($value)) {
+                        throw new WF_Exception(vsprintf('value for "%s" is null',[$key,]));
+
+                    }
+
+                    $like_query[] = $like_value;
+                }
+
+                $this->setLike($like_query);
+                $this->setLikeValue($like_value_list);
+            }
+
+            return $this;
+        }
+
         public function get($where = []) {
             $transaction = $this->getTransaction();
 
