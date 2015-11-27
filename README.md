@@ -101,8 +101,9 @@ namespace Application\Restaurant\Model {
 }
 ```
 
-File `Application/Restaurant/Model/Restaurant.php`
-Namespace/class `Application\Restaurant\Model\Restaurant`
+| File  | Namespace/Class |
+| :------------ |:---------------:|
+| `Application/Restaurant/Model/Restaurant.php` | `Application\Restaurant\Model\Restaurant` |
 
 ```php
 <?php
@@ -134,8 +135,9 @@ namespace Application\Restaurant\Model {
 }
 ```
 
-File `Application/Restaurant/Model/Waiter.php`
-Namespace/class `Application\Restaurant\Model\Waiter`
+| File  | Namespace/Class |
+| :------------ |:---------------:|
+| `Application/Restaurant/Model/Waiter.php` | `Application\Restaurant\Model\Waiter` |
 
 ```php
 <?php
@@ -167,8 +169,9 @@ namespace Application\Restaurant\Model {
 
 Controller `Home.php`
 
-File `Application/Restaurant/Controller/Home.php`
-Namespace/class `Application\Restaurant\Controller\Home`
+| File  | Namespace/Class |
+| :------------ |:---------------:|
+| `Application/Restaurant/Controller/Home.php` | `Application\Restaurant\Controller\Home` |
 
 ```php
 <?php
