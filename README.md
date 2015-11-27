@@ -4,13 +4,25 @@ willer
 [![Build Status](https://travis-ci.org/williamborba/willer.svg?branch=master)](https://travis-ci.org/williamborba/willer)
 [![Latest Stable Version](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer) [![Total Downloads](https://poser.pugx.org/wborba/willer/downloads)](https://packagist.org/packages/wborba/willer) [![Latest Unstable Version](https://poser.pugx.org/wborba/willer/v/unstable)](https://packagist.org/packages/wborba/willer) [![License](https://poser.pugx.org/wborba/willer/license)](https://packagist.org/packages/wborba/willer)
 
-### php framework - influenced by django and codeigniter 
+## php framework - for those who like [![django](https://www.djangoproject.com/)]
 
 ### Documentation
 
 http://williamborba.github.io/willer
 
+### Install
+
+#### Composer
+
+`composer create-project wborba/willer`
+
+#### GitHub
+
+`git clone https://github.com/williamborba/willer.git`
+
 ### Highlights
+
+#### Routes
 
 Routes in style Django by single file `url.php`. Example.
 
@@ -44,7 +56,9 @@ $URL += [
 ];
 
 ```
-### Model's Django like style.
+#### Models
+
+Models Django like style.
 
 Example sql.
 ```sql
@@ -165,7 +179,9 @@ namespace Application\Restaurant\Model {
 }
 ```
 
-### ORM engine, style Django and Active Records.
+#### Controller
+
+ORM engine, style Django and Active Records.
 
 Controller `Home.php`
 
