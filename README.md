@@ -170,7 +170,7 @@ namespace Application\Restaurant\Model {
 Controller `Home.php`
 
 | File  | Namespace/Class |
-| :------------ |:---------------:|
+| :------------: |:---------------:|
 | `Application/Restaurant/Controller/Home.php` | `Application\Restaurant\Controller\Home` |
 
 ```php
