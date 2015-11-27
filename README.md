@@ -73,7 +73,7 @@ CREATE TABLE `waiter` (
 Example model class Place, Restaurant and Waiter.
 
 | File  | Namespace/Class |
-| :------------ |:---------------:|
+| :------------: |:---------------:|
 | `Application/Restaurant/Model/Place.php` | `Application\Restaurant\Model\Place` |
 
 ```php
@@ -102,7 +102,7 @@ namespace Application\Restaurant\Model {
 ```
 
 | File  | Namespace/Class |
-| :------------ |:---------------:|
+| :------------: |:---------------:|
 | `Application/Restaurant/Model/Restaurant.php` | `Application\Restaurant\Model\Restaurant` |
 
 ```php
@@ -136,7 +136,7 @@ namespace Application\Restaurant\Model {
 ```
 
 | File  | Namespace/Class |
-| :------------ |:---------------:|
+| :------------: |:---------------:|
 | `Application/Restaurant/Model/Waiter.php` | `Application\Restaurant\Model\Waiter` |
 
 ```php
