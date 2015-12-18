@@ -4,7 +4,7 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2015-11-09</lastmod>
+     <lastmod>2015-12-18</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,13 +13,13 @@
         
     <url>
      <loc>None/setup/configuration/</loc>
-     <lastmod>2015-11-09</lastmod>
+     <lastmod>2015-12-18</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/setup/constants/</loc>
-     <lastmod>2015-11-09</lastmod>
+     <lastmod>2015-12-18</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -28,15 +28,23 @@
     
     <url>
      <loc>None/quick_start/</loc>
-     <lastmod>2015-11-09</lastmod>
+     <lastmod>2015-12-18</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>None/crud/</loc>
-     <lastmod>2015-11-09</lastmod>
+     <loc>None/orm/</loc>
+     <lastmod>2015-12-18</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/twig/</loc>
+     <lastmod>2015-12-18</lastmod>
      <changefreq>daily</changefreq>
     </url>
     

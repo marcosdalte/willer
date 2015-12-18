@@ -9,7 +9,7 @@
         
         <link rel="shortcut icon" href="../img/favicon.ico">
 
-	<title>CRUD - willer framework</title>
+	<title>Twig [working] - willer framework</title>
 
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -96,8 +96,14 @@
                 
                 
                 
+                    <li >
+                        <a href="../orm/">ORM</a>
+                    </li>
+                
+                
+                
                     <li class="active">
-                        <a href="./">CRUD</a>
+                        <a href="./">Twig [working]</a>
                     </li>
                 
                 
@@ -112,7 +118,7 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../quick_start/">
+                        <a rel="next" href="../orm/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
@@ -142,74 +148,36 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#crud-example">CRUD Example</a></li>
+        <li class="main active"><a href="#twig-template-engine">Twig template engine</a></li>
         
-            <li><a href="#application">Application</a></li>
+            <li><a href="#instalation">Instalation</a></li>
         
             <li><a href="#url">URL</a></li>
         
-            <li><a href="#model">Model</a></li>
-        
             <li><a href="#controller">Controller</a></li>
         
-            <li><a href="#add-record">Add record</a></li>
-        
-            <li><a href="#update-record">Update record</a></li>
-        
-            <li><a href="#delete-record">Delete record</a></li>
-        
-            <li><a href="#get-record">Get record</a></li>
-        
-            <li><a href="#select-record">Select record</a></li>
+            <li><a href="#view">View</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="crud-example">CRUD Example</h1>
-<p>Vamos mostrar como efetuar as principais operações de banco de dados, como insert, update, delete e select.
-Serão criados model's e controllers, com consultas semelhantes ao padrão active record, utilizando o ORM integrado do framework.</p>
-<h2 id="application">Application</h2>
-<p>A aplicação de exemplo terá o nome <code>Restaurant</code>, tendo um model <code>Restaurant.php</code> e um controller <code>Home.php</code>, abaixo a estrutura montada para este exemplo.</p>
-<p><img alt="Screenshot" src="../img/crud-example-1.png" /></p>
+<h1 id="twig-template-engine">Twig template engine</h1>
+<p>Vamos demonstrar como utilizar a biblioteca Twig para criar os templates nas views do willer framework. Para saber mais sobre o <a href="http://twig.sensiolabs.org/">Twig</a> acesse a documentação no site oficial.</p>
+<h2 id="instalation">Instalation</h2>
+<p>Instale o willer e logo em seguida a lib twig utilizando o composer.</p>
+<p><code>composer create-project wborba/willer</code></p>
+<p><code>composer require twig/twig</code></p>
 <h2 id="url">URL</h2>
 <p>O arquivo <code>src/url.php</code> terá o seguinte formato.</p>
 <pre><code>&lt;?php
 
 $url = [
-    '/^\/restaurant\/add\/?$/'        =&gt; ['Restaurant/Home/restaurantAdd',['GET']],
-    '/^\/restaurant\/update\/?$/'     =&gt; ['Restaurant/Home/restaurantUpdate',['GET']],
-    '/^\/restaurant\/delete\/?$/'     =&gt; ['Restaurant/Home/restaurantDelete',['GET']],
-    '/^\/restaurant\/get\/?$/'        =&gt; ['Restaurant/Home/restaurantGet',['GET']],
-    '/^\/restaurant\/select\/?$/'     =&gt; ['Restaurant/Home/restaurantSelect',['GET']],
+    '/^\/?$/'          =&gt; ['Restaurant/Home/home',['GET']],
+    '/^\/home\/?$/'    =&gt; ['Restaurant/Home/home',['GET']],
+    '/^\/contact\/?$/' =&gt; ['Restaurant/Contact/contact',['GET','POST']],
 ];
-</code></pre>
-
-<h2 id="model">Model</h2>
-<p>Model <code>Restaurant.php</code> terá o seguinte formato.</p>
-<pre><code>&lt;?php
-namespace Application\Restaurant\Model {
-    use \Core\Model;
-    class Restaurant extends Model {
-        public $id;
-        public $place;
-        public $serves_hot_dogs;
-        public $serves_pizza;
-
-        protected function schema() {
-            return [
-                'id' =&gt; Model::primaryKey(),
-                'place' =&gt; Model::char(['length' =&gt; 80]),
-                'serves_hot_dogs' =&gt; Model::boolean(['null' =&gt; false]),
-                'serves_pizza' =&gt; Model::boolean(),];
-        }
-
-        protected function name() {
-            return &quot;restaurant&quot;;
-        }
-    }
-}
 </code></pre>
 
 <h2 id="controller">Controller</h2>
@@ -218,36 +186,11 @@ namespace Application\Restaurant\Model {
 
 namespace Application\Restaurant\Controller {
     use \Core\Controller;
-    use \Core\DAO\Transaction;
     use \Core\Util;
-    use \Application\Restaurant\Model\Restaurant;
 
     class Home extends Controller {
-        private $db_transaction;
 
-        public function __construct($request_method = null) {
-            parent::__construct($request_method);
-
-            $this-&gt;db_transaction = new Transaction();
-        }
-
-        public function restaurantAdd() {
-            //
-        }
-
-        public function restaurantUpdate() {
-            //
-        }
-
-        public function restaurantDelete() {
-            //
-        }
-
-        public function restaurantGet() {
-            //
-        }
-
-        public function restaurantSelect() {
+        public function home() {
             //
         }
     }
@@ -255,139 +198,24 @@ namespace Application\Restaurant\Controller {
 
 </code></pre>
 
-<h2 id="add-record">Add record</h2>
-<p>O controller para adicionar registros tera o seguinte formato.</p>
-<pre><code>public function restaurantAdd() {
-    // load model with Transaction instance
-    $restaurant = new Restaurant($this-&gt;db_transaction);
+<p>Controller <code>Contact.php</code> terá o seguinte formato.</p>
+<pre><code>&lt;?php
 
-    // open connection
-    $this-&gt;db_transaction-&gt;connect();
+namespace Application\Restaurant\Controller {
+    use \Core\Controller;
+    use \Core\Util;
 
-    // save
-    $restaurant-&gt;save([
-        'place' =&gt; 'place of test',
-        'serves_hot_dogs' =&gt; 1,
-        'serves_pizza' =&gt; 1,]);
+    class Contact extends Controller {
 
-    Util::renderToJson($restaurant);
+        public function contact() {
+            //
+        }
+    }
 }
+
 </code></pre>
 
-<h2 id="update-record">Update record</h2>
-<p>O controller para atualizar registros tera o seguinte formato.</p>
-<pre><code>public function restaurantUpdate() {
-    // load model with Transaction instance
-    $restaurant = new Restaurant($this-&gt;db_transaction);
-
-    // open connection
-    $this-&gt;db_transaction-&gt;connect();
-
-    // save
-    $restaurant-&gt;save([
-        'place' =&gt; 'place of test',
-        'serves_hot_dogs' =&gt; 1,
-        'serves_pizza' =&gt; 1,]);
-
-    // update
-    $restaurant-&gt;place = 'bla e bla';
-    $restaurant-&gt;serves_hot_dogs = 0;
-    $restaurant-&gt;save();
-
-    Util::renderToJson($restaurant);
-}
-</code></pre>
-
-<h2 id="delete-record">Delete record</h2>
-<p>O controller para deletar registros tera o seguinte formato.</p>
-<pre><code>public function restaurantDelete() {
-    // load model with Transaction instance
-    $restaurant = new Restaurant($this-&gt;db_transaction);
-
-    // open connection
-    $this-&gt;db_transaction-&gt;connect();
-
-    // delete all register without filter
-    // $restaurant-&gt;delete();
-
-    // save
-    $restaurant-&gt;save([
-        'place' =&gt; 'place of test',
-        'serves_hot_dogs' =&gt; 1,
-        'serves_pizza' =&gt; 1,]);
-
-    // delete current instance
-    $restaurant-&gt;delete();
-
-    Util::renderToJson($restaurant);
-}
-</code></pre>
-
-<h2 id="get-record">Get record</h2>
-<p>O controller para pegar um registro especifico tera o seguinte formato.</p>
-<pre><code>public function restaurantGet() {
-    // load model with Transaction instance
-    $restaurant = new Restaurant($this-&gt;db_transaction);
-
-    // open connection
-    $this-&gt;db_transaction-&gt;connect();
-
-    // get(unique)
-    $restaurant-&gt;get([
-        'place' =&gt; 'place of test']);
-
-    // delete current instance
-    // $restaurant-&gt;delete();
-
-    // update
-    // $restaurant-&gt;place = 'bla e bla';
-    // $restaurant-&gt;serves_hot_dogs = 0;
-    // $restaurant-&gt;save();
-
-    Util::renderToJson($restaurant);
-}
-</code></pre>
-
-<h2 id="select-record">Select record</h2>
-<p>O controller para filtrar registros tera o seguinte formato.</p>
-<pre><code>public function restaurantSelect() {
-    // load model with Transaction instance
-    $restaurant = new Restaurant($this-&gt;db_transaction);
-
-    // open connection
-    $this-&gt;db_transaction-&gt;connect();
-
-    // select with where, order by, limit(pagination) and join left
-    // $restaurant_list = $restaurant
-    //     -&gt;where([
-    //         'restaurant.id' =&gt; [15,16],])
-    //     -&gt;orderBy([
-    //         'restaurant.serves_pizza' =&gt; 'desc'])
-    //     -&gt;limit(1,5)
-    //     -&gt;update([
-    //         'place' =&gt; 'testandiooo123654'])
-    //     -&gt;execute([
-    //         'join' =&gt; 'left']);
-
-    // select with update and return changes
-    $restaurant_list = $restaurant
-        -&gt;where([
-            'restaurant.serves_hot_dogs' =&gt; [1,0],]) // id in(1,2)
-        -&gt;orderBy([
-            'restaurant.serves_pizza' =&gt; 'desc'])
-        -&gt;limit(1,5) // page 1 limit 5
-        -&gt;update([
-            'place' =&gt; 'place update yea!']) // update in current select
-        -&gt;execute([
-            'join' =&gt; 'left']); // join left|right optional
-
-    // list of query's
-    // Util::renderToJson($restaurant-&gt;dumpQuery());
-
-    // render to json result
-    Util::renderToJson($restaurant_list);
-}
-</code></pre></div>
+<h2 id="view">View</h2></div>
             
         </div>
 

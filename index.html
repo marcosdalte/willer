@@ -97,7 +97,13 @@
                 
                 
                     <li >
-                        <a href="crud/">CRUD</a>
+                        <a href="orm/">ORM</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="twig/">Twig [working]</a>
                     </li>
                 
                 
@@ -150,6 +156,8 @@
         
             <li><a href="#download-install">Download &amp; Install</a></li>
         
+            <li><a href="#highlights">Highlights</a></li>
+        
             <li><a href="#license">License</a></li>
         
     
@@ -176,6 +184,273 @@
 <li>GIT: <code>git clone</code> the <a href="https://github.com/williamborba/willer/">GitHub project page</a></li>
 <li>Composer: <code>composer create-project wborba/willer --dev</code></li>
 </ul>
+<h2 id="highlights">Highlights</h2>
+<h3 id="routes">Routes</h3>
+<p>Routes in style Django by single file <code>url.php</code>. Example.</p>
+<pre><code class="php">// url's frontend
+$URL = [
+    &quot;/^\/?$/&quot;                     =&gt; [&quot;MyFrontend/Home/index&quot;,null],
+    &quot;/^home\/?$/&quot;                 =&gt; [&quot;MyFrontend/Company/index&quot;,null],
+    &quot;/^product\/?$/&quot;              =&gt; [&quot;MyFrontend/Product/index&quot;,null],
+    &quot;/^product\/([a-z0-9]+)\/?$/&quot; =&gt; [&quot;MyFrontend/Product/detail&quot;,null],
+    &quot;/^contato\/?$/&quot;              =&gt; [&quot;MyFrontend/Contact/contact&quot;,null],
+];
+
+// ajax requests
+// limiting the request by the HTTP protocol type (REST)
+$URL += [
+    &quot;/^request\/product\/?$/&quot;           =&gt; [&quot;MyFrontend/Request/productList&quot;,[&quot;GET&quot;]],
+    &quot;/^request\/product\/([0-9]+)\/?$/&quot; =&gt; [&quot;MyFrontend/Request/productDetail&quot;,[&quot;GET&quot;]],
+    &quot;/^request\/product\/add\/?$/&quot;      =&gt; [&quot;MyFrontend/Request/productAdd&quot;,[&quot;POST&quot;]],
+];
+
+// url's backend
+$URL += [
+    &quot;/^admin\/?$/&quot; =&gt; [&quot;MyBackend/Dashboard/index&quot;,null],
+];
+
+// blog
+$URL += [
+    &quot;/^blog\/?$/&quot;            =&gt; [&quot;MyBlog/Blog/index&quot;,null],
+    &quot;/^blog\/([\w\d]+)\/?$/&quot; =&gt; [&quot;MyBlog/Blog/detail&quot;,null],
+];
+
+</code></pre>
+
+<h3 id="models">Models</h3>
+<p>Models Django like style.</p>
+<p>Example sql.</p>
+<pre><code class="sql">CREATE TABLE `place` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `name`  TEXT NOT NULL,
+    `address`   TEXT NOT NULL
+);
+
+CREATE TABLE `restaurant` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `place_id`  TEXT,
+    `name`  TEXT NOT NULL,
+    `serves_hot_dogs`   INTEGER NOT NULL,
+    `serves_pizza`  INTEGER NOT NULL,
+    FOREIGN KEY(`place_id`) REFERENCES place
+);
+
+CREATE TABLE `waiter` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `restaurant_id` INTEGER,
+    `name`  TEXT NOT NULL,
+    FOREIGN KEY(`restaurant_id`) REFERENCES restaurant
+);
+</code></pre>
+
+<p>Example model class Place, Restaurant and Waiter.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th align="center">Namespace/Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Application/Restaurant/Model/Place.php</code></td>
+<td align="center"><code>Application\Restaurant\Model\Place</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="php">&lt;?php
+
+namespace Application\Restaurant\Model {
+    use \Core\Model;
+
+    class Place extends Model {
+        public $id;
+        public $name;
+        public $address;
+
+        protected function schema() {
+            return [
+                'id' =&gt; Model::primaryKey(),
+                'name' =&gt; Model::char(['length' =&gt; 40]),
+                'address' =&gt; Model::char(['length' =&gt; 40]),];
+        }
+
+        protected function name() {
+            return 'place';
+        }
+    }
+}
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th align="center">Namespace/Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Application/Restaurant/Model/Restaurant.php</code></td>
+<td align="center"><code>Application\Restaurant\Model\Restaurant</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="php">&lt;?php
+
+namespace Application\Restaurant\Model {
+    use \Core\Model;
+    use \Application\Restaurant\Model\Place;
+
+    class Restaurant extends Model {
+        public $id;
+        public $place_id;
+        public $name;
+        public $serves_hot_dogs;
+        public $serves_pizza;
+
+        protected function schema() {
+            return [
+                'id' =&gt; Model::primaryKey(),
+                'place_id' =&gt; Model::foreignKey(['table' =&gt; new Place,'null' =&gt; true]),
+                'name' =&gt; Model::char(['length' =&gt; 40]),
+                'serves_hot_dogs' =&gt; Model::boolean(['null' =&gt; false]),
+                'serves_pizza' =&gt; Model::boolean(['null' =&gt; false]),];
+        }
+
+        protected function name() {
+            return 'restaurant';
+        }
+    }
+}
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th align="center">Namespace/Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Application/Restaurant/Model/Waiter.php</code></td>
+<td align="center"><code>Application\Restaurant\Model\Waiter</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="php">&lt;?php
+
+namespace Application\Restaurant\Model {
+    use \Core\Model;
+    use \Application\Restaurant\Model\Restaurant;
+
+    class Waiter extends Model {
+        public $id;
+        public $restaurant_id;
+        public $name;
+
+        protected function schema() {
+            return [
+                'id' =&gt; Model::primaryKey(),
+                'restaurant_id' =&gt; Model::foreignKey(['table' =&gt; new Restaurant,'null' =&gt; true]),
+                'name' =&gt; Model::char(['length' =&gt; 40]),];
+        }
+
+        protected function name() {
+            return 'waiter';
+        }
+    }
+}
+</code></pre>
+
+<h3 id="controller">Controller</h3>
+<p>ORM engine, style Django and Active Records.</p>
+<p>Controller <code>Home.php</code> with method/view <code>restaurantAdd</code> contains transaction example.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th align="center">Namespace/Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Application/Restaurant/Controller/Home.php</code></td>
+<td align="center"><code>Application\Restaurant\Controller\Home</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="php">&lt;?php
+
+namespace Application\Restaurant\Controller {
+    use \Core\Controller;
+    use \Core\DAO\Transaction;
+    use \Core\Util;
+    use \Application\Restaurant\Model\Place;
+    use \Application\Restaurant\Model\Restaurant;
+    use \Application\Restaurant\Model\Waiter;
+
+    class Home extends Controller {
+        private $db_transaction;
+
+        public function __construct($request_method = null) {
+            parent::__construct($request_method);
+
+            // load transaction object
+            $this-&gt;transaction = new Transaction();
+        }
+
+        public function restaurantAdd() {
+            // load model with Transaction instance
+            $restaurant = new Restaurant($this-&gt;transaction);
+            $place = new Place($this-&gt;transaction);
+            $waiter = new Waiter($this-&gt;transaction);
+
+            try {
+                // open connection with begin transaction
+                $this-&gt;transaction-&gt;beginTransaction();
+
+                // save place
+                $place-&gt;save([
+                    'name' =&gt; 'place name test',
+                    'address' =&gt; 'place address test',]);
+
+                // save restaurant
+                $restaurant-&gt;save([
+                    'place_id' =&gt; $place,
+                    'name' =&gt; 'restaurant name test',
+                    'serves_hot_dogs' =&gt; 1,
+                    'serves_pizza' =&gt; 1,]);
+
+                // save waiter
+                $waiter-&gt;save([
+                    'restaurant_id' =&gt; $restaurant,
+                    'name' =&gt; 'waiter name test']);
+
+                // commit
+                $this-&gt;transaction-&gt;commit();
+
+            } catch (Exception $error) {
+                // rollBack
+                $this-&gt;transaction-&gt;rollBack();
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>Retrieve query's history in real time.</p>
+<pre><code class="php">// return restaurant query's
+$restaurant-&gt;dumpQuery();
+
+// return place query's
+$place-&gt;dumpQuery();
+
+// return waiter query's
+$waiter-&gt;dumpQuery();
+</code></pre>
+
 <h2 id="license">License</h2>
 <p>The MIT License (MIT). Please see <a href="https://github.com/williamborba/willer/blob/master/LICENSE">License File</a> for more information.</p></div>
             
@@ -224,5 +499,5 @@
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-11-09 03:03:02.328884
+Build Date UTC : 2015-12-18 02:47:15.133066
 -->

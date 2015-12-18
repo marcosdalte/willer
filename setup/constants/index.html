@@ -97,7 +97,13 @@
                 
                 
                     <li >
-                        <a href="../../crud/">CRUD</a>
+                        <a href="../../orm/">ORM</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../twig/">Twig [working]</a>
                     </li>
                 
                 
@@ -175,41 +181,47 @@ define('DATABASE','default');
 <pre><code>define('DEBUG',true);
 </code></pre>
 
-<p>Enable or disable display errors.
-Default: true
-Possible values: true or false</p>
+<p>Enable or disable display errors.</p>
+<p>Default: <code>true</code></p>
+<p>Possible values: <code>true</code> or <code>false</code></p>
 <h2 id="url_prefix">URL_PREFIX</h2>
 <pre><code>define('URL_PREFIX','blog/');
 </code></pre>
 
-<p>É um prefixo usado para ser escapado nos acessos as URL do projeto.
-Ex: //PREFIX is defined 'blog/'
-GET: blog/home</p>
-<p>//in url.php file the math ^home is valid.
-'/^\/blog\/?$/' =&gt; ['Blog/Home/index',['GET']],</p>
-<p>Default: ''
-Possible values: String;</p>
+<p>É um prefixo usado para ser escapado nos acessos as URL do projeto.</p>
+<p>Example HTTP GET request</p>
+<pre><code>GET /blog/ HTTP/1.1
+</code></pre>
+
+<p>In url.php</p>
+<pre><code>// in url.php file the math ^home is valid.
+// escaped blog/
+'/^\/home\/?$/' =&gt; ['Blog/Home/index',['GET']],
+</code></pre>
+
+<p>Default: <code>''</code></p>
+<p>Possible values: <code>String</code></p>
 <h2 id="request_uri">REQUEST_URI</h2>
 <pre><code>define('REQUEST_URI',$_SERVER['REQUEST_URI']);
 </code></pre>
 
 <p>É a rota recebida, podendo ser obtida pela global <code>$_SERVER['REQUEST_URI']</code> do php.</p>
-<p>Default: <code>$_SERVER['REQUEST_URI']</code>
-Possible values: String</p>
+<p>Default: <code>$_SERVER['REQUEST_URI']</code></p>
+<p>Possible values: <code>String</code></p>
 <h2 id="root_path">ROOT_PATH</h2>
 <pre><code>define('ROOT_PATH',__DIR__);
 </code></pre>
 
 <p>Diretório no qual a aplicação está rodando, podendo ser adquirida pela função <code>__DIR__</code> do php.</p>
-<p>Default: <code>__DIR__</code>
-Possible values: String</p>
+<p>Default: <code>__DIR__</code></p>
+<p>Possible values: <code>String</code></p>
 <h2 id="database_path">DATABASE_PATH</h2>
 <pre><code>define('DATABASE_PATH',ROOT_PATH.'/database.json');
 </code></pre>
 
 <p>Diretório em que está definido o arquivo json para conexão as bases de dados, geralmente definido como <code>database.json</code> na pasta <code>src/</code>.</p>
-<p>Default: <code>ROOT_PATH.'/database.json'</code>
-Possible values: String[.json]</p>
+<p>Default: <code>ROOT_PATH.'/database.json'</code></p>
+<p>Possible values: <code>String[.json]</code></p>
 <h2 id="database">DATABASE</h2>
 <pre><code>define('DATABASE','default');
 </code></pre>
@@ -230,8 +242,8 @@ Example:</p>
 }
 </code></pre>
 
-<p>Default: default
-Possible values: String</p></div>
+<p>Possible values: <code>String</code></p>
+<p>Default: <code>default</code></p></div>
             
         </div>
 
