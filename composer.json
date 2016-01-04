@@ -1,7 +1,7 @@
 {
     "name": "wborba/willer",
-    "description": "php framework - influenced by django and codeigniter",
-    "keywords": ["orm", "active record", "framework", "django", "codeigniter"],
+    "description": "php framework - for those who like django",
+    "keywords": ["orm", "active record", "framework", "django"],
     "homepage": "http://williamborba.github.io/willer",
     "type": "library",
     "require": {

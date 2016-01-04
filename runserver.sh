@@ -12,10 +12,4 @@ if [ $? != 0 ]; then
 	exit 1
 fi
 
-if [ ! -d $ROOT_PATH"/maintenance/log" ]; then
-	mkdir $ROOT_PATH"/maintenance/log"
-	chmod -R 0777 ./maintenance/log
-	echo '' > $ROOT_PATH"/maintenance/log/error_log.txt"
-fi
-
 $PHP -S $HOST:$PORT -t $ROOT_PATH $ROUTER
