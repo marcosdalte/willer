@@ -1,7 +1,7 @@
 {
 	"default": {
 		"driver": "sqlite",
-		"host": "/home/william/desenvolvimento/test/github/willer/tests/database/db_restaurant",
+		"host": "/willer/tests/database/db_restaurant",
 		"name": "",
 		"user": "",
 		"password": "",
