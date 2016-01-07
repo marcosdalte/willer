@@ -16,6 +16,10 @@ namespace Application\Restaurant\Controller {
             $this->db_transaction = new Transaction();
         }
 
+        public function testPhpInfo() {
+            phpinfo();
+        }
+
         public function requestMethodGetTest() {
             print 'ok';
         }

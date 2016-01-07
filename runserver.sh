@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ROOT_PATH="$(pwd)"
-ROUTER=${ROOT_PATH}"/maintenance/router.php"
+ROUTER=${ROOT_PATH}"/tests/router.php"
 HOST="0.0.0.0"
 PORT="8000"
 

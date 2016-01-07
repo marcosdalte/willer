@@ -1,6 +1,7 @@
 <?php
 
 $url = [
+    '/^\/testphpinfo\/?$/' => ['Restaurant/Home/testPhpInfo',['GET']],
     '/^\/restaurant\/add\/?$/'        => ['Restaurant/Home/restaurantAdd',['GET']],
     '/^\/restaurant\/update\/?$/'     => ['Restaurant/Home/restaurantUpdate',['GET']],
     '/^\/restaurant\/delete\/?$/'     => ['Restaurant/Home/restaurantDelete',['GET']],
