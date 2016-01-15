@@ -516,8 +516,6 @@ namespace Core\DAO {
                 throw new WF_Exception(vsprintf('[save]transaction instance not loaded, in model instance "%s"',[$this->name(),]));
             }
 
-            $flag_getdiscard = false;
-
             $table_name = $this->getTableName();
             $table_column = $this->getTableColumn();
             $table_schema = $this->getTableSchema();
@@ -530,7 +528,8 @@ namespace Core\DAO {
             $query_value_list = [];
             $query_escape_list = [];
             $set_escape = [];
-            $add_flag = false;
+            $flag_getdiscard = false;
+            $flag_add = false;
 
             if (!empty($field)) {
                 if (!is_array($field)) {
@@ -584,7 +583,7 @@ namespace Core\DAO {
                 $query = vsprintf('insert into %s (%s) values(%s)',[$table_name_with_escape,$column_list,$query_escape_list]);
                 $query_value_list = $query_value_add_list;
 
-                $add_flag = true;
+                $flag_add = true;
             }
 
             try {
@@ -605,7 +604,6 @@ namespace Core\DAO {
                 throw $error;
             }
 
-
             $pdo_query_error_info = $pdo_query->errorInfo();
 
             if ($pdo_query_error_info[0] != '00000') {
@@ -615,25 +613,19 @@ namespace Core\DAO {
             if (empty($flag_getdiscard)) {
                 $this->flag_getnotest = true;
 
-                if (empty($add_flag)) {
-                    $this->get([
-                        vsprintf('%s.id',[$table_name_with_escape,]) => $table_column[$primary_key]]);
+                $get_database_info = $transaction->getDatabaseInfo();
 
-                } else {
-                    $get_database_info = $transaction->getDatabaseInfo();
+                $sequence_name = null;
 
-                    $sequence_name = null;
-
-                    if ($get_database_info['driver'] == 'pgsql') {
-                        $sequence_name = vsprintf('%s_id_seq',[$table_name,]);
-                    }
-
-                    $last_insert_id = $transaction->lastInsertId($sequence_name);
-
-                    $this->setLastInsertId($last_insert_id);
-                    $this->get([
-                        vsprintf('%s.id',[$table_name_with_escape,]) => $last_insert_id]);
+                if ($get_database_info['driver'] == 'pgsql') {
+                    $sequence_name = vsprintf('%s_id_seq',[$table_name,]);
                 }
+
+                $last_insert_id = $transaction->lastInsertId($sequence_name);
+
+                $this->setLastInsertId($last_insert_id);
+                $this->get([
+                    vsprintf('%s.id',[$table_name_with_escape,]) => $last_insert_id]);
             }
 
             $this->setQuery($query,$query_value_list);
