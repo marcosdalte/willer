@@ -1,8 +1,8 @@
 <?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
-    use \Application\Restaurant\Model\Restaurant;
+    use Core\Model;
+    use Application\Restaurant\Model\Restaurant;
 
     class Waiter extends Model {
         public $id;

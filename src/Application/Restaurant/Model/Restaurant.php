@@ -1,8 +1,8 @@
 <?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
-    use \Application\Restaurant\Model\Place;
+    use Core\Model;
+    use Application\Restaurant\Model\Place;
 
     class Restaurant extends Model {
         public $id;

@@ -1,15 +1,18 @@
 {
     "name": "wborba/willer",
-    "description": "php framework - for those who like django",
-    "keywords": ["orm", "active record", "framework", "django"],
+    "version": "1.0.0",
+    "description": "php framework",
+    "keywords": ["orm", "active record", "framework"],
     "homepage": "http://williamborba.github.io/willer",
     "type": "library",
     "require": {
         "php": ">=5.6",
-        "filp/whoops": "1.*"
+        "filp/whoops": "1.*",
+        "wborba/willer-core": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit":"5.x"
+        "phpunit/phpunit":"5.x",
+        "luiscoms/release": "0.0.*"
     },
     "autoload": {
         "psr-4": {

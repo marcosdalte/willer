@@ -1,10 +1,10 @@
 <?php
 
 namespace Application\Restaurant\Controller {
-    use \Core\Controller;
-    use \Core\DAO\Transaction;
-    use \Core\Util;
-    use \Application\Restaurant\Model\Restaurant;
+    use Core\Controller;
+    use Core\DAO\Transaction;
+    use Core\Util;
+    use Application\Restaurant\Model\Restaurant;
 
     class Home extends Controller {
         private $db_transaction;
@@ -33,7 +33,7 @@ namespace Application\Restaurant\Controller {
 
             // save
             $restaurant->save([
-                'place' => 'place of test',
+                'name' => 'place of test',
                 'serves_hot_dogs' => 1,
                 'serves_pizza' => 1,]);
 
@@ -49,7 +49,7 @@ namespace Application\Restaurant\Controller {
 
             // save
             $restaurant->save([
-                'place' => 'place of test',
+                'name' => 'place of test',
                 'serves_hot_dogs' => 1,
                 'serves_pizza' => 1,]);
 
@@ -73,7 +73,7 @@ namespace Application\Restaurant\Controller {
 
             // save
             $restaurant->save([
-                'place' => 'place of test',
+                'name' => 'place of test',
                 'serves_hot_dogs' => 1,
                 'serves_pizza' => 1,]);
 
@@ -92,13 +92,13 @@ namespace Application\Restaurant\Controller {
 
             // get(unique)
             $restaurant->get([
-                'place' => 'place of test']);
+                'name' => 'place of test']);
 
             // delete current instance
             // $restaurant->delete();
 
             // update
-            // $restaurant->place = 'bla e bla';
+            // $restaurant->name = 'bla e bla';
             // $restaurant->serves_hot_dogs = 0;
             // $restaurant->save();
 
@@ -130,7 +130,7 @@ namespace Application\Restaurant\Controller {
                     'restaurant.serves_pizza' => 'desc'])
                 ->limit(1,5) // page 1 limit 5
                 ->update([
-                    'place' => 'place update yea!']) // update in current select
+                    'name' => 'place update yea!']) // update in current select
                 ->execute([
                     'join' => 'left']); // join left|right optional
 
