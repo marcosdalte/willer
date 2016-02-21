@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="framework in php - based in django and codeigniter">
+        <meta name="description" content="Willer php framework - The bundle app">
         <meta name="author" content="william borba">
         
         <link rel="shortcut icon" href="./img/favicon.ico">
@@ -12,7 +12,7 @@
 	<title>willer framework</title>
 
         <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="./css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="./css/highlight.css">
 
@@ -101,12 +101,6 @@
                     </li>
                 
                 
-                
-                    <li >
-                        <a href="twig/">Twig [working]</a>
-                    </li>
-                
-                
                 </ul>
             
 
@@ -166,55 +160,44 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="willer-framework">Willer Framework</h1>
-<p>Willer is a PHP framework, it was created based on ideas coming from other frameworks like Codeigniter(php) and Django(python).</p>
+<p>Willer is a PHP framework, it was created based on ideas coming from other frameworks like Django(python), Codeigniter(php) and ZendFramework(php).</p>
 <h2 id="requisites-dependencies">Requisites &amp; Dependencies</h2>
 <ul>
-<li>PHP &gt;= 5.6</li>
+<li>PHP &gt;= 5.6(compatible with php7)</li>
 <li>Whoops - php errors for cool kids</li>
-<li>Twig - templating(optional)</li>
+<li>PHPUnit - The PHP Testing Framework(require-dev)</li>
+<li>Release - PHP library to increment package version and release project(require-dev)</li>
 </ul>
 <h2 id="features">Features</h2>
 <ul>
-<li>ORM(like Django)</li>
-<li>MVC(merge Codeigniter and Django)</li>
+<li>ORM</li>
+<li>MVC</li>
 <li>Run immediately, php server built-in integrated, like <code>./runserver.sh</code></li>
+<li>Bundle</li>
 </ul>
 <h2 id="download-install">Download &amp; Install</h2>
 <ul>
 <li>GIT: <code>git clone</code> the <a href="https://github.com/williamborba/willer/">GitHub project page</a></li>
-<li>Composer: <code>composer create-project wborba/willer --dev</code></li>
+<li>Composer: <code>composer create-project wborba/willer</code></li>
 </ul>
 <h2 id="highlights">Highlights</h2>
 <h3 id="routes">Routes</h3>
-<p>Routes in style Django by single file <code>url.php</code>. Example.</p>
-<pre><code class="php">// url's frontend
-$URL = [
-    &quot;/^\/?$/&quot;                     =&gt; [&quot;MyFrontend/Home/index&quot;,null],
-    &quot;/^home\/?$/&quot;                 =&gt; [&quot;MyFrontend/Company/index&quot;,null],
-    &quot;/^product\/?$/&quot;              =&gt; [&quot;MyFrontend/Product/index&quot;,null],
-    &quot;/^product\/([a-z0-9]+)\/?$/&quot; =&gt; [&quot;MyFrontend/Product/detail&quot;,null],
-    &quot;/^contato\/?$/&quot;              =&gt; [&quot;MyFrontend/Contact/contact&quot;,null],
-];
+<p>Routes in single file <code>Application/Restaurant/Url.php</code>. Example.</p>
+<pre><code class="php">&lt;?php
 
-// ajax requests
-// limiting the request by the HTTP protocol type (REST)
-$URL += [
-    &quot;/^request\/product\/?$/&quot;           =&gt; [&quot;MyFrontend/Request/productList&quot;,[&quot;GET&quot;]],
-    &quot;/^request\/product\/([0-9]+)\/?$/&quot; =&gt; [&quot;MyFrontend/Request/productDetail&quot;,[&quot;GET&quot;]],
-    &quot;/^request\/product\/add\/?$/&quot;      =&gt; [&quot;MyFrontend/Request/productAdd&quot;,[&quot;POST&quot;]],
-];
-
-// url's backend
-$URL += [
-    &quot;/^admin\/?$/&quot; =&gt; [&quot;MyBackend/Dashboard/index&quot;,null],
-];
-
-// blog
-$URL += [
-    &quot;/^blog\/?$/&quot;            =&gt; [&quot;MyBlog/Blog/index&quot;,null],
-    &quot;/^blog\/([\w\d]+)\/?$/&quot; =&gt; [&quot;MyBlog/Blog/detail&quot;,null],
-];
-
+namespace Application\Restaurant {
+    class Url {
+        static public function url() {
+            return [
+                &quot;/^\/?$/&quot;                     =&gt; [&quot;Restaurant/Home/index&quot;,null],
+                &quot;/^home\/?$/&quot;                 =&gt; [&quot;Restaurant/Company/index&quot;,null],
+                &quot;/^product\/?$/&quot;              =&gt; [&quot;Restaurant/Product/index&quot;,null],
+                &quot;/^product\/([a-z0-9]+)\/?$/&quot; =&gt; [&quot;Restaurant/Product/detail&quot;,null],
+                &quot;/^contato\/?$/&quot;              =&gt; [&quot;Restaurant/Contact/contact&quot;,null],
+            ];
+        }
+    }
+}
 </code></pre>
 
 <h3 id="models">Models</h3>
@@ -261,7 +244,7 @@ CREATE TABLE `waiter` (
 <pre><code class="php">&lt;?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
+    use Core\Model;
 
     class Place extends Model {
         public $id;
@@ -299,8 +282,8 @@ namespace Application\Restaurant\Model {
 <pre><code class="php">&lt;?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
-    use \Application\Restaurant\Model\Place;
+    use Core\Model;
+    use Application\Restaurant\Model\Place;
 
     class Restaurant extends Model {
         public $id;
@@ -342,8 +325,8 @@ namespace Application\Restaurant\Model {
 <pre><code class="php">&lt;?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
-    use \Application\Restaurant\Model\Restaurant;
+    use Core\Model;
+    use Application\Restaurant\Model\Restaurant;
 
     class Waiter extends Model {
         public $id;
@@ -365,7 +348,7 @@ namespace Application\Restaurant\Model {
 </code></pre>
 
 <h3 id="controller">Controller</h3>
-<p>ORM engine, style Django and Active Records.</p>
+<p>ORM engine.</p>
 <p>Controller <code>Home.php</code> with method/view <code>restaurantAdd</code> contains transaction example.</p>
 <table>
 <thead>
@@ -384,12 +367,12 @@ namespace Application\Restaurant\Model {
 <pre><code class="php">&lt;?php
 
 namespace Application\Restaurant\Controller {
-    use \Core\Controller;
-    use \Core\DAO\Transaction;
-    use \Core\Util;
-    use \Application\Restaurant\Model\Place;
-    use \Application\Restaurant\Model\Restaurant;
-    use \Application\Restaurant\Model\Waiter;
+    use Core\Controller;
+    use Core\DAO\Transaction;
+    use Core\Util;
+    use Application\Restaurant\Model\Place;
+    use Application\Restaurant\Model\Restaurant;
+    use Application\Restaurant\Model\Waiter;
 
     class Home extends Controller {
         private $db_transaction;
@@ -498,6 +481,6 @@ $waiter-&gt;dumpQuery();
 </html>
 
 <!--
-MkDocs version : 0.14.0
-Build Date UTC : 2015-12-18 02:47:15.133066
+MkDocs version : 0.15.3
+Build Date UTC : 2016-02-21 22:21:12.123339
 -->

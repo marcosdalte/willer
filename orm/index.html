@@ -12,7 +12,7 @@
 	<title>ORM - willer framework</title>
 
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="../css/highlight.css">
 
@@ -101,12 +101,6 @@
                     </li>
                 
                 
-                
-                    <li >
-                        <a href="../twig/">Twig [working]</a>
-                    </li>
-                
-                
                 </ul>
             
 
@@ -122,8 +116,8 @@
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
-                    <li >
-                        <a rel="prev" href="../twig/">
+                    <li class="disabled">
+                        <a rel="prev" >
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -150,7 +144,7 @@
     
         <li class="main active"><a href="#orm">ORM</a></li>
         
-            <li><a href="#application">Application</a></li>
+            <li><a href="#bundle">Bundle</a></li>
         
             <li><a href="#database">Database</a></li>
         
@@ -166,11 +160,17 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="orm">ORM</h1>
-<p>Vamos mostrar como efetuar as principais operações de banco de dados, como insert, update, delete e select.
-Serão criados model's e controllers, com consultas semelhantes ao padrão active record, utilizando o ORM integrado do framework.</p>
-<h2 id="application">Application</h2>
-<p>A aplicação de exemplo terá o nome <code>Restaurant</code>, tendo um model <code>Restaurant.php</code> e um controller <code>Home.php</code>, abaixo a estrutura montada para este exemplo.</p>
-<p><img alt="Screenshot" src="../img/crud-example-1.png" /></p>
+<p>We will show how to make the major database operations, such as insert, update, delete and select.
+Will be created model's and controllers, with queries similar to the active record pattern, using the integrated ORM framework.</p>
+<h2 id="bundle">Bundle</h2>
+<p>The example application has the name <code>Restaurant</code>, having a model <code>Restaurant.php</code> and a controller <code>Home.php</code> below the mounted structure for this example.</p>
+<p><img alt="Screenshot" src="../img/orm-example-1.png" /></p>
+<p>Remains only registering this new bundle in <code>src/Config/app.json</code> file, as shown below:</p>
+<pre><code>[
+    &quot;Restaurant&quot;
+]
+</code></pre>
+
 <h2 id="database">Database</h2>
 <p>Criaremos uma base de dados SQLite com as seguintes tabelas.</p>
 <pre><code>CREATE TABLE `place` (
@@ -193,7 +193,7 @@ CREATE TABLE `waiter` (
 );
 </code></pre>
 
-<p>Arquivo src/database.json de exemplo configurado para base SQLite.</p>
+<p>The file <code>src/config/database.json</code> of example for the base SQLite.</p>
 <pre><code>{
     &quot;default&quot;: {
         &quot;driver&quot;: &quot;sqlite&quot;,
@@ -209,53 +209,109 @@ CREATE TABLE `waiter` (
 </code></pre>
 
 <h2 id="url">URL</h2>
-<p>O arquivo <code>src/url.php</code> terá o seguinte formato.</p>
-<pre><code>&lt;?php
+<p>File <code>Application/Restaurant/Url.php</code></p>
+<pre><code class="php">&lt;?php
 
-$url = [
-    '/^\/restaurant\/add\/?$/'        =&gt; ['Restaurant/Home/restaurantAdd',['GET']],
-    '/^\/restaurant\/update\/?$/'     =&gt; ['Restaurant/Home/restaurantUpdate',['GET']],
-    '/^\/restaurant\/delete\/?$/'     =&gt; ['Restaurant/Home/restaurantDelete',['GET']],
-    '/^\/restaurant\/get\/?$/'        =&gt; ['Restaurant/Home/restaurantGet',['GET']],
-    '/^\/restaurant\/select\/?$/'     =&gt; ['Restaurant/Home/restaurantSelect',['GET']],
-];
+namespace Application\Restaurant {
+    class Url {
+        static public function url() {
+            return [
+                '/^\/?$/'                         =&gt; [&quot;Restaurant/Home/home&quot;,['GET']],
+                '/^\/home\/?$/'                   =&gt; [&quot;Restaurant/Home/home&quot;,['GET']],
+                '/^\/contact\/?$/'                =&gt; [&quot;Restaurant/Contact/contact&quot;,['GET']],
+                '/^\/restaurant\/add\/?$/'        =&gt; ['Restaurant/Home/restaurantAdd',['GET']],
+                '/^\/restaurant\/update\/?$/'     =&gt; ['Restaurant/Home/restaurantUpdate',['GET']],
+                '/^\/restaurant\/delete\/?$/'     =&gt; ['Restaurant/Home/restaurantDelete',['GET']],
+                '/^\/restaurant\/get\/?$/'        =&gt; ['Restaurant/Home/restaurantGet',['GET']],
+                '/^\/restaurant\/select\/?$/'     =&gt; ['Restaurant/Home/restaurantSelect',['GET']],
+                '/^\/restaurant\/other-page\/?$/' =&gt; ['Restaurant/Home/otherView',['GET']],
+            ];
+        }
+    }
+}
 </code></pre>
 
 <h2 id="model">Model</h2>
-<p>Model <code>Restaurant.php</code> terá o seguinte formato.</p>
-<pre><code>&lt;?php
-namespace Application\Restaurant\Model {
-    use \Core\Model;
-    class Restaurant extends Model {
+<p>The model will be created in the <code>Restaurant</code> bundle, in the <code>Model</code> folder, accordance with SQL entities listed above.</p>
+<pre><code>namespace Application\Restaurant\Model\Person {
+    use Core\Model;
+
+    class Person extends Model {
         public $id;
-        public $place;
-        public $serves_hot_dogs;
-        public $serves_pizza;
+        public $first_name;
+        public $last_name;
 
         protected function schema() {
             return [
-                'id' =&gt; Model::primaryKey(),
-                'place' =&gt; Model::char(['length' =&gt; 80]),
-                'serves_hot_dogs' =&gt; Model::boolean(['null' =&gt; false]),
-                'serves_pizza' =&gt; Model::boolean(),];
+                &quot;id&quot; =&gt; Model::primaryKey(),
+                &quot;first_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 40]),
+                &quot;last_name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 40])];
         }
 
         protected function name() {
-            return &quot;restaurant&quot;;
+            return &quot;person&quot;;
+        }
+    }
+}
+
+namespace Application\Restaurant\Model\Product {
+    use Core\Model;
+
+    class Product extends Model {
+        public $id;
+        public $name;
+        public $price;
+
+        protected function schema() {
+            return [
+                &quot;id&quot; =&gt; Model::primaryKey(),
+                &quot;name&quot; =&gt; Model::char([&quot;length&quot; =&gt; 40]),
+                &quot;price&quot; =&gt; Model::float([&quot;length&quot; =&gt; 20])];
+        }
+
+        protected function name() {
+            return &quot;product&quot;;
+        }
+    }
+}
+
+namespace Application\Restaurant\Model\Purchase {
+    use Core\Model;
+    use Application\Restaurant\Model\Person;
+    use Application\Restaurant\Model\Product;
+
+    class Purchase extends Model {
+        public $id;
+        public $person_id;
+        public $product_id;
+        public $quantity;
+
+        protected function schema() {
+            return [
+                &quot;id&quot; =&gt; Model::primaryKey(),
+                &quot;person_id&quot; =&gt; Model::foreignKey([&quot;table&quot; =&gt; new Person\Person,&quot;null&quot; =&gt; 0]),
+                &quot;product_id&quot; =&gt; Model::foreignKey([&quot;table&quot; =&gt; new Product\Product,&quot;null&quot; =&gt; 0]),
+                &quot;quantity&quot; =&gt; Model::integer([&quot;length&quot; =&gt; 20])];
+        }
+
+        protected function name() {
+            return &quot;purchase&quot;;
         }
     }
 }
 </code></pre>
 
 <h2 id="controller">Controller</h2>
-<p>Controller <code>Home.php</code> terá o seguinte formato.</p>
+<p>Controller <code>Home.php</code>.</p>
 <pre><code>&lt;?php
 
 namespace Application\Restaurant\Controller {
-    use \Core\Controller;
-    use \Core\DAO\Transaction;
-    use \Core\Util;
-    use \Application\Restaurant\Model\Restaurant;
+    use Core\Controller;
+    use Core\DAO\Transaction;
+    use Core\Util;
+    use Application\Restaurant\Model\Restaurant;
+    use Application\Restaurant\Model\Place;
+    use Application\Restaurant\Model\Waiter;
 
     class Home extends Controller {
         private $db_transaction;
@@ -282,7 +338,7 @@ namespace Application\Restaurant\Controller {
             //
         }
 
-        public function restaurantSelect() {
+        public function restaurantListing() {
             //
         }
     }
@@ -291,7 +347,7 @@ namespace Application\Restaurant\Controller {
 </code></pre>
 
 <h3 id="add-record">Add record</h3>
-<p>O controller para adicionar registros tera o seguinte formato.</p>
+<p>The controller to add records will have the following format.</p>
 <pre><code>public function restaurantAdd() {
     // load model with Transaction instance
     $restaurant = new Restaurant($this-&gt;db_transaction);
@@ -310,7 +366,7 @@ namespace Application\Restaurant\Controller {
 </code></pre>
 
 <h3 id="update-record">Update record</h3>
-<p>O controller para atualizar registros tera o seguinte formato.</p>
+<p>The controller to update records will have the following format.</p>
 <pre><code>public function restaurantUpdate() {
     // load model with Transaction instance
     $restaurant = new Restaurant($this-&gt;db_transaction);
@@ -334,7 +390,7 @@ namespace Application\Restaurant\Controller {
 </code></pre>
 
 <h3 id="delete-record">Delete record</h3>
-<p>O controller para deletar registros tera o seguinte formato.</p>
+<p>The controller to delete records will have the following format.</p>
 <pre><code>public function restaurantDelete() {
     // load model with Transaction instance
     $restaurant = new Restaurant($this-&gt;db_transaction);
@@ -359,7 +415,7 @@ namespace Application\Restaurant\Controller {
 </code></pre>
 
 <h3 id="get-record">Get record</h3>
-<p>O controller para pegar um registro especifico tera o seguinte formato.</p>
+<p>The controller to get records will have the following format.</p>
 <pre><code>public function restaurantGet() {
     // load model with Transaction instance
     $restaurant = new Restaurant($this-&gt;db_transaction);
@@ -384,8 +440,8 @@ namespace Application\Restaurant\Controller {
 </code></pre>
 
 <h3 id="select-record">Select record</h3>
-<p>O controller para filtrar registros tera o seguinte formato.</p>
-<pre><code>public function restaurantSelect() {
+<p>The controller to filter records will have the following format.</p>
+<pre><code>public function restaurantListing() {
     // load model with Transaction instance
     $restaurant = new Restaurant($this-&gt;db_transaction);
 

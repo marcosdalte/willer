@@ -12,7 +12,7 @@
 	<title>Constants - willer framework</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="../../css/highlight.css">
 
@@ -101,12 +101,6 @@
                     </li>
                 
                 
-                
-                    <li >
-                        <a href="../../twig/">Twig [working]</a>
-                    </li>
-                
-                
                 </ul>
             
 
@@ -168,12 +162,12 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="constants">Constants</h1>
-<p>As constants são todas definidas no arquivo <code>src/bootstrap.php</code> podendo ser manipuladas conforme o ambiente e necessidades de seu projeto.</p>
+<p>The constants are defined in file <code>src/bootstrap.php</code>, it can be manipuled according to the environment and needs of your project.</p>
 <pre><code>define('DEBUG',true);
 define('URL_PREFIX','');
 define('REQUEST_URI',$_SERVER['REQUEST_URI']);
 define('ROOT_PATH',__DIR__);
-define('DATABASE_PATH',ROOT_PATH.'/database.json');
+define('DATABASE_PATH',ROOT_PATH.'/Config/database.json');
 define('DATABASE','default');
 </code></pre>
 
