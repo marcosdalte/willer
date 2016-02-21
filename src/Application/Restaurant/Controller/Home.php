@@ -16,12 +16,12 @@ namespace Application\Restaurant\Controller {
             $this->db_transaction = new Transaction();
         }
 
-        public function testPhpInfo() {
-            phpinfo();
-        }
-
         public function requestMethodGetTest() {
             print 'ok';
+        }
+
+        public function home() {
+            print 'home page';
         }
 
         public function restaurantAdd() {
@@ -105,7 +105,7 @@ namespace Application\Restaurant\Controller {
             Util::renderToJson($restaurant);
         }
 
-        public function restaurantSelect() {
+        public function restaurantListing() {
             // load model with Transaction instance
             $restaurant = new Restaurant($this->db_transaction);
 
@@ -139,10 +139,6 @@ namespace Application\Restaurant\Controller {
 
             // render to json result
             Util::renderToJson($restaurant_list);
-        }
-
-        public function otherView() {
-            print 'test other view';
         }
     }
 }

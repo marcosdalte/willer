@@ -1,6 +1,6 @@
 <?php
 
-use \Application\Restaurant\Controller\Home;
+use Application\Restaurant\Controller\Home;
 
 class RestaurantMethodTest extends PHPUnit_Framework_TestCase {
     public function testExceptionRequestMethodInvalid() {
@@ -31,5 +31,3 @@ class RestaurantMethodTest extends PHPUnit_Framework_TestCase {
         $restaurant_controller->requestMethodGetTest();
     }
 }
-
-?>

@@ -4,59 +4,53 @@ willer
 [![Build Status](https://travis-ci.org/williamborba/willer.svg?branch=master)](https://travis-ci.org/williamborba/willer)
 [![Latest Stable Version](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer) [![Total Downloads](https://poser.pugx.org/wborba/willer/downloads)](https://packagist.org/packages/wborba/willer) [![Latest Unstable Version](https://poser.pugx.org/wborba/willer/v/unstable)](https://packagist.org/packages/wborba/willer) [![License](https://poser.pugx.org/wborba/willer/license)](https://packagist.org/packages/wborba/willer)
 
-## php framework - for those who like [django](https://www.djangoproject.com/)
+## Willer php framework
 
-### Documentation
+Willer is a PHP framework, it was created based on ideas coming from other frameworks like Django(python), Codeigniter(php) and ZendFramework(php).
 
-http://williamborba.github.io/willer
+## Requisites & Dependencies
 
-### Install
+* PHP >= 5.6(compatible with php7)
+* Whoops - php errors for cool kids
+* PHPUnit - The PHP Testing Framework(require-dev)
+* Release - PHP library to increment package version and release project(require-dev)
 
-#### Composer
+## Features
 
-`composer create-project wborba/willer`
+* ORM
+* MVC
+* Run immediately, php server built-in integrated, like `./runserver.sh`
+* Bundle
 
-#### GitHub
+## Download & Install
 
-`git clone https://github.com/williamborba/willer.git`
+* GIT: `git clone` the [GitHub project page](https://github.com/williamborba/willer/)
+* Composer: `composer create-project wborba/willer`
 
-### Highlights
+## Highlights
 
-#### Routes
+### Routes
 
-Routes in style Django by single file `url.php`. Example.
+Routes in single file `Application/Restaurant/Url.php`. Example.
 
 ```php
-// url's frontend
-$URL = [
-    "/^\/?$/"                     => ["MyFrontend/Home/index",null],
-    "/^home\/?$/"                 => ["MyFrontend/Company/index",null],
-    "/^product\/?$/"              => ["MyFrontend/Product/index",null],
-    "/^product\/([a-z0-9]+)\/?$/" => ["MyFrontend/Product/detail",null],
-    "/^contato\/?$/"              => ["MyFrontend/Contact/contact",null],
-];
+<?php
 
-// ajax requests
-// limiting the request by the HTTP protocol type (REST)
-$URL += [
-    "/^request\/product\/?$/"           => ["MyFrontend/Request/productList",["GET"]],
-    "/^request\/product\/([0-9]+)\/?$/" => ["MyFrontend/Request/productDetail",["GET"]],
-    "/^request\/product\/add\/?$/"      => ["MyFrontend/Request/productAdd",["POST"]],
-];
-
-// url's backend
-$URL += [
-    "/^admin\/?$/" => ["MyBackend/Dashboard/index",null],
-];
-
-// blog
-$URL += [
-    "/^blog\/?$/"            => ["MyBlog/Blog/index",null],
-    "/^blog\/([\w\d]+)\/?$/" => ["MyBlog/Blog/detail",null],
-];
-
+namespace Application\Restaurant {
+    class Url {
+        static public function url() {
+            return [
+                "/^\/?$/"                     => ["Restaurant/Home/index",null],
+                "/^home\/?$/"                 => ["Restaurant/Company/index",null],
+                "/^product\/?$/"              => ["Restaurant/Product/index",null],
+                "/^product\/([a-z0-9]+)\/?$/" => ["Restaurant/Product/detail",null],
+                "/^contato\/?$/"              => ["Restaurant/Contact/contact",null],
+            ];
+        }
+    }
+}
 ```
-#### Models
+### Models
 
 Models Django like style.
 
@@ -94,7 +88,7 @@ Example model class Place, Restaurant and Waiter.
 <?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
+    use Core\Model;
 
     class Place extends Model {
         public $id;
@@ -123,8 +117,8 @@ namespace Application\Restaurant\Model {
 <?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
-    use \Application\Restaurant\Model\Place;
+    use Core\Model;
+    use Application\Restaurant\Model\Place;
 
     class Restaurant extends Model {
         public $id;
@@ -157,8 +151,8 @@ namespace Application\Restaurant\Model {
 <?php
 
 namespace Application\Restaurant\Model {
-    use \Core\Model;
-    use \Application\Restaurant\Model\Restaurant;
+    use Core\Model;
+    use Application\Restaurant\Model\Restaurant;
 
     class Waiter extends Model {
         public $id;
@@ -179,9 +173,9 @@ namespace Application\Restaurant\Model {
 }
 ```
 
-#### Controller
+### Controller
 
-ORM engine, style Django and Active Records.
+ORM engine.
 
 Controller `Home.php` with method/view `restaurantAdd` contains transaction example.
 
@@ -193,12 +187,12 @@ Controller `Home.php` with method/view `restaurantAdd` contains transaction exam
 <?php
 
 namespace Application\Restaurant\Controller {
-    use \Core\Controller;
-    use \Core\DAO\Transaction;
-    use \Core\Util;
-    use \Application\Restaurant\Model\Place;
-    use \Application\Restaurant\Model\Restaurant;
-    use \Application\Restaurant\Model\Waiter;
+    use Core\Controller;
+    use Core\DAO\Transaction;
+    use Core\Util;
+    use Application\Restaurant\Model\Place;
+    use Application\Restaurant\Model\Restaurant;
+    use Application\Restaurant\Model\Waiter;
 
     class Home extends Controller {
         private $db_transaction;
@@ -260,3 +254,7 @@ $place->dumpQuery();
 // return waiter query's
 $waiter->dumpQuery();
 ```
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/williamborba/willer/blob/master/LICENSE) for more information.

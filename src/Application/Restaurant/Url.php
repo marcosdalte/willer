@@ -4,7 +4,9 @@ namespace Application\Restaurant {
     class Url {
         static public function url() {
             return [
-                '/^\/testphpinfo\/?$/'            => ['Restaurant/Home/testPhpInfo',['GET']],
+                '/^\/?$/'                         => ["Restaurant/Home/home",['GET']],
+                '/^\/home\/?$/'                   => ["Restaurant/Home/home",['GET']],
+                '/^\/contact\/?$/'                => ["Restaurant/Contact/contact",['GET']],
                 '/^\/restaurant\/add\/?$/'        => ['Restaurant/Home/restaurantAdd',['GET']],
                 '/^\/restaurant\/update\/?$/'     => ['Restaurant/Home/restaurantUpdate',['GET']],
                 '/^\/restaurant\/delete\/?$/'     => ['Restaurant/Home/restaurantDelete',['GET']],

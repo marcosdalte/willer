@@ -1,11 +1,11 @@
 <?php
 
-use \Core\DAO\Transaction;
-use \Application\Restaurant\Model\Restaurant;
-use \Application\Restaurant\Model\Place;
+use Core\DAO\Transaction;
+use Application\Restaurant\Model\Restaurant;
+use Application\Restaurant\Model\Place;
 
-class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
-    public function testRestaurantCrudAdd() {
+class RestaurantOrmBasicTest extends PHPUnit_Framework_TestCase {
+    public function testRestaurantOrmAdd() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -38,7 +38,7 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(print_r($restaurant_test,true),print_r($restaurant,true));
     }
 
-    public function testRestaurantCrudUpdate() {
+    public function testRestaurantOrmUpdate() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -76,7 +76,7 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(print_r($restaurant_test,true),print_r($restaurant,true));
     }
 
-    public function testRestaurantCrudDelete() {
+    public function testRestaurantOrmDelete() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -104,7 +104,7 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
         $this->assertNull($restaurant->serves_pizza);
     }
 
-    public function testRestaurantCrudGet() {
+    public function testRestaurantOrmGet() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -144,7 +144,7 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(print_r($restaurant_test,true),print_r($restaurant,true));
     }
 
-    public function testRestaurantCrudSelect() {
+    public function testRestaurantOrmSelect() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -185,7 +185,7 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1,$restaurant_list['page_previous']);
     }
 
-    // public function testRestaurantCrudSelectWithLike() {
+    // public function testRestaurantOrmSelectWithLike() {
     //     // load transaction object
     //     $transaction = new Transaction();
 
@@ -231,5 +231,3 @@ class RestaurantCrudBasicTest extends PHPUnit_Framework_TestCase {
     //     // $this->assertEquals(1,$restaurant_list['page_previous']);
     // }
 }
-
-?>

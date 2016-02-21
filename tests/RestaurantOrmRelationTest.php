@@ -1,12 +1,12 @@
 <?php
 
-use \Core\DAO\Transaction;
-use \Application\Restaurant\Model\Restaurant;
-use \Application\Restaurant\Model\Waiter;
-use \Application\Restaurant\Model\Place;
+use Core\DAO\Transaction;
+use Application\Restaurant\Model\Restaurant;
+use Application\Restaurant\Model\Waiter;
+use Application\Restaurant\Model\Place;
 
-class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
-    public function testRestaurantCrudRelationAdd() {
+class RestaurantOrmRelationTest extends PHPUnit_Framework_TestCase {
+    public function testRestaurantOrmRelationAdd() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -63,7 +63,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(print_r($waiter_test,true),print_r($waiter,true));
     }
 
-    public function testRestaurantCrudRelationUpdate() {
+    public function testRestaurantOrmRelationUpdate() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -135,7 +135,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(print_r($waiter_test,true),print_r($waiter,true));
     }
 
-    public function testRestaurantCrudRelationDelete() {
+    public function testRestaurantOrmRelationDelete() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -185,7 +185,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
         $this->assertNull($waiter->name);
     }
 
-    public function testRestaurantCrudRelationGet() {
+    public function testRestaurantOrmRelationGet() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -258,7 +258,7 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($waiter->restaurant_id->serves_pizza,1);
     }
 
-    public function testRestaurantCrudRelationSelect() {
+    public function testRestaurantOrmRelationSelect() {
         // load transaction object
         $transaction = new Transaction();
 
@@ -362,5 +362,3 @@ class RestaurantCrudRelationTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1,$waiter_list['page_previous']);
     }
 }
-
-?>
