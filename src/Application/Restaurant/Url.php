@@ -11,7 +11,7 @@ namespace Application\Restaurant {
                 '/^\/restaurant\/update\/?$/'     => ['Restaurant/Home/restaurantUpdate',['GET']],
                 '/^\/restaurant\/delete\/?$/'     => ['Restaurant/Home/restaurantDelete',['GET']],
                 '/^\/restaurant\/get\/?$/'        => ['Restaurant/Home/restaurantGet',['GET']],
-                '/^\/restaurant\/select\/?$/'     => ['Restaurant/Home/restaurantSelect',['GET']],
+                '/^\/restaurant\/listing\/?$/'    => ['Restaurant/Home/restaurantListing',['GET']],
                 '/^\/restaurant\/other-page\/?$/' => ['Restaurant/Home/otherView',['GET']],
             ];
         }
