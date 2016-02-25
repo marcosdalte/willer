@@ -1,13 +1,12 @@
 {
     "name": "wborba/willer",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "description": "php framework",
     "keywords": ["orm", "active record", "framework"],
     "homepage": "http://williamborba.github.io/willer",
     "type": "library",
     "require": {
         "php": ">=5.6",
-        "filp/whoops": "1.*",
         "wborba/willer-core": "1.*"
     },
     "require-dev": {

@@ -4,7 +4,7 @@ define('DEBUG',true);
 define('URL_PREFIX','/');
 define('REQUEST_URI','/');
 define('ROOT_PATH',dirname(__DIR__));
-define('DATABASE_PATH',ROOT_PATH.'/src/Config/database.json');
+define('DATABASE_PATH',ROOT_PATH.'/tests/database.json');
 define('DATABASE','default');
 
 require(ROOT_PATH.'/vendor/wborba/willer-core/src/Core/Exception/WF_Exception.php');

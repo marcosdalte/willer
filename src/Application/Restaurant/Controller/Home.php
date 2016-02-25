@@ -5,6 +5,8 @@ namespace Application\Restaurant\Controller {
     use Core\DAO\Transaction;
     use Core\Util;
     use Application\Restaurant\Model\Restaurant;
+    use Application\Restaurant\Model\Waiter;
+    use Application\Restaurant\Model\Place;
 
     class Home extends Controller {
         private $db_transaction;
@@ -139,6 +141,85 @@ namespace Application\Restaurant\Controller {
 
             // render to json result
             Util::renderToJson($restaurant_list);
+        }
+
+        public function restaurantLikeListing() {
+            // load transaction object
+            $transaction = new Transaction();
+
+            // load model with Transaction instance
+            $restaurant = new Restaurant($transaction);
+            $place = new Place($transaction);
+            $waiter = new Waiter($transaction);
+
+            // open connection
+            $transaction->connect();
+
+            // delete if exists
+            $restaurant->delete();
+            $place->delete();
+            $waiter->delete();
+
+            // save place
+            $place->save([
+                'name' => 'place name test',
+                'address' => 'place address test',]);
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'restaurant name test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
+            // save waiter
+            $waiter->save([
+                'restaurant_id' => $restaurant,
+                'name' => 'waiter name test']);
+
+            // select with where, order by and limit(pagination)
+            $restaurant_list = $restaurant
+                ->like([
+                    'restaurant.name' => '%name%',
+                    'place.name' => '%test',
+                    'place.address' => 'place%',])
+                ->orderBy([
+                    'restaurant.name' => 'desc',
+                    'place.name' => 'desc',
+                    'place.address' => 'desc',])
+                ->limit(1,5)
+                ->execute();
+
+            // select with where, order by and limit(pagination)
+            $place_list = $place
+                ->like([
+                    'place.name' => '%name%',
+                    'place.address' => 'place%',])
+                ->orderBy([
+                    'place.name' => 'desc',
+                    'place.address' => 'desc',])
+                ->limit(1,5)
+                ->execute();
+
+            // select with where, order by and limit(pagination)
+            $waiter_list = $waiter
+                ->like([
+                    'waiter.name' => '%name%',
+                    'restaurant.name' => 'restaurant%',])
+                ->orderBy([
+                    'restaurant.name' => 'desc',
+                    'waiter.name' => 'desc',])
+                ->limit(1,5)
+                ->execute();
+
+            // list of query's
+            // Util::renderToJson($restaurant->dumpQuery());
+
+            // render to json result
+            Util::renderToJson([
+                'restaurant_list' => $restaurant_list,
+                'place_list' => $place_list,
+                'waiter_list' => $waiter_list]);
         }
     }
 }
