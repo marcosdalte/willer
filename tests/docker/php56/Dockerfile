@@ -1,3 +1,4 @@
+#php5.6
 FROM debian:jessie
 MAINTAINER wborba/debian/jessie
 
@@ -20,5 +21,7 @@ RUN apt-get autoclean && apt-get update && \
 	service php5-fpm restart && \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --filename=composer && \
 	cd ~ && wget https://phar.phpunit.de/phpunit.phar && chmod +x phpunit.phar && mv phpunit.phar /usr/local/bin/phpunit
+
+COPY default /etc/nginx/sites-available/
 
 EXPOSE 80
