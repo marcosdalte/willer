@@ -7,8 +7,6 @@ namespace Application\Restaurant\Controller {
     use Application\Restaurant\Model\Restaurant;
 
     class Contact extends Controller {
-        private $db_transaction;
-
         public function __construct($request_method = null) {
             parent::__construct($request_method);
         }
