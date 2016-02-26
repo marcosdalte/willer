@@ -7,6 +7,7 @@ namespace Application\Restaurant\Controller {
     use Application\Restaurant\Model\Restaurant;
     use Application\Restaurant\Model\Waiter;
     use Application\Restaurant\Model\Place;
+    use Core\Component\HtmlBlock;
 
     class Home extends Controller {
         private $db_transaction;
@@ -23,7 +24,20 @@ namespace Application\Restaurant\Controller {
         }
 
         public function home() {
-            print 'home page';
+            $html_block = new HtmlBlock\HtmlBlock();
+
+            $html_table = new HtmlBlock\Table(
+                $html_block,
+                'table_id',
+                'table_class',
+                null,
+                'content of test');
+
+            $html = $html_block
+                ->appendElement($html_table->getDomElement())
+                ->renderHtml();
+
+            print $html;
         }
 
         public function restaurantAdd() {
