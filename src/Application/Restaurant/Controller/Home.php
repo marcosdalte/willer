@@ -56,7 +56,7 @@ namespace Application\Restaurant\Controller {
                 'serves_pizza' => 1,]);
 
             // update
-            $restaurant->place = 'bla e bla';
+            $restaurant->name = 'bla e bla';
             $restaurant->serves_hot_dogs = 0;
             $restaurant->save();
 
@@ -92,9 +92,18 @@ namespace Application\Restaurant\Controller {
             // open connection
             $this->db_transaction->connect();
 
+            // delete all register without filter
+            $restaurant->delete();
+
+            // save
+            $restaurant->save([
+                'name' => 'place of test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
+
             // get(unique)
             $restaurant->get([
-                'name' => 'place of test']);
+                'restaurant.name' => 'place of test']);
 
             // delete current instance
             // $restaurant->delete();
@@ -110,9 +119,23 @@ namespace Application\Restaurant\Controller {
         public function restaurantListing() {
             // load model with Transaction instance
             $restaurant = new Restaurant($this->db_transaction);
+            $place = new Place($this->db_transaction);
+            $waiter = new Waiter($this->db_transaction);
 
             // open connection
             $this->db_transaction->connect();
+
+            // save place
+            $place->save([
+                'name' => 'place name test',
+                'address' => 'place address test',]);
+
+            // save restaurant
+            $restaurant->save([
+                'place_id' => $place,
+                'name' => 'place of test',
+                'serves_hot_dogs' => 1,
+                'serves_pizza' => 1,]);
 
             // select with where, order by, limit(pagination) and join left
             // $restaurant_list = $restaurant
@@ -144,16 +167,13 @@ namespace Application\Restaurant\Controller {
         }
 
         public function restaurantLikeListing() {
-            // load transaction object
-            $transaction = new Transaction();
-
             // load model with Transaction instance
-            $restaurant = new Restaurant($transaction);
-            $place = new Place($transaction);
-            $waiter = new Waiter($transaction);
+            $restaurant = new Restaurant($this->db_transaction);
+            $place = new Place($this->db_transaction);
+            $waiter = new Waiter($this->db_transaction);
 
             // open connection
-            $transaction->connect();
+            $this->db_transaction->connect();
 
             // delete if exists
             $restaurant->delete();

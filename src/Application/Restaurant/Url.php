@@ -6,7 +6,7 @@ namespace Application\Restaurant {
             return [
                 '/^\/?$/'                            => ["Restaurant/Home/home",['GET']],
                 '/^\/home\/?$/'                      => ["Restaurant/Home/home",['GET']],
-                '/^\/contact\/?$/'                   => ["Restaurant/Contact/contact",['GET']],
+                '/^\/contact\/?$/'                   => ["Restaurant/Contact/contact",['POST']],
                 '/^\/restaurant\/add\/?$/'           => ['Restaurant/Home/restaurantAdd',['GET']],
                 '/^\/restaurant\/update\/?$/'        => ['Restaurant/Home/restaurantUpdate',['GET']],
                 '/^\/restaurant\/delete\/?$/'        => ['Restaurant/Home/restaurantDelete',['GET']],
