@@ -1,6 +1,5 @@
 {
     "name": "wborba/willer",
-    "version": "1.1.7",
     "description": "php framework",
     "keywords": ["orm", "active record", "framework"],
     "homepage": "http://williamborba.github.io/willer",
