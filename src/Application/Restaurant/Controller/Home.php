@@ -27,17 +27,21 @@ namespace Application\Restaurant\Controller {
             $html_block = new HtmlBlock\HtmlBlock();
 
             $html_table = new HtmlBlock\Table(
-                $html_block,
-                'table_id',
-                'table_class',
-                null,
-                'content of test');
+                $html_block,[
+                    'id' => 'table_id',
+                    'class' => 'table']);
 
             $html = $html_block
-                ->appendElement($html_table->getDomElement())
+                ->setHeadTitleContent('title of test')
+                ->addCss('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
+                ->addCss('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css')
+                ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
+                ->addJs('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
+                ->appendBodyElement($html_table->getDomElement())
                 ->renderHtml();
 
             print $html;
+
         }
 
         public function restaurantAdd() {
