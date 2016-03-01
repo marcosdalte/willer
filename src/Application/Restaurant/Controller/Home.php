@@ -33,10 +33,10 @@ namespace Application\Restaurant\Controller {
 
             $html = $html_block
                 ->setHeadTitleContent('title of test')
-                ->addCss('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
-                ->addCss('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css')
+                ->addCss('http://127.0.0.1:8000/src/public/css/bootstrap.min.css')
+                ->addCss('http://127.0.0.1:8000/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-                ->addJs('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
+                ->addJs('http://127.0.0.1:8000/src/public/js/bootstrap.min.js')
                 ->appendBodyElement($html_table->getDomElement())
                 ->renderHtml();
 
