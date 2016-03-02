@@ -24,20 +24,72 @@ namespace Application\Restaurant\Controller {
         }
 
         public function home() {
+            $restaurant = new Restaurant($this->db_transaction);
+            $place = new Place($this->db_transaction);
+
+            $this->db_transaction->connect();
+
+            $restaurant_list = $restaurant
+                ->where([
+                    'restaurant.serves_hot_dogs' => [1,0],])
+                ->orderBy([
+                    'restaurant.id' => 'desc'])
+                ->limit(1,5)
+                ->execute([
+                    'join' => 'left']);
+
+            $place_list = $place
+                ->where()
+                ->orderBy()
+                ->limit(1,5)
+                ->execute([
+                    'join' => 'left']);
+
+            // return Util::renderToJson($restaurant_list);
+
             $html_block = new HtmlBlock\HtmlBlock();
 
             $html_table = new HtmlBlock\Table(
                 $html_block,[
                     'id' => 'table_id',
-                    'class' => 'table']);
+                    'class' => 'table table-striped table-bordered table-hover table-condensed',
+                    'model' => $restaurant_list,
+                    'label' => [
+                        'id' => 'ID',
+                        'name' => 'Nome',
+                        'serves_hot_dogs' => 'Cachorro quente',
+                        'serves_pizza' => 'Pizza',
+                        'place_id' => [
+                            'id' => 'ID',
+                            'name' => 'Nome do lugar',
+                            'address' => 'Endereço'
+                        ]
+                    ]]);
+
+            // print $html_table->renderHtml();
+            // return true;
+
+            $html_form = new HtmlBlock\Form(
+                $html_block,[
+                    'action' => 'restaurant/add',
+                    'method' => 'post',
+                    'id' =>  'form_id',
+                    'class' => '',
+                    'model' => $restaurant,
+                    'label' => []
+                ]);
+
+            // print $html_form->renderHtml();
+            // return true;
 
             $html = $html_block
-                ->setHeadTitleContent('title of test')
-                ->addCss('http://127.0.0.1:8000/src/public/css/bootstrap.min.css')
-                ->addCss('http://127.0.0.1:8000/src/public/css/bootstrap-theme.min.css')
+                ->setHeadTitle('outro titulo')
+                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap.min.css')
+                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-                ->addJs('http://127.0.0.1:8000/src/public/js/bootstrap.min.js')
-                ->appendBodyElement($html_table->getDomElement())
+                ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
+                ->appendBody($html_table)
+                ->appendBody($html_form)
                 ->renderHtml();
 
             print $html;
@@ -51,11 +103,16 @@ namespace Application\Restaurant\Controller {
             // open connection
             $this->db_transaction->connect();
 
+            // get fields
+            $name = Util::get($_POST,'name','place of test');
+            $serves_hot_dogs = Util::get($_POST,'serves_hot_dogs',0);
+            $serves_pizza = Util::get($_POST,'serves_pizza',0);
+
             // save
             $restaurant->save([
-                'name' => 'place of test',
-                'serves_hot_dogs' => 1,
-                'serves_pizza' => 1,]);
+                'name' => $name,
+                'serves_hot_dogs' => $serves_hot_dogs,
+                'serves_pizza' => $serves_pizza,]);
 
             Util::renderToJson($restaurant);
         }

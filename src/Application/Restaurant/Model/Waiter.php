@@ -9,7 +9,7 @@ namespace Application\Restaurant\Model {
         public $restaurant_id;
         public $name;
 
-        protected function schema() {
+        public function schema() {
             return [
                 'id' => Model::primaryKey(),
                 'restaurant_id' => Model::foreignKey(['table' => new Restaurant,'null' => true]),

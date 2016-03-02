@@ -11,7 +11,7 @@ namespace Application\Restaurant\Model {
         public $serves_hot_dogs;
         public $serves_pizza;
 
-        protected function schema() {
+        public function schema() {
             return [
                 'id' => Model::primaryKey(),
                 'place_id' => Model::foreignKey(['table' => new Place,'null' => true]),

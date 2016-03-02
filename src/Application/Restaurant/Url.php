@@ -7,7 +7,7 @@ namespace Application\Restaurant {
                 '/^\/?$/'                            => ['Restaurant/Home/home',['GET']],
                 '/^\/home\/?$/'                      => ['Restaurant/Home/home',['GET']],
                 '/^\/contact\/?$/'                   => ['Restaurant/Contact/contact',['POST']],
-                '/^\/restaurant\/add\/?$/'           => ['Restaurant/Home/restaurantAdd',['GET']],
+                '/^\/restaurant\/add\/?$/'           => ['Restaurant/Home/restaurantAdd',['GET','POST']],
                 '/^\/restaurant\/update\/?$/'        => ['Restaurant/Home/restaurantUpdate',['GET']],
                 '/^\/restaurant\/delete\/?$/'        => ['Restaurant/Home/restaurantDelete',['GET']],
                 '/^\/restaurant\/get\/?$/'           => ['Restaurant/Home/restaurantGet',['GET']],

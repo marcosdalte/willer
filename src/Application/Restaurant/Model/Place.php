@@ -8,7 +8,7 @@ namespace Application\Restaurant\Model {
         public $name;
         public $address;
 
-        protected function schema() {
+        public function schema() {
             return [
                 'id' => Model::primaryKey(),
                 'name' => Model::char(['length' => 40]),
