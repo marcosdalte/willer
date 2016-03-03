@@ -34,7 +34,7 @@ namespace Application\Restaurant\Controller {
                     'restaurant.serves_hot_dogs' => [1,0],])
                 ->orderBy([
                     'restaurant.id' => 'desc'])
-                ->limit(1,5)
+                // ->limit(1,5)
                 ->execute([
                     'join' => 'left']);
 
@@ -47,9 +47,20 @@ namespace Application\Restaurant\Controller {
 
             // return Util::renderToJson($restaurant_list);
 
-            $html_block = new HtmlBlock\HtmlBlock();
+            $html_block = new HtmlBlock\HtmlBlock([
+                'style' => 'padding-top: 50px;']);
 
-            $html_table = new HtmlBlock\Table(
+            $html_block_nav = new HtmlBlock\Nav(
+                $html_block,[
+                    'id' => 'nav_id',
+                    'class' => 'navbar navbar-inverse navbar-fixed-top',
+                    'title' => 'titulo da bagaça',
+                    'model' => [
+                        'menu 1' => 'http://williamborba.github.io/willer',
+                        'menu 2' => 'http://williamborba.github.io/willer',
+                        'menu 3' => 'http://williamborba.github.io/willer']]);
+
+            $html_block_table = new HtmlBlock\Table(
                 $html_block,[
                     'id' => 'table_id',
                     'class' => 'table table-striped table-bordered table-hover table-condensed',
@@ -66,10 +77,7 @@ namespace Application\Restaurant\Controller {
                         ]
                     ]]);
 
-            // print $html_table->renderHtml();
-            // return true;
-
-            $html_form = new HtmlBlock\Form(
+            $html_block_form = new HtmlBlock\Form(
                 $html_block,[
                     'action' => 'restaurant/add',
                     'method' => 'post',
@@ -79,17 +87,15 @@ namespace Application\Restaurant\Controller {
                     'label' => []
                 ]);
 
-            // print $html_form->renderHtml();
-            // return true;
-
             $html = $html_block
                 ->setHeadTitle('outro titulo')
                 ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap.min.css')
                 ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
                 ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
-                ->appendBody($html_table)
-                ->appendBody($html_form)
+                ->appendBodyContainer($html_block_nav)
+                ->appendBodyContainerRow($html_block_table)
+                ->appendBodyContainerRow($html_block_form)
                 ->renderHtml();
 
             print $html;

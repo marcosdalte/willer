@@ -8,5 +8,6 @@ define('REQUEST_URI',$_SERVER['REQUEST_URI']);
 define('ROOT_PATH',__DIR__);
 define('DATABASE_PATH',ROOT_PATH.'/Config/database.json');
 define('DATABASE','default');
+define('QUERY_LIMIT',30);
 
 new Core\System();
