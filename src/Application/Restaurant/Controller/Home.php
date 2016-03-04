@@ -81,6 +81,9 @@ namespace Application\Restaurant\Controller {
                 $html_block,[
                     'action' => 'restaurant/add',
                     'method' => 'post',
+                    'title' => 'titulo do formulario zuado',
+                    'text' => 'texto do formulario zuadinho',
+                    'footer' => 'texto do formulario zuadinho footer',
                     'id' =>  'form_id',
                     'class' => '',
                     'model' => $restaurant,
@@ -89,10 +92,10 @@ namespace Application\Restaurant\Controller {
 
             $html = $html_block
                 ->setHeadTitle('outro titulo')
-                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap.min.css')
-                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
+                ->addCss('http://127.0.0.1/willer/willer/src/public/css/bootstrap.min.css')
+                ->addCss('http://127.0.0.1/willer/willer/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-                ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
+                ->addJs('http://127.0.0.1/willer/willer/src/public/js/bootstrap.min.js')
                 ->appendBodyContainer($html_block_nav)
                 ->appendBodyContainerRow($html_block_table)
                 ->appendBodyContainerRow($html_block_form)
