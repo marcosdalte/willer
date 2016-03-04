@@ -34,7 +34,7 @@ namespace Application\Restaurant\Controller {
                     'restaurant.serves_hot_dogs' => [1,0],])
                 ->orderBy([
                     'restaurant.id' => 'desc'])
-                // ->limit(1,5)
+                ->limit(1,5)
                 ->execute([
                     'join' => 'left']);
 
@@ -54,16 +54,39 @@ namespace Application\Restaurant\Controller {
                 $html_block,[
                     'id' => 'nav_id',
                     'class' => 'navbar navbar-inverse navbar-fixed-top',
-                    'title' => 'titulo da bagaça',
+                    'title' => 'titulo da bagaça trocar titulo',
                     'model' => [
                         'menu 1' => 'http://williamborba.github.io/willer',
                         'menu 2' => 'http://williamborba.github.io/willer',
-                        'menu 3' => 'http://williamborba.github.io/willer']]);
+                        'menu 3' => 'http://williamborba.github.io/willer',
+                        'menu 4' => 'http://williamborba.github.io/willer']]);
+
+            $html_block_sidebar = new HtmlBlock\Sidebar(
+                $html_block,[
+                    'id' => 'sidebar_id',
+                    'class' => 'col-md-2',
+                    'style' => '',
+                    'model' => [
+                        'sidebar menu 1' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 2' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
+
+            $html_block_table_page_header = new HtmlBlock\PageHeader(
+                $html_block,[
+                    'class' => '',
+                    'style' => '',
+                    'container_class' => 'col-md-10',
+                    'container_style' => 'float:right;',
+                    'title' => 'titulo da tabela',
+                    'small_title' => ' titulo menor da tabela',]);
 
             $html_block_table = new HtmlBlock\Table(
                 $html_block,[
                     'id' => 'table_id',
-                    'class' => 'table table-striped table-bordered table-hover table-condensed',
+                    'style' => '',
+                    'class' => '',
+                    'container_class' => 'col-md-6',
+                    'container_style' => 'float:right;',
                     'model' => $restaurant_list,
                     'label' => [
                         'id' => 'ID',
@@ -74,35 +97,43 @@ namespace Application\Restaurant\Controller {
                             'id' => 'ID',
                             'name' => 'Nome do lugar',
                             'address' => 'Endereço'
-                        ]
-                    ]]);
+                        ]]]);
+
+            $html_block_form_page_header = new HtmlBlock\PageHeader(
+                $html_block,[
+                    'class' => '',
+                    'style' => '',
+                    'container_class' => 'col-md-10',
+                    'container_style' => 'float:right;',
+                    'title' => 'titulo do formulario',
+                    'small_title' => ' titulo menor do formulario',]);
 
             $html_block_form = new HtmlBlock\Form(
                 $html_block,[
                     'action' => 'restaurant/add',
                     'method' => 'post',
-                    'title' => 'titulo do formulario zuado',
-                    'text' => 'texto do formulario zuadinho',
-                    'footer' => 'texto do formulario zuadinho footer',
                     'id' =>  'form_id',
+                    'style' => '',
                     'class' => '',
+                    'container_class' => 'col-md-4',
+                    'container_style' => 'float:left;',
                     'model' => $restaurant,
-                    'label' => []
-                ]);
+                    'label' => []]);
 
             $html = $html_block
                 ->setHeadTitle('outro titulo')
-                ->addCss('http://127.0.0.1/willer/willer/src/public/css/bootstrap.min.css')
-                ->addCss('http://127.0.0.1/willer/willer/src/public/css/bootstrap-theme.min.css')
+                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap.min.css')
+                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-                ->addJs('http://127.0.0.1/willer/willer/src/public/js/bootstrap.min.js')
+                ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
                 ->appendBodyContainer($html_block_nav)
+                ->appendBodyContainerRow($html_block_sidebar)
+                ->appendBodyContainerRow($html_block_table_page_header)
                 ->appendBodyContainerRow($html_block_table)
                 ->appendBodyContainerRow($html_block_form)
                 ->renderHtml();
 
             print $html;
-
         }
 
         public function restaurantAdd() {
