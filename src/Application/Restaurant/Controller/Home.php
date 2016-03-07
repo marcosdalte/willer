@@ -25,9 +25,12 @@ namespace Application\Restaurant\Controller {
 
         public function home() {
             $restaurant = new Restaurant($this->db_transaction);
+            $waiter = new Waiter($this->db_transaction);
             $place = new Place($this->db_transaction);
 
             $this->db_transaction->connect();
+
+            // $restaurant->get(['restaurant.id' => 829]);
 
             $restaurant_list = $restaurant
                 ->where([
@@ -64,8 +67,13 @@ namespace Application\Restaurant\Controller {
             $html_block_sidebar = new HtmlBlock\Sidebar(
                 $html_block,[
                     'id' => 'sidebar_id',
-                    'class' => 'col-md-2',
+                    'class' => '',
                     'style' => '',
+                    'container_class' => 'col-md-2',
+                    // 'container_style' => 'float:right;',
+                    'title' => 'title do sidebar',
+                    'text' => 'text do sidebar',
+                    'footer' => 'foooter do sidebar',
                     'model' => [
                         'sidebar menu 1' => 'http://williamborba.github.io/willer',
                         'sidebar menu 2' => 'http://williamborba.github.io/willer',
@@ -76,7 +84,7 @@ namespace Application\Restaurant\Controller {
                     'class' => '',
                     'style' => '',
                     'container_class' => 'col-md-10',
-                    'container_style' => 'float:right;',
+                    // 'container_style' => 'float:right;',
                     'title' => 'titulo da tabela',
                     'small_title' => ' titulo menor da tabela',]);
 
@@ -85,9 +93,12 @@ namespace Application\Restaurant\Controller {
                     'id' => 'table_id',
                     'style' => '',
                     'class' => '',
-                    'container_class' => 'col-md-6',
+                    'container_class' => 'col-md-7',
                     'container_style' => 'float:right;',
                     'model' => $restaurant_list,
+                    'title' => 'title do table',
+                    'text' => 'text do table',
+                    'footer' => 'foooter do table',
                     'label' => [
                         'id' => 'ID',
                         'name' => 'Nome',
@@ -99,15 +110,6 @@ namespace Application\Restaurant\Controller {
                             'address' => 'Endereço'
                         ]]]);
 
-            $html_block_form_page_header = new HtmlBlock\PageHeader(
-                $html_block,[
-                    'class' => '',
-                    'style' => '',
-                    'container_class' => 'col-md-10',
-                    'container_style' => 'float:right;',
-                    'title' => 'titulo do formulario',
-                    'small_title' => ' titulo menor do formulario',]);
-
             $html_block_form = new HtmlBlock\Form(
                 $html_block,[
                     'action' => 'restaurant/add',
@@ -115,8 +117,11 @@ namespace Application\Restaurant\Controller {
                     'id' =>  'form_id',
                     'style' => '',
                     'class' => '',
-                    'container_class' => 'col-md-4',
-                    'container_style' => 'float:left;',
+                    'title' => 'title do form',
+                    'text' => 'text do form',
+                    'footer' => 'foooter do form',
+                    'container_class' => 'col-md-3',
+                    // 'container_style' => 'float:left;',
                     'model' => $restaurant,
                     'label' => []]);
 
