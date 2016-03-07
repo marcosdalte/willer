@@ -56,8 +56,9 @@ namespace Application\Restaurant\Controller {
             $html_block_nav = new HtmlBlock\Nav(
                 $html_block,[
                     'id' => 'nav_id',
-                    'class' => 'navbar navbar-inverse navbar-fixed-top',
+                    // 'class' => 'navbar navbar-inverse navbar-fixed-top',
                     'title' => 'titulo da bagaça trocar titulo',
+                    // 'container_class' => 'col-md-12',
                     'model' => [
                         'menu 1' => 'http://williamborba.github.io/willer',
                         'menu 2' => 'http://williamborba.github.io/willer',
@@ -69,7 +70,7 @@ namespace Application\Restaurant\Controller {
                     'id' => 'sidebar_id',
                     'class' => '',
                     'style' => '',
-                    'container_class' => 'col-md-2',
+                    // 'container_class' => 'col-md-2',
                     // 'container_style' => 'float:right;',
                     'title' => 'title do sidebar',
                     'text' => 'text do sidebar',
@@ -79,11 +80,26 @@ namespace Application\Restaurant\Controller {
                         'sidebar menu 2' => 'http://williamborba.github.io/willer',
                         'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
 
-            $html_block_table_page_header = new HtmlBlock\PageHeader(
+            $html_block_sidebar_2 = new HtmlBlock\Sidebar(
+                $html_block,[
+                    'id' => 'sidebar_id',
+                    'class' => '',
+                    'style' => '',
+                    // 'container_class' => 'col-md-2',
+                    // 'container_style' => 'float:right;',
+                    'title' => 'title do sidebar 2',
+                    'text' => 'text do sidebar 2',
+                    'footer' => 'foooter do sidebar 2',
+                    'model' => [
+                        'sidebar menu 1' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 2' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
+
+            $html_block_page_header = new HtmlBlock\PageHeader(
                 $html_block,[
                     'class' => '',
                     'style' => '',
-                    'container_class' => 'col-md-10',
+                    'container_class' => 'col-md-12',
                     // 'container_style' => 'float:right;',
                     'title' => 'titulo da tabela',
                     'small_title' => ' titulo menor da tabela',]);
@@ -93,7 +109,7 @@ namespace Application\Restaurant\Controller {
                     'id' => 'table_id',
                     'style' => '',
                     'class' => '',
-                    'container_class' => 'col-md-7',
+                    'container_class' => 'col-md-9',
                     'container_style' => 'float:right;',
                     'model' => $restaurant_list,
                     'title' => 'title do table',
@@ -131,11 +147,14 @@ namespace Application\Restaurant\Controller {
                 ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
                 ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
-                ->appendBodyContainer($html_block_nav)
-                ->appendBodyContainerRow($html_block_sidebar)
-                ->appendBodyContainerRow($html_block_table_page_header)
-                ->appendBodyContainerRow($html_block_table)
-                ->appendBodyContainerRow($html_block_form)
+                ->appendBody($html_block_nav)
+                ->appendBodyRow('col-md-2',[
+                    $html_block_sidebar,
+                    $html_block_sidebar_2])
+                ->appendBodyRow('col-md-10',[
+                    $html_block_page_header,
+                    $html_block_table,
+                    $html_block_form])
                 ->renderHtml();
 
             print $html;
