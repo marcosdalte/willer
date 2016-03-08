@@ -28,6 +28,8 @@ namespace Application\Restaurant\Controller {
             $waiter = new Waiter($this->db_transaction);
             $place = new Place($this->db_transaction);
 
+            $table_page = Util::get($_GET,'table_id_page',1);
+
             $this->db_transaction->connect();
 
             // $restaurant->get(['restaurant.id' => 829]);
@@ -37,7 +39,7 @@ namespace Application\Restaurant\Controller {
                     'restaurant.serves_hot_dogs' => [1,0],])
                 ->orderBy([
                     'restaurant.id' => 'desc'])
-                ->limit(1,5)
+                ->limit($table_page,5)
                 ->execute([
                     'join' => 'left']);
 
@@ -109,7 +111,7 @@ namespace Application\Restaurant\Controller {
                     'id' => 'table_id',
                     'style' => '',
                     'class' => '',
-                    'container_class' => 'col-md-9',
+                    'container_class' => 'col-md-12',
                     'container_style' => 'float:right;',
                     'model' => $restaurant_list,
                     'title' => 'title do table',
@@ -136,7 +138,7 @@ namespace Application\Restaurant\Controller {
                     'title' => 'title do form',
                     'text' => 'text do form',
                     'footer' => 'foooter do form',
-                    'container_class' => 'col-md-3',
+                    'container_class' => 'col-md-12',
                     // 'container_style' => 'float:left;',
                     'model' => $restaurant,
                     'label' => []]);
