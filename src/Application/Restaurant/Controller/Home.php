@@ -25,9 +25,12 @@ namespace Application\Restaurant\Controller {
 
         public function home() {
             $restaurant = new Restaurant($this->db_transaction);
+            $waiter = new Waiter($this->db_transaction);
             $place = new Place($this->db_transaction);
 
             $this->db_transaction->connect();
+
+            // $restaurant->get(['restaurant.id' => 829]);
 
             $restaurant_list = $restaurant
                 ->where([
@@ -122,10 +125,10 @@ namespace Application\Restaurant\Controller {
 
             $html = $html_block
                 ->setHeadTitle('outro titulo')
-                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap.min.css')
-                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
+                ->addCss('http://127.0.0.1/willer/willer/src/public/css/bootstrap.min.css')
+                ->addCss('http://127.0.0.1/willer/willer/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-                ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
+                ->addJs('http://127.0.0.1/willer/willer/src/public/js/bootstrap.min.js')
                 ->appendBodyContainer($html_block_nav)
                 ->appendBodyContainerRow($html_block_sidebar)
                 ->appendBodyContainerRow($html_block_table_page_header)
