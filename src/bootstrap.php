@@ -2,7 +2,7 @@
 
 require(dirname(__DIR__).'/vendor/autoload.php');
 
-define('DEBUG',0);
+define('DEBUG',true);
 define('URL_PREFIX','willer/willer/');
 define('REQUEST_URI',$_SERVER['REQUEST_URI']);
 define('ROOT_PATH',__DIR__);
