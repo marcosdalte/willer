@@ -9,7 +9,7 @@
         "wborba/willer-core": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit":"5.x",
+        "phpunit/phpunit":"5.x"
     },
     "autoload": {
         "psr-4": {
