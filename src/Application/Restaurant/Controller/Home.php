@@ -28,7 +28,7 @@ namespace Application\Restaurant\Controller {
             $waiter = new Waiter($this->db_transaction);
             $place = new Place($this->db_transaction);
 
-            $table_page = Util::get($_GET,'table_id_page',1);
+            $table_page = Util::get($_GET,'table-test-pag-page',1);
 
             $this->db_transaction->connect();
 
@@ -108,7 +108,7 @@ namespace Application\Restaurant\Controller {
 
             $html_block_table = new HtmlBlock\Table(
                 $html_block,[
-                    'id' => 'table_id',
+                    'id' => 'table-test',
                     'style' => '',
                     'class' => '',
                     'container_class' => 'col-md-12',
@@ -119,20 +119,20 @@ namespace Application\Restaurant\Controller {
                     'footer' => 'foooter do table',
                     'label' => [
                         'id' => 'ID',
-                        'name' => 'Nome',
+                        'name' => 'Name',
                         'serves_hot_dogs' => 'Cachorro quente',
                         'serves_pizza' => 'Pizza',
                         'place_id' => [
-                            'id' => 'ID',
-                            'name' => 'Nome do lugar',
-                            'address' => 'Endereço'
+                            'id' => 'Place ID',
+                            'name' => 'Place Name',
+                            'address' => 'Place Address'
                         ]]]);
 
             $html_block_form = new HtmlBlock\Form(
                 $html_block,[
                     'action' => 'restaurant/add',
                     'method' => 'post',
-                    'id' =>  'form_id',
+                    'id' =>  'form-test',
                     'style' => '',
                     'class' => '',
                     'title' => 'title do form',
@@ -145,10 +145,10 @@ namespace Application\Restaurant\Controller {
 
             $html = $html_block
                 ->setHeadTitle('outro titulo')
-                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap.min.css')
-                ->addCss('http://10.1.1.171:8000/src/public/css/bootstrap-theme.min.css')
+                ->addCss('/src/public/css/bootstrap.min.css')
+                ->addCss('/src/public/css/bootstrap-theme.min.css')
                 ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-                ->addJs('http://10.1.1.171:8000/src/public/js/bootstrap.min.js')
+                ->addJs('/src/public/js/bootstrap.min.js')
                 ->appendBody($html_block_nav)
                 ->appendBodyRow('col-md-2',[
                     $html_block_sidebar,
