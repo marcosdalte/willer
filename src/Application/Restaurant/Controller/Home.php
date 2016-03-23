@@ -24,10 +24,11 @@ namespace Application\Restaurant\Controller {
         }
 
         public function home() {
-            $x = str_replace(' ','','/cadastro/produto/{nam._-e}/{namssss._-e}/{id:[0-9]+}[/{phone}]');
-            $y = explode('/',$x);
-            preg_match_all('/({[a-z0-9.\-_:\[\]\\+\(\)]+})/',$x,$match_1);
-            preg_match_all('/(\[[\/]?{[[a-z]+}\])/',$x,$match_2);
+            $x = str_replace(' ','','/cadastro/produto/{nam._-e}/{namssss._-e}/{id:[0-9]+}[/{phone}][/{kk}]');
+            // $y = explode('/',$x);
+            $y = preg_split('/(\[\/)|(\/)/',$x,-1,PREG_SPLIT_NO_EMPTY);
+            preg_match_all('/{[a-z0-9.\-_:\[\]\\+\(\)]+}/',$x,$match_1);
+            preg_match_all('/\[[\/]?{[[a-z]+}\]/',$x,$match_2);
 
             print '<pre>';
             print_r($y);
