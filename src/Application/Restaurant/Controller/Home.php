@@ -23,17 +23,42 @@ namespace Application\Restaurant\Controller {
             print 'ok';
         }
 
-        public function home() {
-            $x = str_replace(' ','','/cadastro/produto/{nam._-e}/{namssss._-e}/{id:[0-9]+}[/{phone}][/{kk}]');
-            // $y = explode('/',$x);
-            $y = preg_split('/(\[\/)|(\/)/',$x,-1,PREG_SPLIT_NO_EMPTY);
-            preg_match_all('/{[a-z0-9.\-_:\[\]\\+\(\)]+}/',$x,$match_1);
-            preg_match_all('/\[[\/]?{[[a-z]+}\]/',$x,$match_2);
+        public function test() {
+            print 'lalala';
+        }
 
+        public function home() {
             print '<pre>';
-            print_r($y);
-            print_r($match_1);
-            print_r($match_2);
+            $uri = 'cadastro/produto/teste/teste123/1234567890';
+            $route = 'cadastro/produto/{nam._-e:[0-9]}/{namssss._-e:[a-z]+}/{id:[0-9]+}';
+            print $route;
+
+            $url = str_replace(' ','','cadastro/produto/{nam._-e:[0-9]}/{namssss._-e:[a-z]+}/{id:[0-9]+}');
+            // preg_match_all('/\[[\/]?{[[a-z]+}\]/',$url,$match_2);
+            $route_split = explode('/',$url);
+
+            print_r($route_split);
+
+            foreach ($route_split as $key => $route) {
+                preg_match('/{([a-z0-9.\-_]+)([:]{1})?([\w^\-|\[\]\\+\(\)\/]+)?}/',$route,$match_1);
+
+                if (!empty($match_1)) {
+                    $match_1 = str_replace(['{','}'],'',$match_1);
+                    $match_1 = explode(':',$match_1[0]);
+
+                    if (count($match_1) == 2) {
+                        $route_split[$key] = $match_1[1];
+
+                    } else {
+                        $route_split[$key] = '[a-z0-9]+';
+                    }
+                }
+            }
+
+            $route_er = vsprintf('^%s$',[implode('\/',$route_split),]);
+
+            print_r($route_er);
+
             print '</pre>';
             // $restaurant = new Restaurant($this->db_transaction);
             // $waiter = new Waiter($this->db_transaction);
