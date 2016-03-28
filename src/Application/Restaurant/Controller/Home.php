@@ -8,6 +8,7 @@ namespace Application\Restaurant\Controller {
     use Application\Restaurant\Model\Waiter;
     use Application\Restaurant\Model\Place;
     use Core\Component\HtmlBlock;
+    use Core\Request;
 
     class Home extends Controller {
         private $db_transaction;
@@ -23,8 +24,10 @@ namespace Application\Restaurant\Controller {
             print 'ok';
         }
 
-        public function test() {
-            print 'lalala';
+        public function test(Request $request) {
+            print '<pre>';
+            print_r($request);
+            print '</pre>';
         }
 
         public function home() {
@@ -50,7 +53,7 @@ namespace Application\Restaurant\Controller {
                         $route_split[$key] = $match_1[1];
 
                     } else {
-                        $route_split[$key] = '[a-z0-9]+';
+                        $route_split[$key] = '([a-z0-9]+)';
                     }
                 }
             }
