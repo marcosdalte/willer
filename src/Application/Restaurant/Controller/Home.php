@@ -26,43 +26,21 @@ namespace Application\Restaurant\Controller {
 
         public function test(Request $request) {
             print '<pre>';
-            print_r($request);
+            print '<br/>-----------------------------<br/>';
+            print_r($request->getArgument());
+            print '<br/>-----------------------------<br/>';
+            print_r($request->getArgument('var1'));
+            print '<br/>-----------------------------<br/>';
+            print_r($request->getUri());
+            print '<br/>-----------------------------<br/>';
+            print_r($request->getRoute('test_id',[
+                'var1' => 7,
+                'var2' => 'blabla',
+                'var3' => 2343547687]));
             print '</pre>';
         }
 
         public function home() {
-            print '<pre>';
-            $uri = 'cadastro/produto/teste/teste123/1234567890';
-            $route = 'cadastro/produto/{nam._-e:[0-9]}/{namssss._-e:[a-z]+}/{id:[0-9]+}';
-            print $route;
-
-            $url = str_replace(' ','','cadastro/produto/{nam._-e:[0-9]}/{namssss._-e:[a-z]+}/{id:[0-9]+}');
-            // preg_match_all('/\[[\/]?{[[a-z]+}\]/',$url,$match_2);
-            $route_split = explode('/',$url);
-
-            print_r($route_split);
-
-            foreach ($route_split as $key => $route) {
-                preg_match('/{([a-z0-9.\-_]+)([:]{1})?([\w^\-|\[\]\\+\(\)\/]+)?}/',$route,$match_1);
-
-                if (!empty($match_1)) {
-                    $match_1 = str_replace(['{','}'],'',$match_1);
-                    $match_1 = explode(':',$match_1[0]);
-
-                    if (count($match_1) == 2) {
-                        $route_split[$key] = $match_1[1];
-
-                    } else {
-                        $route_split[$key] = '([a-z0-9]+)';
-                    }
-                }
-            }
-
-            $route_er = vsprintf('^%s$',[implode('\/',$route_split),]);
-
-            print_r($route_er);
-
-            print '</pre>';
             // $restaurant = new Restaurant($this->db_transaction);
             // $waiter = new Waiter($this->db_transaction);
             // $place = new Place($this->db_transaction);
