@@ -4,11 +4,11 @@ namespace Application\Restaurant\Controller {
     use Core\Controller;
     use Core\DAO\Transaction;
     use Core\Util;
+    use Core\Request;
     use Application\Restaurant\Model\Restaurant;
     use Application\Restaurant\Model\Waiter;
     use Application\Restaurant\Model\Place;
     use Core\Component\HtmlBlock;
-    use Core\Request;
 
     class Home extends Controller {
         private $db_transaction;
