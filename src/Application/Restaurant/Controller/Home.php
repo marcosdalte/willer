@@ -5,6 +5,7 @@ namespace Application\Restaurant\Controller {
     use Core\DAO\Transaction;
     use Core\Util;
     use Core\Request;
+    use Core\Response;
     use Application\Restaurant\Model\Restaurant;
     use Application\Restaurant\Model\Waiter;
     use Application\Restaurant\Model\Place;
@@ -25,19 +26,18 @@ namespace Application\Restaurant\Controller {
         }
 
         public function test(Request $request) {
-            print '<pre>';
-            print '<br/>-----------------------------<br/>';
-            print_r($request->getArgument());
-            print '<br/>-----------------------------<br/>';
-            print_r($request->getArgument('var1'));
-            print '<br/>-----------------------------<br/>';
-            print_r($request->getUri());
-            print '<br/>-----------------------------<br/>';
-            print_r($request->getRoute('test_id',[
+            $argument = $request->getArgument();
+            $request->getArgument('var1');
+            $request->getUri();
+            $route = $request->getRoute('test_id',[
                 'var1' => 7,
                 'var2' => 'blabla',
-                'var3' => 2343547687]));
-            print '</pre>';
+                'var3' => 2343547687]);
+
+            $response = new Response();
+            $response->setCode(200);
+
+            return $response->render($route);
         }
 
         public function home() {
