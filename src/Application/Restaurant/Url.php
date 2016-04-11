@@ -8,6 +8,7 @@ namespace Application\Restaurant {
                 '/'           => ['Home\home',['GET'],'home_default'],
                 '/home'       => ['Home\home',['GET'],'home_home'],
                 '/contact'    => ['Contact\contact',['POST'],'contact_default'],
+                '/restaurant/add'    => ['Home\restaurantAdd',['POST'],'restaurant_add'],
                 '/restaurant' => ['Home\Dispath',['GET','POST','PUT','DELETE'],'restaurant_dispath'],
             ];
         }

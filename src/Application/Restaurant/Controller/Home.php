@@ -41,142 +41,142 @@ namespace Application\Restaurant\Controller {
         }
 
         public function home() {
-            // $restaurant = new Restaurant($this->db_transaction);
-            // $waiter = new Waiter($this->db_transaction);
-            // $place = new Place($this->db_transaction);
+            $restaurant = new Restaurant($this->db_transaction);
+            $waiter = new Waiter($this->db_transaction);
+            $place = new Place($this->db_transaction);
 
-            // $table_page = Util::get($_GET,'table-test-pag-page',1);
+            $table_page = Util::get($_GET,'table-test-pag-page',1);
 
-            // $this->db_transaction->connect();
+            $this->db_transaction->connect();
 
-            // // $restaurant->get(['restaurant.id' => 829]);
+            // $restaurant->get(['restaurant.id' => 829]);
 
-            // $restaurant_list = $restaurant
-            //     ->where([
-            //         'restaurant.serves_hot_dogs' => [1,0],])
-            //     ->orderBy([
-            //         'restaurant.id' => 'desc'])
-            //     ->limit($table_page,5)
-            //     ->execute([
-            //         'join' => 'left']);
+            $restaurant_list = $restaurant
+                ->where([
+                    'restaurant.serves_hot_dogs' => [1,0],])
+                ->orderBy([
+                    'restaurant.id' => 'desc'])
+                ->limit($table_page,5)
+                ->execute([
+                    'join' => 'left']);
 
-            // $place_list = $place
-            //     ->where()
-            //     ->orderBy()
-            //     ->limit(1,5)
-            //     ->execute([
-            //         'join' => 'left']);
+            $place_list = $place
+                ->where()
+                ->orderBy()
+                ->limit(1,5)
+                ->execute([
+                    'join' => 'left']);
 
-            // // return Util::renderToJson($restaurant_list);
+            // return Util::renderToJson($restaurant_list);
 
-            // $html_block = new HtmlBlock\HtmlBlock([
-            //     'style' => 'padding-top: 50px;']);
+            $html_block = new HtmlBlock\HtmlBlock([
+                'style' => 'padding-top: 50px;']);
 
-            // $html_block_nav = new HtmlBlock\Nav(
-            //     $html_block,[
-            //         'id' => 'nav_id',
-            //         // 'class' => 'navbar navbar-inverse navbar-fixed-top',
-            //         'title' => 'titulo da bagaça trocar titulo',
-            //         // 'container_class' => 'col-md-12',
-            //         'model' => [
-            //             'menu 1' => 'http://williamborba.github.io/willer',
-            //             'menu 2' => 'http://williamborba.github.io/willer',
-            //             'menu 3' => 'http://williamborba.github.io/willer',
-            //             'menu 4' => 'http://williamborba.github.io/willer']]);
+            $html_block_nav = new HtmlBlock\Nav(
+                $html_block,[
+                    'id' => 'nav_id',
+                    // 'class' => 'navbar navbar-inverse navbar-fixed-top',
+                    'title' => 'titulo da bagaça trocar titulo',
+                    // 'container_class' => 'col-md-12',
+                    'model' => [
+                        'menu 1' => 'http://williamborba.github.io/willer',
+                        'menu 2' => 'http://williamborba.github.io/willer',
+                        'menu 3' => 'http://williamborba.github.io/willer',
+                        'menu 4' => 'http://williamborba.github.io/willer']]);
 
-            // $html_block_sidebar = new HtmlBlock\Sidebar(
-            //     $html_block,[
-            //         'id' => 'sidebar_id',
-            //         'class' => '',
-            //         'style' => '',
-            //         // 'container_class' => 'col-md-2',
-            //         // 'container_style' => 'float:right;',
-            //         'title' => 'title do sidebar',
-            //         'text' => 'text do sidebar',
-            //         'footer' => 'foooter do sidebar',
-            //         'model' => [
-            //             'sidebar menu 1' => 'http://williamborba.github.io/willer',
-            //             'sidebar menu 2' => 'http://williamborba.github.io/willer',
-            //             'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
+            $html_block_sidebar = new HtmlBlock\Sidebar(
+                $html_block,[
+                    'id' => 'sidebar_id',
+                    'class' => '',
+                    'style' => '',
+                    // 'container_class' => 'col-md-2',
+                    // 'container_style' => 'float:right;',
+                    'title' => 'title do sidebar',
+                    'text' => 'text do sidebar',
+                    'footer' => 'foooter do sidebar',
+                    'model' => [
+                        'sidebar menu 1' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 2' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
 
-            // $html_block_sidebar_2 = new HtmlBlock\Sidebar(
-            //     $html_block,[
-            //         'id' => 'sidebar_id',
-            //         'class' => '',
-            //         'style' => '',
-            //         // 'container_class' => 'col-md-2',
-            //         // 'container_style' => 'float:right;',
-            //         'title' => 'title do sidebar 2',
-            //         'text' => 'text do sidebar 2',
-            //         'footer' => 'foooter do sidebar 2',
-            //         'model' => [
-            //             'sidebar menu 1' => 'http://williamborba.github.io/willer',
-            //             'sidebar menu 2' => 'http://williamborba.github.io/willer',
-            //             'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
+            $html_block_sidebar_2 = new HtmlBlock\Sidebar(
+                $html_block,[
+                    'id' => 'sidebar_id',
+                    'class' => '',
+                    'style' => '',
+                    // 'container_class' => 'col-md-2',
+                    // 'container_style' => 'float:right;',
+                    'title' => 'title do sidebar 2',
+                    'text' => 'text do sidebar 2',
+                    'footer' => 'foooter do sidebar 2',
+                    'model' => [
+                        'sidebar menu 1' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 2' => 'http://williamborba.github.io/willer',
+                        'sidebar menu 3' => 'http://williamborba.github.io/willer']]);
 
-            // $html_block_page_header = new HtmlBlock\PageHeader(
-            //     $html_block,[
-            //         'class' => '',
-            //         'style' => '',
-            //         'container_class' => 'col-md-12',
-            //         // 'container_style' => 'float:right;',
-            //         'title' => 'titulo da tabela',
-            //         'small_title' => ' titulo menor da tabela',]);
+            $html_block_page_header = new HtmlBlock\PageHeader(
+                $html_block,[
+                    'class' => '',
+                    'style' => '',
+                    'container_class' => 'col-md-12',
+                    // 'container_style' => 'float:right;',
+                    'title' => 'titulo da tabela',
+                    'small_title' => ' titulo menor da tabela',]);
 
-            // $html_block_table = new HtmlBlock\Table(
-            //     $html_block,[
-            //         'id' => 'table-test',
-            //         'style' => '',
-            //         'class' => '',
-            //         'container_class' => 'col-md-12',
-            //         'container_style' => 'float:right;',
-            //         'model' => $restaurant_list,
-            //         'title' => 'title do table',
-            //         'text' => 'text do table',
-            //         'footer' => 'foooter do table',
-            //         'label' => [
-            //             'id' => 'ID',
-            //             'name' => 'Name',
-            //             'serves_hot_dogs' => 'Cachorro quente',
-            //             'serves_pizza' => 'Pizza',
-            //             'place_id' => [
-            //                 'id' => 'Place ID',
-            //                 'name' => 'Place Name',
-            //                 'address' => 'Place Address'
-            //             ]]]);
+            $html_block_table = new HtmlBlock\Table(
+                $html_block,[
+                    'id' => 'table-test',
+                    'style' => '',
+                    'class' => '',
+                    'container_class' => 'col-md-12',
+                    'container_style' => 'float:right;',
+                    'model' => $restaurant_list,
+                    'title' => 'title do table',
+                    'text' => 'text do table',
+                    'footer' => 'foooter do table',
+                    'label' => [
+                        'id' => 'ID',
+                        'name' => 'Name',
+                        'serves_hot_dogs' => 'Cachorro quente',
+                        'serves_pizza' => 'Pizza',
+                        'place_id' => [
+                            'id' => 'Place ID',
+                            'name' => 'Place Name',
+                            'address' => 'Place Address'
+                        ]]]);
 
-            // $html_block_form = new HtmlBlock\Form(
-            //     $html_block,[
-            //         'action' => 'restaurant/add',
-            //         'method' => 'post',
-            //         'id' =>  'form-test',
-            //         'style' => '',
-            //         'class' => '',
-            //         'title' => 'title do form',
-            //         'text' => 'text do form',
-            //         'footer' => 'foooter do form',
-            //         'container_class' => 'col-md-12',
-            //         // 'container_style' => 'float:left;',
-            //         'model' => $restaurant,
-            //         'label' => []]);
+            $html_block_form = new HtmlBlock\Form(
+                $html_block,[
+                    'action' => 'restaurant/add',
+                    'method' => 'post',
+                    'id' =>  'form-test',
+                    'style' => '',
+                    'class' => '',
+                    'title' => 'title do form',
+                    'text' => 'text do form',
+                    'footer' => 'foooter do form',
+                    'container_class' => 'col-md-12',
+                    // 'container_style' => 'float:left;',
+                    'model' => $restaurant,
+                    'label' => []]);
 
-            // $html = $html_block
-            //     ->setHeadTitle('outro titulo')
-            //     ->addCss('/src/public/css/bootstrap.min.css')
-            //     ->addCss('/src/public/css/bootstrap-theme.min.css')
-            //     ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
-            //     ->addJs('/src/public/js/bootstrap.min.js')
-            //     ->appendBody($html_block_nav)
-            //     ->appendBodyRow('col-md-2',[
-            //         $html_block_sidebar,
-            //         $html_block_sidebar_2])
-            //     ->appendBodyRow('col-md-10',[
-            //         $html_block_page_header,
-            //         $html_block_table,
-            //         $html_block_form])
-            //     ->renderHtml();
+            $html = $html_block
+                ->setHeadTitle('outro titulo')
+                ->addCss('/src/public/css/bootstrap.min.css')
+                ->addCss('/src/public/css/bootstrap-theme.min.css')
+                ->addJs('https://code.jquery.com/jquery-2.2.1.min.js')
+                ->addJs('/src/public/js/bootstrap.min.js')
+                ->appendBody($html_block_nav)
+                ->appendBodyRow('col-md-2',[
+                    $html_block_sidebar,
+                    $html_block_sidebar_2])
+                ->appendBodyRow('col-md-10',[
+                    $html_block_page_header,
+                    $html_block_table,
+                    $html_block_form])
+                ->renderHtml();
 
-            // print $html;
+            print $html;
         }
 
         public function restaurantAdd() {
@@ -184,7 +184,7 @@ namespace Application\Restaurant\Controller {
             $restaurant = new Restaurant($this->db_transaction);
 
             // open connection
-            $this->db_transaction->connect();
+            $this->db_transaction->beginTransaction();
 
             // get fields
             $name = Util::get($_POST,'name','place of test');
@@ -197,11 +197,11 @@ namespace Application\Restaurant\Controller {
                 'serves_hot_dogs' => $serves_hot_dogs,
                 'serves_pizza' => $serves_pizza,]);
 
-            // $response = new Response();
+            $this->db_transaction->commit();
 
-            // return $response->code('200')->render([],'json');
+            $response = new Response();
 
-            Util::renderToJson($restaurant);
+            return $response->setCode('200')->renderToJson($restaurant);
         }
 
         public function restaurantUpdate() {

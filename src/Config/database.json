@@ -1,7 +1,7 @@
 {
 	"default": {
 		"driver": "sqlite",
-		"host": "/home/wborba/Dropbox/projeto/php/willer/willer/tests/database/db_restaurant",
+		"host": "/home/wborba/projeto/wborba/willer/tests/database/db_restaurant",
 		"name": "",
 		"user": "",
 		"password": "",
