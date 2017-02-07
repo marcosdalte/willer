@@ -1,0 +1,14 @@
+[2017-02-07 11:53:40 *14273.0]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Class 'Application\MyApp\Controller\Test' not found in /home/wborba/project/willer/vendor/wborba/willer-core/src/Core/System.php:203
+Stack trace:
+#0 /home/wborba/project/willer/vendor/wborba/willer-core/src/Core/System.php(286): Core\System->urlMatch(Array, Array)
+#1 /home/wborba/project/willer/vendor/wborba/willer-core/src/Core/System.php(137): Core\System->readyRoute('/')
+#2 [internal function]: Core\System->Core\{closure}(Object(swoole_http_
+[2017-02-07 11:53:40 $14271.0]	WARNING	swManager_check_exit_status: worker#0 abnormal exit, status=255, signal=0
+[2017-02-07 11:54:18 *14301.0]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Class 'Application\MyApp\Model\Employee\Employee' not found in /home/wborba/project/willer/src/Application/MyApp/Controller/Test.php:17
+Stack trace:
+#0 /home/wborba/project/willer/vendor/wborba/willer-core/src/Core/System.php(210): Application\MyApp\Controller\Test->index()
+#1 /home/wborba/project/willer/vendor/wborba/willer-core/src/Core/System.php(286): Core\System->urlMatch(Array, Array)
+#2 /home/wborba/project/willer/vendor/wborba/willer-co
+[2017-02-07 11:54:18 $14271.0]	WARNING	swManager_check_exit_status: worker#0 abnormal exit, status=255, signal=0
+[2017-02-07 11:54:46 *14342.0]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Cannot use 'static' as constant modifier in /home/wborba/project/willer/src/Application/MyApp/Model/Employee.php on line 11.
+[2017-02-07 11:54:46 $14271.0]	WARNING	swManager_check_exit_status: worker#0 abnormal exit, status=255, signal=0

@@ -1,0 +1,16 @@
+{
+	"DEBUG": "1",
+	"URL": "http://127.0.0.1",
+	"URL_PREFIX": "",
+	"DATABASE": "default",
+	"QUERY_LIMIT": "20",
+	"SWOOLE": "1",
+	"SWOOLE_IP": "http://127.0.0.1",
+	"SWOOLE_PORT": "9501",
+	"SWOOLE_DAEMONIZE": "0",
+	"SWOOLE_GZIP": "0",
+	"SWOOLE_LOG_LEVEL": "1",
+	"SWOOLE_LOG_PATH": "/log/swoole.log",
+	"SWOOLE_PAGE_ERROR_PATH": "/page/error.html",
+	"LAYOUT_THEME": "default"
+}

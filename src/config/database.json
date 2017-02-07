@@ -1,0 +1,12 @@
+{
+	"default": {
+		"driver": "sqlite",
+		"host": "/home/wborba/project/willer/upkeep/database/dev-willer",
+		"name": "",
+		"user": "",
+		"password": "",
+		"port": "",
+		"autocommit": 0,
+		"debug": 0
+	}
+}
