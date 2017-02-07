@@ -5,4 +5,8 @@ dummy.php
 *.txt
 .travis.yml
 composer.lock
+modules.xml
+profiles_settings.xml
+willer.iml
+.idea/
 /vendor/
