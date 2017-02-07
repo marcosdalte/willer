@@ -5,22 +5,20 @@ willer
 [![Latest Stable Version](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer) [![Total Downloads](https://poser.pugx.org/wborba/willer/downloads)](https://packagist.org/packages/wborba/willer) [![Latest Unstable Version](https://poser.pugx.org/wborba/willer/v/unstable)](https://packagist.org/packages/wborba/willer) [![License](https://poser.pugx.org/wborba/willer/license)](https://packagist.org/packages/wborba/willer)
 [![Coverage Status](https://coveralls.io/repos/github/williamborba/willer/badge.svg?branch=master)](https://coveralls.io/github/williamborba/willer?branch=master)
 
-## Willer php framework
+## Willer Framework
 
 Willer is a PHP framework, highlighting the features of ORM, MVC and Bundle.
 
 ## Requisites & Dependencies
 
-* PHP >= 5.6(compatible with php7)
-* Whoops - php errors for cool kids
-* PHPUnit - The PHP Testing Framework(require-dev)
-* Release - PHP library to increment package version and release project(require-dev)
+* PHP >= 7.1
+* Swoole
 
 ## Features
 
 * ORM
 * MVC
-* Run immediately, php server built-in integrated, like `./runserver.sh`
+* Run immediately, php server built-in integrated with Swoole, simply `./server.sh`
 * Bundle
 
 ## Download & Install
@@ -32,24 +30,23 @@ Willer is a PHP framework, highlighting the features of ORM, MVC and Bundle.
 
 ### Routes
 
-Routes in single file `Application/Restaurant/Url.php`. Example.
+Routes in single file `Url.php`, Example:
 
 ```php
-<?php
-
-namespace Application\Restaurant {
+namespace Application\MyApp {
     class Url {
         static public function url() {
-            return [
-                "/^\/?$/"                     => ["Restaurant/Home/index",null],
-                "/^home\/?$/"                 => ["Restaurant/Company/index",null],
-                "/^product\/?$/"              => ["Restaurant/Product/index",null],
-                "/^product\/([a-z0-9]+)\/?$/" => ["Restaurant/Product/detail",null],
-                "/^contato\/?$/"              => ["Restaurant/Contact/contact",null],
+            $url = [
+                '/'                           => ['Test\index',['GET'],'myapp_test_id_of_url'],
+                '/page/test'                  => ['Test\index',['GET'],'id_is_unique'],
+                '/page/test/{test_id:[0-9]+}' => ['Test\index',['GET'],'id_of_this_url'],
             ];
+
+            return $url;
         }
     }
 }
+
 ```
 ### Models
 
@@ -57,118 +54,65 @@ Models Django like style.
 
 Example sql.
 ```sql
-CREATE TABLE `place` (
-    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    `name`  TEXT NOT NULL,
-    `address`   TEXT NOT NULL
+CREATE TABLE employee (
+    id INTEGER NOT NULL,
+    employeerole_id INTEGER,
+    name TEXT(2000000000) NOT NULL,
+    description TEXT(2000000000),
+    email TEXT(2000000000) NOT NULL,
+    phone TEXT(2000000000) NOT NULL,
+    dateCreate TEXT(2000000000) NOT NULL,
+    status INTEGER NOT NULL,
+    CONSTRAINT employee_pk PRIMARY KEY (id),
+    CONSTRAINT FK_employee_employeerole FOREIGN KEY (employeerole_id) REFERENCES employeerole(id)
 );
 
-CREATE TABLE `restaurant` (
-    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    `place_id`  TEXT,
-    `name`  TEXT NOT NULL,
-    `serves_hot_dogs`   INTEGER NOT NULL,
-    `serves_pizza`  INTEGER NOT NULL,
-    FOREIGN KEY(`place_id`) REFERENCES place
-);
-
-CREATE TABLE `waiter` (
-    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    `restaurant_id` INTEGER,
-    `name`  TEXT NOT NULL,
-    FOREIGN KEY(`restaurant_id`) REFERENCES restaurant
+CREATE TABLE employeerole (
+    id INTEGER NOT NULL,
+    name TEXT(2000000000) NOT NULL,
+    description TEXT(255),
+    dateCreate TEXT(20) NOT NULL,
+    status INTEGER NOT NULL,
+    CONSTRAINT employeerole_pk PRIMARY KEY (id)
 );
 ```
-Example model class Place, Restaurant and Waiter.
-
-| File  | Namespace/Class |
-| :------------: |:---------------:|
-| `Application/Restaurant/Model/Place.php` | `Application\Restaurant\Model\Place` |
+Model for table `employee`:
 
 ```php
-<?php
+namespace Application\MyApp\Model {
+    use Core\{Model,Util};
+    use Core\Exception\WException;
+    use Application\MyApp\Model\EmployeeRole as ModelEmployeeRole;
+    use \Datetime as Datetime;
+    use \Exception as Exception;
 
-namespace Application\Restaurant\Model {
-    use Core\Model;
+    class Employee extends Model {
+        public const STATUS_ACTIVE = '1';
+        public const STATUS_LIST = ['1' => 'Active','0' => 'Inactive'];
 
-    class Place extends Model {
         public $id;
+        public $employeerole_id;
         public $name;
-        public $address;
+        public $description;
+        public $email;
+        public $phone;
+        public $dateCreate;
+        public $status;
 
-        protected function schema() {
+        public function schema() {
             return [
-                'id' => Model::primaryKey(),
-                'name' => Model::char(['length' => 40]),
-                'address' => Model::char(['length' => 40]),];
+                'id' => Model::primaryKey(['label' => 'ID']),
+                'employeerole_id' => Model::foreignKey(['table' => new EmployeeRole,'filter' => ['employeerole.status' => [self::STATUS_ACTIVE]],'label' => 'Office']),
+                'name' => Model::char(['length' => 255,'label' => 'Name']),
+                'description' => Model::text(['null' => true,'label' => 'Describe']),
+                'email' => Model::char(['length' => 100,'label' => 'Email']),
+                'phone' => Model::char(['length' => 20,'label' => 'Phone']),
+                'dateCreate' => Model::datetime(['hidden' => true,'label' => 'Date registry']),
+                'status' => Model::boolean(['label' => 'Active','option' => self::STATUS_LIST]),];
         }
 
         protected function name() {
-            return 'place';
-        }
-    }
-}
-```
-
-| File  | Namespace/Class |
-| :------------: |:---------------:|
-| `Application/Restaurant/Model/Restaurant.php` | `Application\Restaurant\Model\Restaurant` |
-
-```php
-<?php
-
-namespace Application\Restaurant\Model {
-    use Core\Model;
-    use Application\Restaurant\Model\Place;
-
-    class Restaurant extends Model {
-        public $id;
-        public $place_id;
-        public $name;
-        public $serves_hot_dogs;
-        public $serves_pizza;
-
-        protected function schema() {
-            return [
-                'id' => Model::primaryKey(),
-                'place_id' => Model::foreignKey(['table' => new Place,'null' => true]),
-                'name' => Model::char(['length' => 40]),
-                'serves_hot_dogs' => Model::boolean(['null' => false]),
-                'serves_pizza' => Model::boolean(['null' => false]),];
-        }
-
-        protected function name() {
-            return 'restaurant';
-        }
-    }
-}
-```
-
-| File  | Namespace/Class |
-| :------------: |:---------------:|
-| `Application/Restaurant/Model/Waiter.php` | `Application\Restaurant\Model\Waiter` |
-
-```php
-<?php
-
-namespace Application\Restaurant\Model {
-    use Core\Model;
-    use Application\Restaurant\Model\Restaurant;
-
-    class Waiter extends Model {
-        public $id;
-        public $restaurant_id;
-        public $name;
-
-        protected function schema() {
-            return [
-                'id' => Model::primaryKey(),
-                'restaurant_id' => Model::foreignKey(['table' => new Restaurant,'null' => true]),
-                'name' => Model::char(['length' => 40]),];
-        }
-
-        protected function name() {
-            return 'waiter';
+            return 'employee';
         }
     }
 }
@@ -176,84 +120,99 @@ namespace Application\Restaurant\Model {
 
 ### Controller
 
-ORM engine.
-
-Controller `Home.php` with method/view `restaurantAdd` contains transaction example.
-
-| File  | Namespace/Class |
-| :------------: |:---------------:|
-| `Application/Restaurant/Controller/Home.php` | `Application\Restaurant\Controller\Home` |
+It's very simple, look at this:
 
 ```php
-<?php
-
-namespace Application\Restaurant\Controller {
-    use Core\Controller;
+namespace Application\MyApp\Controller {
+    use Core\{Controller,Request,Response};
+    use Core\Exception\WException;
     use Core\DAO\Transaction;
-    use Core\Util;
-    use Application\Restaurant\Model\Place;
-    use Application\Restaurant\Model\Restaurant;
-    use Application\Restaurant\Model\Waiter;
+    use Application\MyApp\Model\Employee as ModelEmployee;
+    use Component\HtmlBlock;
+    use \Exception as Exception;
 
-    class Home extends Controller {
-        private $db_transaction;
-
-        public function __construct($request_method = null) {
-            parent::__construct($request_method);
-
-            // load transaction object
-            $this->transaction = new Transaction();
+    class Test extends Controller {
+        public function __construct(Request $request) {
+            parent::__construct($request);
         }
 
-        public function restaurantAdd() {
-            // load model with Transaction instance
-            $restaurant = new Restaurant($this->transaction);
-            $place = new Place($this->transaction);
-            $waiter = new Waiter($this->transaction);
+        public function index() {
+            $response = new Response();
+            $transaction = new Transaction();
+            $model_employee = new ModelEmployee($transaction);
 
-            try {
-                // open connection with begin transaction
-                $this->transaction->beginTransaction();
+            $request = $this->getRequest();
+            $flash_message = $response->getFlashMessage();
 
-                // save place
-                $place->save([
-                    'name' => 'place name test',
-                    'address' => 'place address test',]);
+            $html_block = new HtmlBlock\HtmlBlock();
 
-                // save restaurant
-                $restaurant->save([
-                    'place_id' => $place,
-                    'name' => 'restaurant name test',
-                    'serves_hot_dogs' => 1,
-                    'serves_pizza' => 1,]);
+            // ... html block is the interface generator for willer
 
-                // save waiter
-                $waiter->save([
-                    'restaurant_id' => $restaurant,
-                    'name' => 'waiter name test']);
+            $response->setCode(200);
 
-                // commit
-                $this->transaction->commit();
-
-            } catch (Exception $error) {
-                // rollBack
-                $this->transaction->rollBack();
-            }
+            return $response->render($html_block_render_html);
         }
     }
 }
 ```
-Retrieve query's history in real time.
+
+### ORM
+
+It's simple and power, try it:
 
 ```php
-// return restaurant query's
-$restaurant->dumpQuery();
+$transaction = new Transaction();
 
-// return place query's
-$place->dumpQuery();
+$model_employee = new ModelEmployee($transaction);
+$model_employeerole = new ModelEmployeeRole($transaction);
 
-// return waiter query's
-$waiter->dumpQuery();
+$model_employeerole->get([
+    'employeerole.id' => 7]);
+
+$model_employee->save([
+    'employeerole_id' => $model_employeerole,
+    'name' => 'name of teste',
+    'description' => 'description of test',
+    'email' => 'email of test',
+    'phone' => '123456',
+    'dateCreate' => '2017-01-01 00:00:00',
+    'status' => true]);
+
+$employee_list = $model_employee
+    ->where([
+        'employee.status' => ['0','1'],
+        'employee.name' => 'name of test',
+        'employeerole.name' => 'role of test',
+    ])
+    ->like([
+        'employee.description' => 'my description ...',
+    ])
+    ->limit(1,10)
+    ->orderBy(['employee.id' => 'desc'])
+    ->execute([
+        'join' => 'left']);
+
+$model_employee->get([
+    'employee.id' => 1,]);
+
+$model_employeerole->get([
+    'employeerole.id' => 7]);
+
+$model_employee->employeerole_id = $model_employeerole;
+$model_employee->name = 'name of teste';
+$model_employee->description = 'description of test';
+$model_employee->email = 'email of test';
+$model_employee->phone = '123456';
+$model_employee->status = true;
+$model_employee->save();
+
+$model_employee->get([
+    'employee.id' => 2,]);
+
+$model_employee->delete();
+
+$model_employee->dumpQuery();
+$model_employeerole->dumpQuery();
 ```
 
 ## License
