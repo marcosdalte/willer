@@ -1,7 +1,7 @@
 willer
 ===========
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/c8ab021d-3302-4ed7-a17d-8118190b0774/mini.png)](https://insight.sensiolabs.com/projects/c8ab021d-3302-4ed7-a17d-8118190b0774)
-[![default](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer)
+[![default](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer) [![Monthly Downloads](https://poser.pugx.org/wborba/willer/d/monthly)](https://packagist.org/packages/wborba/willer) [![composer.lock](https://poser.pugx.org/wborba/willer/composerlock)](https://packagist.org/packages/wborba/willer) [![License](https://poser.pugx.org/wborba/willer/license)](https://packagist.org/packages/wborba/willer)
 
 ## Willer Framework
 
