@@ -1,9 +1,7 @@
 willer
 ===========
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/c8ab021d-3302-4ed7-a17d-8118190b0774/mini.png)](https://insight.sensiolabs.com/projects/c8ab021d-3302-4ed7-a17d-8118190b0774)
-[![Build Status](https://travis-ci.org/williamborba/willer.svg?branch=master)](https://travis-ci.org/williamborba/willer)
-[![Latest Stable Version](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer) [![Total Downloads](https://poser.pugx.org/wborba/willer/downloads)](https://packagist.org/packages/wborba/willer) [![Latest Unstable Version](https://poser.pugx.org/wborba/willer/v/unstable)](https://packagist.org/packages/wborba/willer) [![License](https://poser.pugx.org/wborba/willer/license)](https://packagist.org/packages/wborba/willer)
-[![Coverage Status](https://coveralls.io/repos/github/williamborba/willer/badge.svg?branch=master)](https://coveralls.io/github/williamborba/willer?branch=master)
+[![default](https://poser.pugx.org/wborba/willer/v/stable)](https://packagist.org/packages/wborba/willer)
 
 ## Willer Framework
 
@@ -12,13 +10,13 @@ Willer is a PHP framework, highlighting the features of ORM, MVC and Bundle.
 ## Requisites & Dependencies
 
 * PHP >= 7.1
-* Swoole
+* [Swoole](https://github.com/swoole/swoole-src)
 
 ## Features
 
 * ORM
 * MVC
-* Run immediately, php server built-in integrated with Swoole, simply `./server.sh`
+* Run immediately, php server built-in integrated with [Swoole](https://github.com/swoole/swoole-src), simply `./server.sh`
 * Bundle
 
 ## Download & Install
